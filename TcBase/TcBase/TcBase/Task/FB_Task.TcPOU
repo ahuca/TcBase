@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Task" Id="{f4d3bd7e-104a-4ada-800c-9a0a1d3ee958}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Task EXTENDS FB_Object IMPLEMENTS I_Task, I_CyclicTask
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+    _eState:                E_TaskState;
+    _eOldState:             E_TaskState;
+    _nStartCounter:         UDINT := 0;
+    fbExecutionTimer:       TON := (PT := TO_TIME(4294967295));
+    fbExecuteCallCtrl:      FB_InvocationControl;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Attributes" Id="{0648b82d-b082-4066-b6d1-0d36afdd6bb0}" />
+    <Folder Name="Cyclical" Id="{a9d806fd-306e-428f-9745-b97ae33e30aa}" />
+    <Folder Name="On Change" Id="{7b54719e-317e-4661-bc93-15636e66b27e}" />
+    <Folder Name="State Flow" Id="{163a7df7-3015-49d9-b70e-8fd703683f52}" />
+    <Method Name="Abort" Id="{e29fef59-529d-4428-856d-a0423040ccee}" FolderPath="State Flow\">
+      <Declaration><![CDATA[METHOD Abort : I_TaskStatus
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Abort := THIS^;
+
+IF THIS^._eState = E_TaskState.Busy THEN
+    THIS^.OnAbort();
+    THIS^.Restore();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="bBusy" Id="{adf293d6-cf35-403a-a60a-00c4af025de3}" FolderPath="Attributes\">
+      <Declaration><![CDATA[PROPERTY bBusy : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{44e7a439-2fd7-49c3-bd5a-3f8064aeec64}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bBusy := THIS^._eState = E_TaskState.Busy;
+THIS^.CheckCyclicCall();
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bDone" Id="{ab95c304-5686-42c0-a371-76fd93686585}" FolderPath="Attributes\">
+      <Declaration><![CDATA[PROPERTY bDone : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{d3893ab2-b012-405b-a4be-a71ce15f1199}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bDone := THIS^._eState = E_TaskState.Done;
+THIS^.CheckCyclicCall();
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bError" Id="{5ae5e19f-ab56-4f17-8631-64e94506f4d0}" FolderPath="Attributes\">
+      <Declaration><![CDATA[PROPERTY bError : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{a0def179-678c-49db-9708-1053c5bf7ed9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bError := THIS^._eState = E_TaskState.Error;
+THIS^.CheckCyclicCall();
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bReady" Id="{483ad99a-a4ab-4cf1-ba7b-952c73d7eb27}" FolderPath="Attributes\">
+      <Declaration><![CDATA[PROPERTY bReady : BOOL]]></Declaration>
+      <Get Name="Get" Id="{aedb4938-68b4-4727-938a-ab71e6912d69}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bReady := THIS^._eState = E_TaskState.Ready;
+THIS^.CheckCyclicCall();
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="CheckCyclicCall" Id="{b1a7e10b-f0c6-4efc-ab87-0b445b6ec704}">
+      <Declaration><![CDATA[METHOD PRIVATE CheckCyclicCall
+VAR_INST
+    fbCallCtrl:             FB_InvocationControl;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbCallCtrl.Track();
+
+IF THIS^.eState = E_TaskState.Busy AND_THEN
+    (THIS^.CyclicCallDropped()
+        OR_ELSE (NOT THIS^.fbExecuteCallCtrl.bCalledCyclically AND_THEN fbCallCtrl.bNewInvocation)) THEN
+    Tc2_System.ADSLOGSTR(
+        msgCtrlMask := Tc2_System.ADSLOG_MSGTYPE_ERROR,
+        msgFmtStr := 'Cyclic execution of is not done correctly for $'%s$'',
+        strArg := THIS^.sPath);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CyclicCallDropped" Id="{74e8aeb4-4e9c-4a50-82c8-677e7e19f117}">
+      <Declaration><![CDATA[METHOD PRIVATE CyclicCallDropped : BOOL
+VAR_INST
+    fbCyclicCallDropped:        F_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbCyclicCallDropped(CLK:= THIS^.fbExecuteCallCtrl.bCalledCyclically);
+
+CyclicCallDropped := fbCyclicCallDropped.Q;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DoneWhen" Id="{15efd1b0-9d2e-4acd-85f4-d70243cc6597}" FolderPath="State Flow\">
+      <Declaration><![CDATA[METHOD DoneWhen : BOOL
+VAR_INPUT
+    bDone:          BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bDone AND_THEN THIS^._eState = E_TaskState.Busy THEN
+    THIS^.SetState(E_TaskState.Done);
+    THIS^.OnDone();
+    DoneWhen := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ErrorWhen" Id="{036c3caa-498b-4897-a6d5-ad8c4e8a1a30}" FolderPath="State Flow\">
+      <Declaration><![CDATA[METHOD ErrorWhen : BOOL
+VAR_INPUT
+    bError:         bool;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bError AND_THEN THIS^._eState = E_TaskState.Busy THEN
+    THIS^.SetState(E_TaskState.Error);
+    THIS^.OnError();
+    ErrorWhen := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="eState" Id="{c6d3fbdc-1f9b-42bd-a9c8-2d8c1aaa0363}" FolderPath="Attributes\">
+      <Declaration><![CDATA[PROPERTY eState : E_TaskState]]></Declaration>
+      <Get Name="Get" Id="{4ec553bc-5f27-42d5-870f-192cfa04fd81}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[eState := THIS^._eState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Execute" Id="{2fa5e7f6-4779-4333-9846-d4ebf8c73074}" FolderPath="Cyclical\">
+      <Declaration><![CDATA[METHOD PROTECTED Execute : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.fbExecuteCallCtrl.Track();
+
+IF THIS^._eState = E_TaskState.Error THEN
+    THIS^.WhileError();
+END_IF;
+
+Execute := THIS^._eState = E_TaskState.Busy;
+
+IF Execute THEN
+    THIS^.fbExecutionTimer(IN := TRUE);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Invoke" Id="{7d291c31-c84c-4fd9-aa3e-9ccac03b239d}" FolderPath="State Flow\">
+      <Declaration><![CDATA[METHOD Invoke : I_TaskStatus
+VAR_INST
+    fbCallCtrl:         FB_InvocationControl;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbCallCtrl.Track();
+
+IF THIS^._eState = E_TaskState.Ready
+    OR_ELSE ((THIS^._eState = E_TaskState.Done OR THIS^._eState = E_TaskState.Error) AND fbCallCtrl.bNewInvocation) THEN
+
+    THIS^.SetState(E_TaskState.Busy);
+    THIS^.OnStart();
+END_IF
+
+Invoke := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnAbort" Id="{5e42bc5c-9ca8-46d5-bc3a-561f8bb725c1}" FolderPath="On Change\">
+      <Declaration><![CDATA[METHOD PROTECTED OnAbort
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnDone" Id="{440178a0-fe57-41e7-a8b0-9dff8b47cefd}" FolderPath="On Change\">
+      <Declaration><![CDATA[METHOD PROTECTED OnDone
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnError" Id="{72dbb8e6-5548-4ac3-b879-d778ada91edf}" FolderPath="On Change\">
+      <Declaration><![CDATA[METHOD PROTECTED OnError
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnStart" Id="{4ae4b885-beec-4640-9379-42cf5acf2fd5}" FolderPath="On Change\">
+      <Declaration><![CDATA[METHOD PROTECTED OnStart
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nStartCounter := THIS^._nStartCounter + 1;
+THIS^.fbExecutionTimer(IN := FALSE);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Restore" Id="{d3b160ff-5ff3-41c1-967f-4b834ff372cb}" FolderPath="State Flow\">
+      <Declaration><![CDATA[METHOD Restore : I_Restorable
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.SetState(E_TaskState.Ready);
+THIS^.fbExecutionTimer(IN := FALSE);
+
+Restore := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{4a3124ce-aaa4-40fc-bfdd-6eec8224c877}">
+      <Declaration><![CDATA[METHOD Run : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetState" Id="{bc298fca-d865-460f-95bf-f2e5edbe4259}">
+      <Declaration><![CDATA[METHOD PRIVATE SetState
+VAR_INPUT
+    eNewState:          E_TaskState;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^._eState <> eNewState THEN
+    THIS^._eOldState := THIS^._eState;
+    THIS^._eState := eNewState;
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="tElapsedTime" Id="{4c0380ea-a1ab-48b4-95b2-7f8a3a65353e}" FolderPath="Attributes\">
+      <Declaration><![CDATA[PROPERTY tElapsedTime : TIME]]></Declaration>
+      <Get Name="Get" Id="{5c36d2cd-cc24-4279-a355-f4e06a2f3f73}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[tElapsedTime := fbExecutionTimer.ET;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="WhileError" Id="{7cdf781c-f1d8-489d-bbf2-26d367973fff}" FolderPath="Cyclical\">
+      <Declaration><![CDATA[METHOD PROTECTED WhileError
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

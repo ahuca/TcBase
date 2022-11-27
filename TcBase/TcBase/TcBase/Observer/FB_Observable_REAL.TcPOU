@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observable_REAL" Id="{44f2149a-e556-4278-8e29-b5be8430ad03}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_REAL EXTENDS FB_AbstractObservable
+VAR
+    _fVal:                  REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="fValue32" Id="{a0813b3d-f5d1-4dc2-abb7-e188f52cb384}">
+      <Declaration><![CDATA[PROPERTY fValue32 : REAL]]></Declaration>
+      <Get Name="Get" Id="{1b7554b4-9021-4d07-9c73-8d38b15ac4db}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fValue32 := THIS^._fVal;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{2a2e589f-9528-41d6-9e71-704813bd50f0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._fVal := fValue32;
+
+IF THIS^._bAutoNotify THEN
+    THIS^.Notify();
+END_IF
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Notify" Id="{bdb8eebc-0456-495a-bfc0-8db8495e80d3}">
+      <Declaration><![CDATA[METHOD  Notify : I_Observable
+VAR
+    i:      UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Notify := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+FOR i := 0 TO THIS^.nLastIdx DO
+    THIS^.pipObserver[i].Update(THIS^._fVal);
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NotifyLast" Id="{d836ad80-4747-45ab-acac-519a63f75d6b}">
+      <Declaration><![CDATA[METHOD  NotifyLast : I_Observable
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[NotifyLast := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+THIS^.pipObserver[THIS^.nLastIdx].Update(THIS^._fVal);
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

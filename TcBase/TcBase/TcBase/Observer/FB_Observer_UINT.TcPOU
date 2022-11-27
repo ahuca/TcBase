@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observer_UINT" Id="{59583273-3d3e-4802-b654-f708202ae237}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observer_UINT EXTENDS FB_AbstractObserver
+VAR
+    _nVal:              UINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="nValue16" Id="{6dc69f70-3e83-4a36-8698-ccc51429d02e}">
+      <Declaration><![CDATA[PROPERTY nValue16 : UINT]]></Declaration>
+      <Get Name="Get" Id="{1a8067e6-be65-4e7b-bdac-0cb25898151d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nValue16 := THIS^._nVal;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Update" Id="{dd0feac9-7acc-4ff7-8168-b2b688fcd1a0}">
+      <Declaration><![CDATA[{attribute 'hasanytype'}
+METHOD Update : I_Observer
+VAR_INPUT
+    anyVal:         ANY;
+END_VAR
+VAR
+    pReal:          POINTER TO REAL;
+    pLreal:         POINTER TO LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Update := THIS^;
+
+IF TO_INT(anyVal.TypeClass) = IBaseLibrary.TypeClass.TYPE_UINT THEN
+    Tc2_System.MEMCPY(destAddr := ADR(THIS^._nVal),
+                      srcAddr := anyVal.pValue,
+                      n := SIZEOF(THIS^._nVal));
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

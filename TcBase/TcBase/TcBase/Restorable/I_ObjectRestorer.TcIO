@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_ObjectRestorer" Id="{822ff220-fd57-4c01-8277-950b1acf1e25}">
+    <Declaration><![CDATA[INTERFACE I_ObjectRestorer EXTENDS __SYSTEM.IQueryInterface
+]]></Declaration>
+    <Method Name="RestoreObject" Id="{1f7ec782-71cd-4465-9be2-f2e2ea23874f}">
+      <Declaration><![CDATA[METHOD RestoreObject : I_ObjectRestorer
+VAR_INPUT
+    ipRestorable:           I_Restorable;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

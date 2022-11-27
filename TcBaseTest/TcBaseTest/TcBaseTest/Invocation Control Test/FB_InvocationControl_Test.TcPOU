@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_InvocationControl_Test" Id="{275ee212-b633-48c9-bfec-9d4bc677a258}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_InvocationControl_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+    
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[RunAllTheTimeExpectCalledCyclicallyTrue();
+RunAllTheTimeExpectNewInvocationOnce();
+RunOnceExpectNewInvocationOnce();
+RunOncePerCycleExpectMultipleCallAlwaysFalse();
+RunThricePerCycleExpectMultipleCallTrue();
+]]></ST>
+    </Implementation>
+    <Method Name="RunAllTheTimeExpectCalledCyclicallyTrue" Id="{686e5088-d8f9-4b8e-b31b-9ad32a9b6c16}">
+      <Declaration><![CDATA[METHOD PRIVATE RunAllTheTimeExpectCalledCyclicallyTrue
+VAR_INST
+    fbCallCtrl:             FB_InvocationControl;
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('RunAllTheTimeExpectCalledCyclicallyTrue');
+
+fbCallCtrlTestTask.SetRunCondition(5).Run();
+
+IF fbCallCtrlTestTask.nCycleCounter = 1 THEN
+    THIS^.AssertFalse(Condition := fbCallCtrl.bCalledCyclically,
+                      Message := '$'bCalledCyclically$' should be false as Track() has not been called at all');
+END_IF
+
+fbCallCtrl.Track();
+
+THIS^.AssertTrue(Condition := fbCallCtrl.bCalledCyclically,
+                 Message := '$'bCalledCyclically$' is false, but it should be true');
+
+THIS^.AssertTrue(Condition := fbCallCtrl.bCalledThisCycle,
+                 Message := '$'bCalledThisCycle$' is false, but it should be true');
+
+IF fbCallCtrlTestTask.nCycleCounter > 1 THEN
+    THIS^.AssertTrue(Condition := fbCallCtrl.bCalledLastCycle,
+                     Message := '$'bCalledLastCycle$' is false, but it should be true');
+    IF NOT fbCallCtrl.bCalledLastCycle THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR,
+                  msgFmtStr := fbCallCtrl.ToString(),
+                  strArg := '');
+    END_IF
+ELSE
+    THIS^.AssertFalse(Condition := fbCallCtrl.bCalledLastCycle,
+                      Message := '$'bCalledLastCycle$' should not be true on the first cycle it is called');
+END_IF
+
+IF fbCallCtrlTestTask.bDone THEN
+    TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunAllTheTimeExpectNewInvocationOnce" Id="{af048f57-1807-46ae-9881-f2e068cfe1eb}">
+      <Declaration><![CDATA[METHOD PRIVATE RunAllTheTimeExpectNewInvocationOnce
+VAR_INST
+    fbCallCtrl:             FB_InvocationControl;
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('RunAllTheTimeExpectNewInvocationOnce');
+
+fbCallCtrlTestTask.SetRunCondition(5).Run();
+
+fbCallCtrl.Track();
+
+IF fbCallCtrlTestTask.nCycleCounter = 1 THEN
+    THIS^.AssertTrue(Condition := fbCallCtrl.bNewInvocation,
+                     Message := '$'bNewInvocation$' is false, but it should be true');
+ELSE
+    THIS^.Assertfalse(Condition := fbCallCtrl.bNewInvocation,
+                      Message := '$'bNewInvocation$' is true, but it should be false');
+END_IF
+
+IF fbCallCtrlTestTask.bDone THEN
+    TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunOnceExpectNewInvocationOnce" Id="{68d6ed3b-98e6-4660-bca2-69a6a41d9382}">
+      <Declaration><![CDATA[METHOD PRIVATE RunOnceExpectNewInvocationOnce
+VAR_INST
+    fbCallCtrl:             FB_InvocationControl;
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('RunOnceExpectNewInvocationOnce');
+
+fbCallCtrlTestTask.SetRunCondition(5).Run();
+
+IF fbCallCtrlTestTask.nCycleCounter = 3 THEN
+    fbCallCtrl.Track();
+    THIS^.AssertTrue(Condition := fbCallCtrl.bNewInvocation,
+                     Message := '$'bNewInvocation$' is false, but it should be true');
+ELSE
+    THIS^.AssertFalse(Condition := fbCallCtrl.bNewInvocation,
+                      Message := '$'bNewInvocation$' is trie, but it should be false');
+END_IF
+
+IF fbCallCtrlTestTask.bDone THEN
+    TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunOncePerCycleExpectMultipleCallAlwaysFalse" Id="{34940cc7-dfc1-48bb-b5d8-329b2bf9d30e}">
+      <Declaration><![CDATA[METHOD PRIVATE RunOncePerCycleExpectMultipleCallAlwaysFalse
+VAR_INST
+    fbCallCtrl:             FB_InvocationControl;
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('RunOncePerCycleExpectMultipleCallAlwaysFalse');
+
+fbCallCtrlTestTask.SetRunCondition(5).Run();
+
+THIS^.AssertFalse(Condition := fbCallCtrl.bMultipleCall,
+                  Message := '$'bMultipleCall$' is true, but it should be false');
+
+fbCallCtrl.Track();
+
+THIS^.AssertFalse(Condition := fbCallCtrl.bMultipleCall,
+                  Message := '$'bMultipleCall$' is true, but it should be false');
+
+
+IF fbCallCtrlTestTask.bDone THEN
+    TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunThricePerCycleExpectMultipleCallTrue" Id="{7d926dff-c48f-42d5-a61f-6f06dd6acce5}">
+      <Declaration><![CDATA[METHOD PRIVATE RunThricePerCycleExpectMultipleCallTrue
+VAR_INST
+    fbCallCtrl:             FB_InvocationControl;
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('RunThricePerCycleExpectMultipleCallTrue');
+
+fbCallCtrlTestTask.SetRunCondition(5).Run();
+
+IF fbCallCtrlTestTask.nCycleCounter > 1 THEN
+    THIS^.AssertTrue(Condition := fbCallCtrl.bMultipleCall,
+                     Message := '$'bMultipleCall$' is false, but it should be true');
+END_IF
+
+fbCallCtrl.Track().Track().Track();
+
+THIS^.AssertTrue(Condition := fbCallCtrl.bMultipleCall,
+                 Message := '$'bMultipleCall$' is false, but it should be true');
+
+IF fbCallCtrlTestTask.bDone THEN
+    TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observer_REAL" Id="{d1c7af26-f07e-42b0-992b-a1ffff6d7b81}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observer_REAL EXTENDS FB_AbstractObserver
+VAR
+    _fVal:              REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="fValue32" Id="{c642b59a-6e55-4cd0-8595-4cc6183b71c8}">
+      <Declaration><![CDATA[PROPERTY fValue32 : REAL]]></Declaration>
+      <Get Name="Get" Id="{3fab4433-5f59-4791-9081-0075f9ea3bcd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fValue32 := THIS^._fVal;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Update" Id="{c904694c-08aa-4ae1-9389-a1e998633ac7}">
+      <Declaration><![CDATA[{attribute 'hasanytype'}
+METHOD Update : I_Observer
+VAR_INPUT
+    anyVal:         ANY;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Update := THIS^;
+
+IF TO_INT(anyVal.TypeClass) = IBaseLibrary.TypeClass.TYPE_REAL THEN
+    Tc2_System.MEMCPY(destAddr := ADR(THIS^._fVal),
+                      srcAddr := anyVal.pValue,
+                      n := SIZEOF(THIS^._fVal));
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

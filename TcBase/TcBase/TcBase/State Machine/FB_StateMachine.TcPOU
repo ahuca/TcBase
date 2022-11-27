@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_StateMachine" Id="{fde30d05-33cb-4c8b-b55e-62aa88e8a800}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_StateMachine EXTENDS FB_Object IMPLEMENTS I_StateMachine
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+    _ipState:               I_State;
+    _ipPrevState:           I_State;
+    _nStateChangeCount:     UDINT := 0;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="ipPrevState" Id="{dd37e782-3259-48d5-bbdd-e492214b4e1d}">
+      <Declaration><![CDATA[PROPERTY ipPrevState : I_State]]></Declaration>
+      <Get Name="Get" Id="{e615f0e3-c5fd-4003-a6dc-12e9df41e5ea}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipPrevState := THIS^._ipPrevState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ipState" Id="{bc54c102-419f-4792-8ddb-88a43ac6e58c}">
+      <Declaration><![CDATA[PROPERTY ipState : I_State]]></Declaration>
+      <Get Name="Get" Id="{e6c63ae4-e32d-4571-9341-0970144ab421}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipState := THIS^._ipState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="SetState" Id="{c0a40504-cddb-40b7-affb-fd6284bdb099}">
+      <Declaration><![CDATA[METHOD SetState : BOOL
+VAR_INPUT
+    newState:           I_State;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.ipState <> newState THEN
+    THIS^._ipState.OnExit();
+
+    THIS^._ipPrevState := _ipState;
+    THIS^._ipState := newState;
+
+    THIS^._ipState.OnEntry();
+
+    THIS^._nStateChangeCount := THIS^._nStateChangeCount + 1;
+
+    SetState := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

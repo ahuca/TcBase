@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_Restorable" Id="{013c2610-d02c-42c6-86e8-03b3b8c8717d}">
+    <Declaration><![CDATA[INTERFACE I_Restorable EXTENDS __SYSTEM.IQueryInterface
+]]></Declaration>
+    <Method Name="Restore" Id="{3e98e5e0-5ef8-4687-98c2-cba9e3a31fe8}">
+      <Declaration><![CDATA[METHOD Restore : I_Restorable
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observable_UDINT" Id="{d0660e49-c775-410d-a0a1-9e032074c447}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_UDINT EXTENDS FB_AbstractObservable
+VAR
+    _nVal:              UDINT;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Notify" Id="{7bf07f9f-9a73-4cb8-8e42-b2f4644a79b1}">
+      <Declaration><![CDATA[METHOD  Notify : I_Observable
+VAR
+    i:      UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Notify := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+FOR i := 0 TO THIS^.nLastIdx DO
+    THIS^.pipObserver[i].Update(THIS^._nVal);
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NotifyLast" Id="{146a901e-f8dc-4d96-b1cb-110d36bf9c72}">
+      <Declaration><![CDATA[METHOD  NotifyLast : I_Observable
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[NotifyLast := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+THIS^.pipObserver[THIS^.nLastIdx].Update(THIS^._nVal);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nValue32" Id="{1b1add70-3051-4ef1-935b-e2d6c1d98d7e}">
+      <Declaration><![CDATA[PROPERTY nValue32 : UDINT]]></Declaration>
+      <Get Name="Get" Id="{632ceaa0-021f-4af2-aa9d-7e6a21040b3d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nValue32 := THIS^._nVal;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{79fae39c-6271-4ab4-972b-e43b59cbba29}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._nVal := nValue32;
+
+IF THIS^._bAutoNotify THEN
+    THIS^.Notify();
+END_IF
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

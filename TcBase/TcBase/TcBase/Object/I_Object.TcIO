@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_Object" Id="{96c915d9-541c-4566-8f01-7492919705b5}">
+    <Declaration><![CDATA[INTERFACE I_Object EXTENDS __SYSTEM.IQueryInterface
+]]></Declaration>
+    <Property Name="ipContext" Id="{d54a9832-a1de-45c3-9205-7c8581f64604}">
+      <Declaration><![CDATA[PROPERTY ipContext : I_Context]]></Declaration>
+      <Get Name="Get" Id="{f2c6904c-7ca9-4293-8141-7b24b0bbbb4d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="nIdentity" Id="{92b56106-a7b5-4964-b45c-98b59de921b1}">
+      <Declaration><![CDATA[PROPERTY nIdentity : ULINT]]></Declaration>
+      <Get Name="Get" Id="{0bd6f9ae-19ae-44ce-9d71-fb8d6bfead8a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="sPath" Id="{703fc0af-c533-4d23-89ec-6b8f676dca77}">
+      <Declaration><![CDATA[PROPERTY sPath : STRING(MAX_STRING_LENGTH)]]></Declaration>
+      <Get Name="Get" Id="{4521e10c-7e6c-46c5-81a0-1856018e854b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

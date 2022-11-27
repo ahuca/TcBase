@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observable_DINT" Id="{6de3a4c4-474b-46c8-abeb-2912757def04}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_DINT EXTENDS FB_AbstractObservable
+VAR
+    _nVal:              DINT;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Notify" Id="{fb99eee2-2794-4587-8270-d5628be07767}">
+      <Declaration><![CDATA[METHOD  Notify : I_Observable
+VAR
+    i:      UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Notify := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+FOR i := 0 TO THIS^.nLastIdx DO
+    THIS^.pipObserver[i].Update(THIS^._nVal);
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NotifyLast" Id="{5d071ee6-6cfe-4744-b1d5-a21b19b7be0e}">
+      <Declaration><![CDATA[METHOD  NotifyLast : I_Observable
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[NotifyLast := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+THIS^.pipObserver[THIS^.nLastIdx].Update(THIS^._nVal);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nValue32" Id="{8c6e5650-be92-461f-8538-94a03dc98106}">
+      <Declaration><![CDATA[PROPERTY nValue32 : DINT]]></Declaration>
+      <Get Name="Get" Id="{8fd5783a-ed1c-4ca8-980a-76c10d0027c7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nValue32 := THIS^._nVal;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{7690aef0-1b32-4f34-b842-7c699fcf50f7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._nVal := nValue32;
+
+IF THIS^._bAutoNotify THEN
+    THIS^.Notify();
+END_IF
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

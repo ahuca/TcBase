@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="Param_Observer" Id="{2d769b2c-14a5-4d82-9d5e-2e0563cc4466}" ParameterList="True">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    cMaxNumberOfObservers:      UDINT := 50;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_CyclicTask" Id="{474f2a5a-80bd-41d9-948d-26247a1ce276}">
+    <Declaration><![CDATA[INTERFACE I_CyclicTask EXTENDS __SYSTEM.IQueryInterface
+]]></Declaration>
+    <Method Name="Run" Id="{676981b5-670e-448f-a624-da6140f640f1}">
+      <Declaration><![CDATA[METHOD Run : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

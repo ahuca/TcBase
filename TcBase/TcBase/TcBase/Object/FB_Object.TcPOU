@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Object" Id="{87ccbc5a-8a98-4cc4-aa55-78ff92f7c37f}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'}
+FUNCTION_BLOCK ABSTRACT FB_Object IMPLEMENTS I_Object
+VAR
+    _nIdentity:         ULINT;
+    _ipParent:          I_Object;
+
+    {attribute 'instance-path'}
+    {attribute 'noinit'}
+    _sPath:             STRING(MAX_STRING_LENGTH);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="bOrphan" Id="{b322e367-c154-402e-88b0-f0f448e22ea7}">
+      <Declaration><![CDATA[PROPERTY bOrphan : BOOL]]></Declaration>
+      <Get Name="Get" Id="{37a6e89f-2a4c-4eec-9652-407a301a9ce5}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bOrphan := THIS^._ipParent = 0;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="EqualsTo" Id="{e0d9c976-b19a-4134-8e2d-cb5c401117cc}">
+      <Declaration><![CDATA[METHOD EqualsTo : BOOL
+VAR_INPUT
+    ipComparedObject:           I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipComparedObject.nIdentity <> 0 THEN
+    EqualsTo := ipComparedObject.nIdentity = THIS^._nIdentity;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{058b6abe-0386-4ead-9210-33fdf22e4732}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    ipParentObject:         I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_nIdentity := ADR(THIS^);
+_ipParent := ipParentObject;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ipContext" Id="{af011723-3225-42bc-a3cf-ab5677defbfe}">
+      <Declaration><![CDATA[PROPERTY ipContext : I_Context]]></Declaration>
+      <Get Name="Get" Id="{40949f99-26a3-42b6-8031-091b2b3252b0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF NOT THIS^.bOrphan THEN
+    ipContext := THIS^.ipParent.ipContext;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ipParent" Id="{476836f0-75a2-440a-a857-bf17b0a7f0dc}">
+      <Declaration><![CDATA[PROPERTY ipParent : I_Object]]></Declaration>
+      <Get Name="Get" Id="{07e655a1-6465-4a2f-826a-bf0c292f7655}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF _ipParent <> 0 THEN
+    ipParent := THIS^._ipParent;
+    RETURN;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nIdentity" Id="{f3f9b85a-2c87-4f9c-bb99-0511480c45ad}">
+      <Declaration><![CDATA[PROPERTY nIdentity : ULINT
+]]></Declaration>
+      <Get Name="Get" Id="{a92d2096-f26b-4a48-9f10-1d6a8572e4ae}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._nIdentity := ADR(THIS^);
+nIdentity := THIS^._nIdentity;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="sPath" Id="{57079563-ab74-4c88-ae4d-a3108deae837}">
+      <Declaration><![CDATA[PROPERTY sPath : STRING(MAX_STRING_LENGTH)]]></Declaration>
+      <Get Name="Get" Id="{29f1b486-0a4c-4485-afe9-f9913d8160f7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[sPath := THIS^._sPath;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

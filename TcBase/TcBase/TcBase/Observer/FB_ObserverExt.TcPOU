@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ObserverExt" Id="{a194f5ad-3f50-4881-8a18-bfc289922fd5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ObserverExt EXTENDS FB_AbstractObserver
+VAR
+    _nTypeClass:    __SYSTEM.TYPE_CLASS;
+    _pVal:          POINTER TO BYTE;
+    _nSize:         DINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{e0865603-4666-45df-a0e0-2d998f9e4a01}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    anyVal: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTypeClass := anyVal.TypeClass;
+THIS^._pVal := anyVal.pValue;
+THIS^._nSize := anyVal.diSize;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nSize" Id="{5901b31d-ec9c-41b5-bbe7-a7babb7614f1}">
+      <Declaration><![CDATA[PROPERTY nSize : UDINT]]></Declaration>
+      <Get Name="Get" Id="{41ef2e29-d353-44d8-bbc9-cc0d72593e58}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nSize := TO_UDINT(THIS^._nSize);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nTypeClass" Id="{183396ab-6e79-4504-93b3-09d3a1ccfdb0}">
+      <Declaration><![CDATA[PROPERTY nTypeClass : __SYSTEM.TYPE_CLASS]]></Declaration>
+      <Get Name="Get" Id="{18e65481-35ef-4aa4-b82f-5ea34d24129c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nTypeClass := THIS^._nTypeClass;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="pVal" Id="{a3da0134-cd8a-40ea-bfa0-eac24a6f2476}">
+      <Declaration><![CDATA[PROPERTY pVal : POINTER TO BYTE]]></Declaration>
+      <Get Name="Get" Id="{52d1a553-ca6d-422b-87d6-8b968f0f31f0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[pVal := THIS^._pVal;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Update" Id="{44645ec1-2c3e-42ea-bf9f-043f0f604e0b}">
+      <Declaration><![CDATA[METHOD Update : I_Observer
+VAR_INPUT
+    anyVal:         ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF anyVal.TypeClass = THIS^._nTypeClass THEN
+    MEMCPY(destAddr := THIS^._pVal,
+           srcAddr := anyVal.pValue,
+           n := TO_UDINT(anyVal.diSize));
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

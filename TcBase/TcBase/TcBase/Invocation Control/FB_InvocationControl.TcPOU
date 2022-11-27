@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_InvocationControl" Id="{e4485e91-b62a-4199-8abd-0536dfa1af16}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'}
+FUNCTION_BLOCK FB_InvocationControl
+// This FB can be used to track if a unit of code is executed cyclically or just invoked
+// A unit of code can be, for example, the body of an FB, a method,
+// an action, a property, etc.
+//
+// To track the desired task, simply place the Track() method in that task.
+// Note that this FB can only track one unit of code at a time, and its properties
+// must be used only after the Track() method is called.
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+    _sOutTemplate:              STRING(MAX_STRING_LENGTH);
+    _sOut:                      STRING(MAX_STRING_LENGTH);
+    fbGetCurTaskIdx:            GETCURTASKINDEX;
+    _nTaskIdx:                  BYTE;
+    _TaskId:                    OTCID;
+    _nCycleCount:               UDINT; // Tracking cycle count
+    _nOldCycleCount:            UDINT; // Old tracking cycle count
+    _nCallCount:                UDINT; // Call count of Track()
+    _nOldCallCount:             UDINT; // Old call count of Track()
+    _nTaskTime:                 LINT;
+    _nOldTaskTime:              LINT;
+    {attribute 'instance-path'}
+    {attribute 'noinit'}
+    sPath:                      STRING(MAX_STRING_LENGTH);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="bCalledCyclically" Id="{5321a012-c4c4-48a7-903e-6e830ba4f2c4}">
+      <Declaration><![CDATA[PROPERTY bCalledCyclically : BOOL]]></Declaration>
+      <Get Name="Get" Id="{4b93c446-84ad-4fbd-b8a3-dd69825ceb6f}">
+        <Declaration><![CDATA[VAR
+END_VAR]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// New invocation when:
+//      - 'Track()' was called last cycle, OR
+//      - 'Track()' is called this cycle
+bCalledCyclically := THIS^.TaskTracked() AND_THEN (THIS^.bCalledLastCycle OR_ELSE THIS^.bCalledThisCycle);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bCalledLastCycle" Id="{b8a86446-7c4b-4bea-8008-410d8bf8212d}">
+      <Declaration><![CDATA[PROPERTY bCalledLastCycle : BOOL]]></Declaration>
+      <Get Name="Get" Id="{64392e1a-c30b-4934-b5e2-c7e23b3d8d9f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF NOT THIS^.TaskTracked() THEN
+    RETURN;
+END_IF
+
+IF THIS^.bCalledThisCycle THEN
+    bCalledLastCycle := (THIS^.nOldCycleCount + 1) = THIS^.nTaskCycleCount;
+ELSE
+    bCalledLastCycle := (THIS^.nCycleCount + 1) = THIS^.nTaskCycleCount;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bCalledThisCycle" Id="{65adcb54-7eec-4a37-9aec-a9c335ff2410}">
+      <Declaration><![CDATA[PROPERTY bCalledThisCycle : BOOL]]></Declaration>
+      <Get Name="Get" Id="{ec43053c-90a2-4313-bfe5-26c9894a0552}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bCalledThisCycle :=
+    THIS^.TaskTracked() AND_THEN (THIS^.nCycleCount = THIS^.nTaskCycleCount);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bMultipleCall" Id="{b98f3092-431b-48de-a025-45c448bb2ce6}">
+      <Declaration><![CDATA[PROPERTY bMultipleCall : BOOL]]></Declaration>
+      <Get Name="Get" Id="{398ad23f-cc6a-4ac6-8aea-f6b49cf29893}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// Multiple call when:
+//  - 'TaskId' <> 0, and
+//  - '_nOldCallCount' <> '_nOldCycleCount', and
+//  - 'Track()' is called this cycle
+bMultipleCall := THIS^.TaskTracked()
+                 AND_THEN THIS^.bCalledCyclically
+                 AND_THEN THIS^._nCallCount - THIS^._nOldCallCount > 1;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bNewInvocation" Id="{cd6d0f36-5e36-4e45-8f59-6477531a43bb}">
+      <Declaration><![CDATA[PROPERTY bNewInvocation : BOOL]]></Declaration>
+      <Get Name="Get" Id="{6c5973f7-7761-4236-9191-9801b3c01ab3}">
+        <Declaration><![CDATA[VAR_INST
+    nLastTrigCycleCount:        UDINT;
+END_VAR]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// New invocation when:
+//  - 'TaskId' <> 0, and
+//  - 'Track()' was not called last cycle, and
+//  - 'Track()' is called this cycle, and
+bNewInvocation := THIS^.TaskTracked()
+                  AND_THEN (THIS^.nOldCycleCount + 1) <> THIS^.nCycleCount
+                  AND_THEN THIS^.nCycleCount = THIS^.nTaskCycleCount;
+
+// For debugging
+IF bNewInvocation THEN
+    nLastTrigCycleCount := THIS^.nTaskCycleCount;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_init" Id="{3936ed01-e594-0b71-3731-2eba6a0c016c}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._sOutTemplate :=
+        'TaskIdx=%d, 
+         TaskId=%d, 
+         TrackCycleCount=%d, 
+         OldTrackCycleCount=%d, 
+         TaskCycleCount=%d, 
+         CallCount=%d, 
+         OldCallCount=%d';]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nCycleCount" Id="{bbb568d7-3510-4531-9db6-4696a951bc2c}">
+      <Declaration><![CDATA[PROPERTY nCycleCount : UDINT]]></Declaration>
+      <Get Name="Get" Id="{885434c6-5651-4df6-8092-a640a72dfb08}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nCycleCount := THIS^._nCycleCount;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nOldCycleCount" Id="{f7f3a850-60c6-46e4-8cb8-76682cb5f8a6}">
+      <Declaration><![CDATA[PROPERTY nOldCycleCount : UDINT]]></Declaration>
+      <Get Name="Get" Id="{ca892eb4-062c-4c6d-a4d5-c876717fd5a7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nOldCycleCount := THIS^._nOldCycleCount;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nTaskCycleCount" Id="{ba6a1a59-235f-093b-38a6-6c492a73d30f}">
+      <Declaration><![CDATA[PROPERTY nTaskCycleCount : UDINT]]></Declaration>
+      <Get Name="Get" Id="{c6fadc55-0231-03b5-37af-8040871d45a8}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF THIS^.TaskTracked() THEN
+    nTaskCycleCount := TwinCAT_SystemInfoVarList._TaskInfo[THIS^._nTaskIdx].CycleCount;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="TaskTracked" Id="{27e3721c-4ce3-0075-26a5-d25b7abb71de}">
+      <Declaration><![CDATA[METHOD PROTECTED TaskTracked : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TaskTracked := THIS^._TaskId <> 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToString" Id="{0a741159-8cd5-0d74-39ef-719ec48a2245}">
+      <Declaration><![CDATA[METHOD ToString : STRING(MAX_STRING_LENGTH)
+VAR_INST
+    fbFormatStr:        FB_FormatString2;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFormatStr(pFormatString := ADR(THIS^._sOutTemplate),
+            arg1 := F_BYTE(THIS^._nTaskIdx),
+            arg2 := F_UDINT(THIS^._TaskId),
+            arg3 := F_UDINT(THIS^._nCycleCount),
+            arg4 := F_UDINT(THIS^._nOldCycleCount),
+            arg5 := F_UDINT(TwinCAT_SystemInfoVarList._TaskInfo[THIS^._nTaskIdx].CycleCount),
+            arg6 := F_UDINT(THIS^._nCallCount),
+            arg7 := F_UDINT(THIS^._nOldCallCount),
+            pDstString := ADR(THIS^._sOut),
+            nDstSize := MAX_STRING_LENGTH);
+
+ToString := THIS^._sOut;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Track" Id="{2f02544c-c458-4fa8-8d9f-b9aada9faa5e}">
+      <Declaration><![CDATA[METHOD Track : REFERENCE TO FB_InvocationControl
+VAR_INPUT
+END_VAR
+VAR
+    nCurCycleCount:         UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Track REF= THIS^;
+
+// Initialize '_TaskId'
+IF THIS^._TaskId = 0 THEN
+    THIS^.fbGetCurTaskIdx();
+    THIS^._nTaskIdx := THIS^.fbGetCurTaskIdx.index;
+    THIS^._TaskId := TwinCAT_SystemInfoVarList._TaskInfo[THIS^._nTaskIdx].ObjId;
+END_IF
+
+nCurCycleCount := THIS^.nTaskCycleCount;
+
+// Update old info only if this is a new cycle
+IF THIS^._nTaskTime <> TwinCAT_SystemInfoVarList._TaskInfo[THIS^._nTaskIdx].DcTaskTime THEN
+    THIS^._nOldTaskTime := THIS^._nTaskTime;
+    THIS^._nOldCycleCount := THIS^._nCycleCount;
+    THIS^._nOldCallCount := THIS^._nCallCount;
+ELSE
+    THIS^._nCallCount := THIS^._nCallCount + 1;
+END_IF
+
+// Update current info
+THIS^._nTaskTime := TwinCAT_SystemInfoVarList._TaskInfo[THIS^._nTaskIdx].DcTaskTime;
+THIS^._nCycleCount := nCurCycleCount;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_TaskStatus" Id="{0d5eb1a7-3c05-4b2b-bb3c-0fa5f089edd9}">
+    <Declaration><![CDATA[INTERFACE I_TaskStatus EXTENDS __SYSTEM.IQueryInterface]]></Declaration>
+    <Property Name="bBusy" Id="{2b0da3e7-7a49-4766-a79a-906f0c61d5b3}">
+      <Declaration><![CDATA[PROPERTY bBusy : BOOL]]></Declaration>
+      <Get Name="Get" Id="{f44b37a2-4b92-4b2f-8690-5a7ff8f86c21}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="bDone" Id="{2b01c358-908d-4bac-b684-2e4db99458cb}">
+      <Declaration><![CDATA[PROPERTY bDone : BOOL]]></Declaration>
+      <Get Name="Get" Id="{3ee91054-113f-4681-ab00-d606f5af4f67}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="bError" Id="{a4ba0f9a-d18a-410c-9489-a7fb03d72a4c}">
+      <Declaration><![CDATA[PROPERTY bError : BOOL]]></Declaration>
+      <Get Name="Get" Id="{9bb2b80c-e9a9-45e7-91be-c894a2ddd2f0}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="bReady" Id="{9cec2872-a4c9-4cb9-bb99-0d16b52fee19}">
+      <Declaration><![CDATA[PROPERTY bReady : BOOL]]></Declaration>
+      <Get Name="Get" Id="{52b2004d-8289-4b5f-b68e-c0835d174087}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

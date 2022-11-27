@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_Task" Id="{9e14b5d7-9fdb-42fd-96bf-40b7d6ee5887}">
+    <Declaration><![CDATA[INTERFACE I_Task EXTENDS I_Object, I_TaskStatus, I_Restorable
+]]></Declaration>
+    <Method Name="Abort" Id="{8600405c-da21-4ead-bbb7-002a777c4c63}">
+      <Declaration><![CDATA[METHOD Abort : I_TaskStatus
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Invoke" Id="{9077fc7b-9fbd-4825-89d2-7c408737b38a}">
+      <Declaration><![CDATA[METHOD Invoke : I_TaskStatus
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

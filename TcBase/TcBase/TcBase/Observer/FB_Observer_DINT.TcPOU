@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observer_DINT" Id="{22c8b8ae-99d5-4d37-9e7c-afe4e3df0815}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observer_DINT EXTENDS FB_AbstractObserver
+VAR
+    _nVal:              DINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="nValue32" Id="{bec0dc45-8824-4d58-907b-b755df6d4f5b}">
+      <Declaration><![CDATA[PROPERTY nValue32 : DINT]]></Declaration>
+      <Get Name="Get" Id="{1c41b536-f2de-4d2e-a865-45917af5498b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nValue32 := THIS^._nVal;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Update" Id="{4f6d7e3e-9c33-46fc-811f-e4e651c35724}">
+      <Declaration><![CDATA[{attribute 'hasanytype'}
+METHOD Update : I_Observer
+VAR_INPUT
+    anyVal:         ANY;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Update := THIS^;
+
+IF TO_INT(anyVal.TypeClass) = IBaseLibrary.TypeClass.TYPE_DINT THEN
+    Tc2_System.MEMCPY(destAddr := ADR(THIS^._nVal),
+                      srcAddr := anyVal.pValue,
+                      n := SIZEOF(THIS^._nVal));
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

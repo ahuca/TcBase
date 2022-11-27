@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Context" Id="{d28e9abd-689a-4aa3-818c-20939c63e485}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'}
+FUNCTION_BLOCK ABSTRACT FB_Context IMPLEMENTS I_Context, I_CyclicTask
+VAR
+    _nIdentity:         ULINT;
+
+    {attribute 'instance-path'}
+    {attribute 'noinit'}
+    _sPath:             STRING(MAX_STRING_LENGTH);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{f76398be-34e5-01b4-28de-5acd84fca741}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nIdentity := ADR(THIS^);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ipContext" Id="{04310c55-50ee-4046-9b23-e96355189c71}">
+      <Declaration><![CDATA[PROPERTY ipContext : I_Context]]></Declaration>
+      <Get Name="Get" Id="{5e7439d3-a921-4136-9ab0-937804049bf3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipContext := THIS^;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Main" Id="{71013068-dd05-01b4-0d7c-4cc33dbec649}">
+      <Declaration><![CDATA[METHOD PROTECTED ABSTRACT Main
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nIdentity" Id="{a90450db-97fe-4175-b000-84e296f0ce8d}">
+      <Declaration><![CDATA[PROPERTY nIdentity : ULINT]]></Declaration>
+      <Get Name="Get" Id="{a7e9c271-141f-4c1b-b3b2-ee5c461cc205}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nIdentity := ADR(THIS^);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="OnEntry" Id="{b43d48a1-f2a3-0f49-05e3-493662e96fcc}">
+      <Declaration><![CDATA[METHOD PROTECTED OnEntry
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnExit" Id="{66795b07-6106-02ba-2bba-7b341567e2c6}">
+      <Declaration><![CDATA[METHOD PROTECTED OnExit
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{cc23d326-e734-4649-8614-a30d0e8170e6}">
+      <Declaration><![CDATA[METHOD FINAL Run : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.OnEntry();
+THIS^.Main();
+THIS^.OnExit();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="sPath" Id="{b12a6184-a925-4d95-b3db-09bcc9c91f3f}">
+      <Declaration><![CDATA[PROPERTY sPath : STRING(MAX_STRING_LENGTH)]]></Declaration>
+      <Get Name="Get" Id="{f319b749-d5b9-4da7-a9bc-b5104c437105}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[sPath := THIS^._sPath;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

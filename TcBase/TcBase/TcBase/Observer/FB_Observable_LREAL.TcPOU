@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observable_LREAL" Id="{fa67ef6a-ec89-437e-b171-e4161c6cb780}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_LREAL EXTENDS FB_AbstractObservable
+VAR
+    _fVal:                  LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="fValue64" Id="{69f3a879-ee85-4896-b924-fb4f518a4add}">
+      <Declaration><![CDATA[PROPERTY fValue64 : LREAL]]></Declaration>
+      <Get Name="Get" Id="{3f8ddbf1-df60-462a-9afe-0be07f6ff38b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fValue64 := THIS^._fVal;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{f4f1b1f9-183d-4a8e-852f-d366e51e67ca}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._fVal := fValue64;
+
+IF THIS^._bAutoNotify THEN
+    THIS^.Notify();
+END_IF
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Notify" Id="{ccebaf2d-4450-476b-a1d1-944fa9552f86}">
+      <Declaration><![CDATA[METHOD  Notify : I_Observable
+VAR
+    i:      UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Notify := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+FOR i := 0 TO THIS^.nLastIdx DO
+    THIS^.pipObserver[i].Update(THIS^._fVal);
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NotifyLast" Id="{2b86ba6a-4a2c-46e4-93e1-a6dd50200154}">
+      <Declaration><![CDATA[METHOD  NotifyLast : I_Observable
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[NotifyLast := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+THIS^.pipObserver[THIS^.nLastIdx].Update(THIS^._fVal);
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

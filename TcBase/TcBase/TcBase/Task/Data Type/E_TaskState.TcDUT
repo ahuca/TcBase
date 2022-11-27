@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_TaskState" Id="{53eb9d8c-b4c2-42c6-9be7-5af228ac73ea}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_TaskState :
+(
+    Ready := 0,
+    Busy,
+    Error,
+    Done
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
