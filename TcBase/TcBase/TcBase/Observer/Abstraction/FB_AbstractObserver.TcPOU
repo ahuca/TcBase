@@ -11,6 +11,19 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Property Name="nTypeClass" Id="{fde940e3-79f9-098e-0135-d3adf4a5926d}">
+      <Declaration><![CDATA[PROPERTY nTypeClass : __SYSTEM.TYPE_CLASS
+]]></Declaration>
+      <Get Name="Get" Id="{8c43525e-7ffb-0f69-01a8-b6b495032969}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nTypeClass := THIS^._nTypeClass;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="Update" Id="{db1aebf2-fca2-494e-a52a-f9c476d5cd33}">
       <Declaration><![CDATA[{attribute 'hasanytype'}
 METHOD Update : I_Observer

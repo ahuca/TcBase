@@ -9,6 +9,19 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="FB_init" Id="{3358d1bd-7387-03cc-10ee-918907a0ac7e}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:       BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:        BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    bAutoNotify:        BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_REAL;
+]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="fValue32" Id="{a0813b3d-f5d1-4dc2-abb7-e188f52cb384}">
       <Declaration><![CDATA[PROPERTY fValue32 : REAL]]></Declaration>
       <Get Name="Get" Id="{1b7554b4-9021-4d07-9c73-8d38b15ac4db}">

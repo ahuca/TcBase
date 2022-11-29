@@ -3,6 +3,9 @@
   <POU Name="FB_AbstractObservable" Id="{71e23688-66a9-4733-83ac-d64ef266e10a}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_AbstractObservable IMPLEMENTS I_Observable
 VAR
+    // Attributes
+    _nTypeClass:                __SYSTEM.TYPE_CLASS;
+
     // Dynamic mem
     fbMemMan:                   FB_DynMem_Manager;
     fbBuffer:                   FB_DynMem_Buffer(ipMemMan := fbMemMan);
@@ -33,6 +36,11 @@ END_IF
 
 // Max number of observers reached
 IF THIS^.nObserverCount >= Param_Observer.cMaxNumberOfObservers THEN
+    RETURN;
+END_IF
+
+// Incompatible type
+IF ipObserver.nTypeClass <> THIS^.nTypeClass THEN
     RETURN;
 END_IF
 
@@ -230,6 +238,18 @@ END_IF
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
+    <Property Name="nTypeClass" Id="{1858b07f-e893-0a1d-310c-1f93f7d39211}">
+      <Declaration><![CDATA[PROPERTY nTypeClass : __SYSTEM.TYPE_CLASS]]></Declaration>
+      <Get Name="Get" Id="{ee9d73be-04be-0396-0ea3-61aae24b72b3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nTypeClass := THIS^._nTypeClass;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="UpdateDebugArray" Id="{d2dd83c4-e423-4d5c-abb7-4b336ab5b071}">
       <Declaration><![CDATA[METHOD PRIVATE UpdateDebugArray : BOOL
 VAR_INPUT

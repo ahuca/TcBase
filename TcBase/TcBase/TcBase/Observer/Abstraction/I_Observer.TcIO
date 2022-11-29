@@ -3,6 +3,12 @@
   <Itf Name="I_Observer" Id="{71e9c537-c1c0-4a93-aa9e-3a7f11d757ab}">
     <Declaration><![CDATA[INTERFACE I_Observer EXTENDS __SYSTEM.IQueryInterface
 ]]></Declaration>
+    <Property Name="nTypeClass" Id="{45bcd299-a5df-005e-250a-29bf5493035a}">
+      <Declaration><![CDATA[PROPERTY nTypeClass : __SYSTEM.TYPE_CLASS]]></Declaration>
+      <Get Name="Get" Id="{abae06e7-3ed9-0451-2c99-f3ae104e17eb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
     <Method Name="Update" Id="{fcb17013-ca2e-40da-951a-a3620cf618d3}">
       <Declaration><![CDATA[METHOD Update : I_Observer
 VAR_INPUT

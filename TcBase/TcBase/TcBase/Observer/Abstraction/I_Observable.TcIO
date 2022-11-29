@@ -35,5 +35,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Property Name="nTypeClass" Id="{cf93b4e0-71b2-07a5-03a3-df12d61358cf}">
+      <Declaration><![CDATA[PROPERTY nTypeClass : __SYSTEM.TYPE_CLASS]]></Declaration>
+      <Get Name="Get" Id="{fc7fe750-ffac-0880-2964-730a12b0f2e2}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
   </Itf>
 </TcPlcObject>

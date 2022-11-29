@@ -7,19 +7,132 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[TestCompatibleDataTypesExpectValuesToUpdate();
+      <ST><![CDATA[TestAdd5CompatibleObserversExpectAll5();
+TestAdd6IncompatibleObserversExpectNone();
+TestAddMoreObserversThanAllowedExpectOnlyMaxCount();
+TestCompatibleDataTypesExpectValuesToUpdate();
 TestIncompatileDataTypesExpectNoValueChange();
 ]]></ST>
     </Implementation>
     <Method Name="TestAdd5CompatibleObserversExpectAll5" Id="{791da87e-3b1e-4df9-be32-6b1c00308983}">
       <Declaration><![CDATA[METHOD PRIVATE TestAdd5CompatibleObserversExpectAll5
-VAR_INPUT
+VAR_INST
+    fbObservableReal: FB_Observable_REAL(TRUE);
+
+    fbObserverReal: ARRAY [1..5] OF FB_Observer_REAL;
+
+    i: UDINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestAdd5CompatibleObserversExpectAll5');
 
+FOR i := 1 TO SIZEOF(fbObserverReal)/SIZEOF(fbObserverReal[1]) DO
+    fbObservableReal.Attach(fbObserverReal[i]);
+END_FOR
 
+THIS^.AssertEquals_UDINT(Expected := 5,
+                         Actual := fbObservableReal.nObserverCount,
+                         Message := 'Unexpected number of observers attached');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestAdd6IncompatibleObserversExpectNone" Id="{f008ceac-1587-4d6c-8c53-a475f778f5b0}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAdd6IncompatibleObserversExpectNone
+VAR_INST
+    // Test can be less manual with dynamic list
+    fbObservableDint: FB_Observable_DINT(TRUE);
+    fbObservableUdint: FB_Observable_UDINT(TRUE);
+    fbObservableUint: FB_Observable_UINT(TRUE);
+    fbObservableReal: FB_Observable_REAL(TRUE);
+    fbObservableLreal: FB_Observable_LREAL(TRUE);
+
+    fbObserverDint: ARRAY [1..6] OF FB_Observer_DINT;
+    fbObserverUdint: ARRAY [1..6] OF FB_Observer_UDINT;
+    fbObserverUint: ARRAY [1..6] OF FB_Observer_UINT;
+    fbObserverLreal: ARRAY [1..6] OF FB_Observer_LREAL;
+    fbObserverReal: ARRAY [1..6] OF FB_Observer_REAL;
+
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAdd6IncompatibleObserversExpectNone');
+
+FOR i := 1 TO SIZEOF(fbObserverUdint)/SIZEOF(fbObserverUdint[1]) DO
+    fbObservableDint.Attach(fbObserverUdint[i]);
+    fbObservableDint.Attach(fbObserverUint[i]);
+    fbObservableDint.Attach(fbObserverLreal[i]);
+    fbObservableDint.Attach(fbObserverReal[i]);
+
+    fbObservableUdint.Attach(fbObserverDint[i]);
+    fbObservableUdint.Attach(fbObserverUint[i]);
+    fbObservableUdint.Attach(fbObserverLreal[i]);
+    fbObservableUdint.Attach(fbObserverReal[i]);
+
+    fbObservableUint.Attach(fbObserverDint[i]);
+    fbObservableUint.Attach(fbObserverUdint[i]);
+    fbObservableUint.Attach(fbObserverLreal[i]);
+    fbObservableUint.Attach(fbObserverReal[i]);
+
+    fbObservableLreal.Attach(fbObserverDint[i]);
+    fbObservableLreal.Attach(fbObserverUdint[i]);
+    fbObservableLreal.Attach(fbObserverUint[i]);
+    fbObservableLreal.Attach(fbObserverReal[i]);
+
+    fbObservableReal.Attach(fbObserverDint[i]);
+    fbObservableReal.Attach(fbObserverUdint[i]);
+    fbObservableReal.Attach(fbObserverUint[i]);
+    fbObservableReal.Attach(fbObserverLreal[i]);
+
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbObservableDint.nObserverCount,
+                         Message := 'Unexpected number of observers attached to observable type DINT');
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbObservableUdint.nObserverCount,
+                         Message := 'Unexpected number of observers attached to observable type UDINT');
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbObservableUint.nObserverCount,
+                         Message := 'Unexpected number of observers attached to observable type UINT');
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbObservableLreal.nObserverCount,
+                         Message := 'Unexpected number of observers attached to observable type LREAL');
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbObservableReal.nObserverCount,
+                         Message := 'Unexpected number of observers attached to observable type REAL');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestAddMoreObserversThanAllowedExpectOnlyMaxCount" Id="{0c149026-c1e8-4c39-92b6-923e4107cb0e}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAddMoreObserversThanAllowedExpectOnlyMaxCount
+VAR_INST
+    fbObservableReal: FB_Observable_REAL(TRUE);
+
+    fbObserverReal: ARRAY [1..(TcBase.Param_Observer.cMaxNumberOfObservers+10)] OF FB_Observer_REAL;
+
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAddMoreObserversThanAllowedExpectOnlyMaxCount');
+
+FOR i := 1 TO SIZEOF(fbObserverReal)/SIZEOF(fbObserverReal[1]) DO
+    fbObservableReal.Attach(fbObserverReal[i]);
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := TcBase.Param_Observer.cMaxNumberOfObservers,
+                         Actual := fbObservableReal.nObserverCount,
+                         Message := 'Unexpected number of observers attached');
 
 TcUnit.TEST_FINISHED();
 ]]></ST>
@@ -64,18 +177,18 @@ FOR i := 1 TO 10 DO
                             Message := 'DINT observer failed to update value according to observable');
     THIS^.AssertEquals_UDINT(Expected := i,
                              Actual := fbObserverUdint.nValue32,
-                             Message := 'DINT observer failed to update value according to observable');
+                             Message := 'UDINT observer failed to update value according to observable');
     THIS^.AssertEquals_UINT(Expected := TO_UINT(i),
                             Actual := fbObserverUint.nValue16,
-                            Message := 'DINT observer failed to update value according to observable');
+                            Message := 'UINT observer failed to update value according to observable');
     THIS^.AssertEquals_LREAL(Expected := TO_LREAL(i),
                              Actual := fbObserverLreal.fValue64,
                              Delta := 0.01,
-                             Message := 'DINT observer failed to update value according to observable');
+                             Message := 'LREAL observer failed to update value according to observable');
     THIS^.AssertEquals_REAL(Expected := TO_REAL(i),
                             Actual := fbObserverReal.fValue32,
                             Delta := 0.01,
-                            Message := 'DINT observer failed to update value according to observable');
+                            Message := 'REAL observer failed to update value according to observable');
 END_FOR
 
 TcUnit.TEST_FINISHED();

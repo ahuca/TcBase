@@ -10,6 +10,19 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="FB_init" Id="{a8d1dafc-ecc5-0651-0bc9-0243a5da7a8f}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:       BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:        BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    bAutoNotify:        BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_UINT;
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Notify" Id="{e877583d-d78e-4b21-a98f-6f809b093685}">
       <Declaration><![CDATA[METHOD  Notify : I_Observable
 VAR
