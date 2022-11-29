@@ -3,6 +3,9 @@
   <POU Name="FB_AbstractObserver" Id="{59366400-b2f5-4598-9c5c-2530302a1d7f}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_AbstractObserver IMPLEMENTS I_Observer
 VAR
+    _nTypeClass:    __SYSTEM.TYPE_CLASS;
+    _pVal:          POINTER TO BYTE;
+    _nSize:         DINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -10,13 +13,18 @@ END_VAR
     </Implementation>
     <Method Name="Update" Id="{db1aebf2-fca2-494e-a52a-f9c476d5cd33}">
       <Declaration><![CDATA[{attribute 'hasanytype'}
-METHOD ABSTRACT Update : I_Observer
+METHOD Update : I_Observer
 VAR_INPUT
     anyVal:         ANY;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[IF anyVal.TypeClass = THIS^._nTypeClass THEN
+    MEMCPY(destAddr := THIS^._pVal,
+           srcAddr := anyVal.pValue,
+           n := TO_UDINT(anyVal.diSize));
+END_IF
+]]></ST>
       </Implementation>
     </Method>
   </POU>

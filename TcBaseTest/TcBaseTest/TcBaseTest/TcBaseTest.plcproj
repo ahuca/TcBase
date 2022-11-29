@@ -23,6 +23,9 @@
     <Compile Include="Invocation Control Test\FB_InvocationControl_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Test\FB_ObserverPattern_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -32,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Invocation Control Test" />
+    <Folder Include="Observer Test" />
     <Folder Include="Programs" />
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +46,10 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Utilities">
+      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Utilities</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>

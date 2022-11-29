@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ObserverPattern_Test" Id="{9669889e-5dc1-4a5e-b021-9809da0da496}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ObserverPattern_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+    
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCompatibleDataTypesExpectValuesToUpdate();
+TestIncompatileDataTypesExpectNoValueChange();
+]]></ST>
+    </Implementation>
+    <Method Name="TestAdd5CompatibleObserversExpectAll5" Id="{791da87e-3b1e-4df9-be32-6b1c00308983}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAdd5CompatibleObserversExpectAll5
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAdd5CompatibleObserversExpectAll5');
+
+
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCompatibleDataTypesExpectValuesToUpdate" Id="{a0c42179-d282-4d90-9f50-7c032bf816e4}">
+      <Declaration><![CDATA[METHOD PRIVATE TestCompatibleDataTypesExpectValuesToUpdate
+VAR_INST
+    fbObservableDint: FB_Observable_DINT(TRUE);
+    fbObservableUdint: FB_Observable_UDINT(TRUE);
+    fbObservableUint: FB_Observable_UINT(TRUE);
+    fbObservableLreal: FB_Observable_LREAL(TRUE);
+    fbObservableReal: FB_Observable_REAL(TRUE);
+
+    fbObserverDint: FB_Observer_DINT;
+    fbObserverUdint: FB_Observer_UDINT;
+    fbObserverUint: FB_Observer_UINT;
+    fbObserverLreal: FB_Observer_LREAL;
+    fbObserverReal: FB_Observer_REAL;
+
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestCompatibleDataTypesExpectValuesToUpdate');
+
+fbObservableDint.Attach(fbObserverDint);
+fbObservableUdint.Attach(fbObserverUdint);
+fbObservableUint.Attach(fbObserverUint);
+fbObservableLreal.Attach(fbObserverLreal);
+fbObservableReal.Attach(fbObserverReal);
+
+FOR i := 1 TO 10 DO
+    fbObservableDint.nValue32 := TO_DINT(i);
+    fbObservableUdint.nValue32 := i;
+    fbObservableUint.nValue16 := TO_UINT(i);
+    fbObservableLreal.fValue64 := TO_LREAL(i);
+    fbObservableReal.fValue32 := TO_REAL(i);
+
+    THIS^.AssertEquals_DINT(Expected := TO_DINT(i),
+                            Actual := fbObserverDint.nValue32,
+                            Message := 'DINT observer failed to update value according to observable');
+    THIS^.AssertEquals_UDINT(Expected := i,
+                             Actual := fbObserverUdint.nValue32,
+                             Message := 'DINT observer failed to update value according to observable');
+    THIS^.AssertEquals_UINT(Expected := TO_UINT(i),
+                            Actual := fbObserverUint.nValue16,
+                            Message := 'DINT observer failed to update value according to observable');
+    THIS^.AssertEquals_LREAL(Expected := TO_LREAL(i),
+                             Actual := fbObserverLreal.fValue64,
+                             Delta := 0.01,
+                             Message := 'DINT observer failed to update value according to observable');
+    THIS^.AssertEquals_REAL(Expected := TO_REAL(i),
+                            Actual := fbObserverReal.fValue32,
+                            Delta := 0.01,
+                            Message := 'DINT observer failed to update value according to observable');
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestIncompatileDataTypesExpectNoValueChange" Id="{0979a056-7376-4db3-99e3-658aa0013606}">
+      <Declaration><![CDATA[METHOD PRIVATE TestIncompatileDataTypesExpectNoValueChange
+VAR_INST
+    fbObservableReal: FB_Observable_REAL(TRUE);
+
+    fbObserverDint: FB_Observer_DINT;
+    fbObserverUdint: FB_Observer_UDINT;
+    fbObserverUint: FB_Observer_UINT;
+    fbObserverLreal: FB_Observer_LREAL;
+
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestIncompatileDataTypeObserverAndObservableExpectNoValueChange');
+
+fbObservableReal.Attach(fbObserverDint);
+fbObservableReal.Attach(fbObserverUdint);
+fbObservableReal.Attach(fbObserverUint);
+fbObservableReal.Attach(fbObserverLreal);
+
+FOR i := 1 TO 10 DO
+    fbObservableReal.fValue32 := TO_REAL(i);
+
+    THIS^.AssertEquals_DINT(Expected := 0,
+                            Actual := fbObserverDint.nValue32,
+                            Message := 'DINT observer value is not 0, but it should be 0');
+
+    THIS^.AssertEquals_UDINT(Expected := 0,
+                            Actual := fbObserverUdint.nValue32,
+                            Message := 'UDINT observer value is not 0, but it should be 0');
+
+    THIS^.AssertEquals_UINT(Expected := 0,
+                            Actual := fbObserverUint.nValue16,
+                            Message := 'UINT observer value is not 0, but it should be 0');
+
+    THIS^.AssertEquals_LREAL(Expected := 0,
+                             Actual := fbObserverLreal.fValue64,
+                             Delta := 0.001,
+                             Message := 'LREAL observer value is not 0, but it should be 0');
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

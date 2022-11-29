@@ -3,9 +3,9 @@
   <POU Name="FB_ObserverExt" Id="{a194f5ad-3f50-4881-8a18-bfc289922fd5}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ObserverExt EXTENDS FB_AbstractObserver
 VAR
-    _nTypeClass:    __SYSTEM.TYPE_CLASS;
-    _pVal:          POINTER TO BYTE;
-    _nSize:         DINT;
+//    _nTypeClass:    __SYSTEM.TYPE_CLASS;
+//    _pVal:          POINTER TO BYTE;
+//    _nSize:         DINT;
 END_VAR
 ]]></Declaration>
     <Implementation>

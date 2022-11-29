@@ -9,6 +9,20 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="FB_init" Id="{57d61c6e-d332-0a6d-2a04-53728b26bdc9}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_DINT;
+THIS^._pVal := ADR(THIS^._nVal);
+THIS^._nSize := SIZEOF(THIS^._nVal);
+]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="nValue32" Id="{bec0dc45-8824-4d58-907b-b755df6d4f5b}">
       <Declaration><![CDATA[PROPERTY nValue32 : DINT]]></Declaration>
       <Get Name="Get" Id="{1c41b536-f2de-4d2e-a865-45917af5498b}">
@@ -21,22 +35,5 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Update" Id="{4f6d7e3e-9c33-46fc-811f-e4e651c35724}">
-      <Declaration><![CDATA[{attribute 'hasanytype'}
-METHOD Update : I_Observer
-VAR_INPUT
-    anyVal:         ANY;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[Update := THIS^;
-
-IF TO_INT(anyVal.TypeClass) = IBaseLibrary.TypeClass.TYPE_DINT THEN
-    Tc2_System.MEMCPY(destAddr := ADR(THIS^._nVal),
-                      srcAddr := anyVal.pValue,
-                      n := SIZEOF(THIS^._nVal));
-END_IF
-]]></ST>
-      </Implementation>
-    </Method>
   </POU>
 </TcPlcObject>
