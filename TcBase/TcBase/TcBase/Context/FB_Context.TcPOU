@@ -5,6 +5,7 @@
 FUNCTION_BLOCK ABSTRACT FB_Context IMPLEMENTS I_Context, I_CyclicTask
 VAR
     _nIdentity:         ULINT;
+    _ipSelf:            I_Object;
 
     {attribute 'instance-path'}
     {attribute 'noinit'}
@@ -14,6 +15,17 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="Equals" Id="{92191aae-b3ac-0ed9-17a3-44b4939d459f}">
+      <Declaration><![CDATA[METHOD Equals : BOOL
+VAR_INPUT
+    ipObject:       I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Equals := ipObject = THIS^._ipSelf;
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="FB_init" Id="{f76398be-34e5-01b4-28de-5acd84fca741}">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
@@ -23,6 +35,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^._nIdentity := ADR(THIS^);
+THIS^._ipSelf := THIS^;
 ]]></ST>
       </Implementation>
     </Method>

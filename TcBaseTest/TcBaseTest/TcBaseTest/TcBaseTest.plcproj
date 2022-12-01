@@ -17,10 +17,19 @@
     <LibraryReferences>{90450cb6-af16-45a8-8664-0a5ea7215673}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collection Test\FB_List_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Invocation Control Test\FB_InvocationControlTestTask.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Invocation Control Test\FB_InvocationControl_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Object Test\FB_Object_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Object Test\FB_TestObject.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Test\FB_ObserverPattern_Test.TcPOU">
@@ -35,7 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Invocation Control Test" />
-    <Folder Include="List Test" />
+    <Folder Include="Collection Test" />
+    <Folder Include="Object Test" />
     <Folder Include="Observer Test" />
     <Folder Include="Programs" />
   </ItemGroup>

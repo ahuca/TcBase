@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_List_Test" Id="{1a035af9-1f4a-4c2b-866c-d7c24ad05b20}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_List_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestAdd5DifferentItemsExpectAll5();
+TestAdd5TimesSameObjectExpectAll5Copies();
+TestClearListOf5ItemsExpectSuccess();
+]]></ST>
+    </Implementation>
+    <Method Name="TestAdd5DifferentItemsExpectAll5" Id="{cb169e4c-2c88-4b92-b5e5-764cc08e99d9}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAdd5DifferentItemsExpectAll5
+VAR_INST
+    fbList: FB_List;
+
+    aObjects: ARRAY [1..5] OF FB_TestObject(0);
+    ipTmp: I_Object;
+    ipCmp: I_Object;
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAdd5DifferentItemsToListExpectAll5');
+
+FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+    THIS^.AssertEquals_DINT(Expected := TO_DINT(i - 1),
+                            Actual := fbList.AddItem(aObjects[i]),
+                            Message := 'Failed to add object to list');
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := SIZEOF(aObjects)/SIZEOF(aObjects[1]),
+                         Actual := fbList.nCount,
+                         Message := 'Unexpected number of items added to list');
+
+FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+    ipTmp := fbList.ItemAt(TO_DINT(i - 1));
+    ipCmp := aObjects[i];
+    THIS^.AssertTrue(Condition := ipTmp = ipCmp,
+                     Message := 'Unexpected item added to list');
+END_FOR
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestAdd5TimesSameObjectExpectAll5Copies" Id="{3ca91ba7-9183-44ac-b311-2309498dfce4}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAdd5TimesSameObjectExpectAll5Copies
+VAR_INST
+    fbList: FB_List;
+
+    nTimesToAdd: UDINT := 5;
+    fbObject: FB_TestObject(0);
+    ipTmp: I_Object;
+    ipCmp: I_Object;
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAdd5TimesSameObjectExpectAll5Copies');
+
+FOR i := 1 TO nTimesToAdd DO
+    THIS^.AssertEquals_DINT(Expected := TO_DINT(i - 1),
+                            Actual := fbList.AddItem(fbObject),
+                            Message := 'Failed to add object to list');
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := nTimesToAdd,
+                         Actual := fbList.nCount,
+                         Message := 'Unexpected number of items added to list');
+
+FOR i := 1 TO nTimesToAdd DO
+    ipTmp := fbList.ItemAt(TO_DINT(i - 1));
+    ipCmp := fbObject;
+    THIS^.AssertTrue(Condition := ipTmp = ipCmp,
+                     Message := 'Unexpected item added to list');
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestClearListOf5ItemsExpectSuccess" Id="{357545c7-ffab-4db3-8a0c-a0931bb37858}">
+      <Declaration><![CDATA[METHOD PRIVATE TestClearListOf5ItemsExpectSuccess
+VAR_INST
+    fbList: FB_List;
+
+
+    aObjects: ARRAY [1..5] OF FB_TestObject(0);
+    ipTmp: I_Object;
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestClearListOf5ItemsExpectSuccess');
+
+FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+    fbList.AddItem(aObjects[i]);
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := SIZEOF(aObjects)/SIZEOF(aObjects[1]),
+                         Actual := fbList.nCount,
+                         Message := 'Unexpected number of items added to list');
+
+fbList.Clear();
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbList.nCount,
+                         Message := 'List was not correctly cleared');
+
+FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+    ipTmp := fbList.ItemAt(TO_DINT(i));
+    THIS^.AssertTrue(Condition := ipTmp = 0,
+                     Message := 'List was not correctly cleared');
+END_FOR
+
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

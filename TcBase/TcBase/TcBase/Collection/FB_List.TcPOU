@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_List" Id="{3d09efba-b29b-0efb-0296-650e9b624057}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_List IMPLEMENTS I_List
+VAR
+    fbMemMan:       FB_DynMem_Manager;
+    fbBuffer:       FB_DynMem_Buffer(ipMemMan := fbMemMan);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddItem" Id="{6b056280-a8e0-0e09-074f-1d3cb2b9d2ee}">
+      <Declaration><![CDATA[METHOD AddItem : DINT
+VAR_INPUT
+    ipObject:       I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipObject = 0 THEN
+    AddItem := -1;
+    RETURN;
+END_IF
+
+IF THIS^.nCount >= TO_UDINT(GVL_IntegerTypeBounds.DINT_UPPER_BOUND) THEN
+    AddItem := -1;
+    RETURN;
+END_IF
+
+AddItem := THIS^.AppendToBuffer(ipObject);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AppendToBuffer" Id="{94a09fe7-a3b1-0757-3845-78a783dfa8df}">
+      <Declaration><![CDATA[METHOD PRIVATE AppendToBuffer : DINT
+VAR_INPUT
+    ipObject:   I_Object;
+END_VAR
+VAR
+    pTmp:       POINTER TO I_Object;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipObject = 0 THEN
+    AppendToBuffer := -1;
+    RETURN;
+END_IF
+
+THIS^.fbBuffer.Resize(nSize := THIS^.fbBuffer.nBufferSize + SIZEOF(POINTER TO I_Object),
+                      bPreserve := TRUE,
+                      bReset := FALSE);
+
+pTmp := THIS^.pBuffer;
+IF pTmp <> 0 THEN
+    pTmp[THIS^.nLastIdx] := ipObject;
+END_IF
+
+AppendToBuffer := THIS^.nLastIdx;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="bIsReadOnly" Id="{ea05ed59-e6d5-04a8-1de2-ffb7506213f8}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY bIsReadOnly : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{a4d9e74a-16d7-0e1b-1c5e-f81bb0e3b24c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Clear" Id="{a137cbbb-95f2-09f4-3dc3-74fa015dc829}">
+      <Declaration><![CDATA[METHOD Clear
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.fbBuffer.Resize(nSize := 0,
+                      bPreserve := FALSE,
+                      bReset := TRUE);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Contains" Id="{e8902ae8-937d-0e9c-2799-5637622ee1a4}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD Contains : BOOL
+VAR_INPUT
+	ipObject	: I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{8965c983-9c90-0eff-34d5-5f9bc7e316ec}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.fbBuffer.CreateBuffer(nSize := 0, bReset := TRUE);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="IndexOfItem" Id="{f7e53ae0-cf34-07c7-1000-7e57010e6b64}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD IndexOfItem : DINT
+VAR_INPUT
+	ipObject	: I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Insert" Id="{77a6d124-8e25-0160-2603-5cc7fd52e20d}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD Insert : BOOL
+VAR_INPUT
+	(* Zero-based index at which object should be inserted*)
+	nIdx	: DINT;
+	(* Object to be inserted*)
+	ipObject	: I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ItemAt" Id="{238f3b9c-2aef-0eae-1903-43fa04efd7f9}">
+      <Declaration><![CDATA[METHOD ItemAt : I_Object
+VAR_INPUT
+    nIdx:       DINT;
+END_VAR
+VAR
+    pTmp:       POINTER TO I_Object;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[pTmp := THIS^.fbBuffer.pBuffer;
+IF nIdx >= 0
+    AND_THEN nIdx <= GVL_IntegerTypeBounds.DINT_UPPER_BOUND
+    AND_THEN pTmp <> 0 THEN
+    ItemAt := pTmp[nIdx];
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nCount" Id="{1f12488a-7040-079f-323b-3cb46e3d0c32}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY nCount : UDINT
+]]></Declaration>
+      <Get Name="Get" Id="{bb42c317-8361-0ccf-0e90-3eba5d86d3f8}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF THIS^.fbBuffer.nBufferSize > 0 THEN
+    nCount := THIS^.nLastIdx + 1;
+ELSE
+    nCount := 0;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nLastIdx" Id="{f5b11e21-f8ae-0e25-3022-1dce5f47fd43}">
+      <Declaration><![CDATA[PROPERTY PRIVATE nLastIdx : DINT]]></Declaration>
+      <Get Name="Get" Id="{1cd81378-769b-0500-1fca-8e5a97da3e08}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF THIS^.fbBuffer.nBufferSize > 0 THEN
+    nLastIdx := TO_DINT(THIS^.fbBuffer.nBufferSize/SIZEOF(POINTER TO I_Object) - 1);
+ELSE
+    nLastIdx := 0;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="pBuffer" Id="{77e9ccb7-bd64-0330-2eb7-1b02a4db0799}">
+      <Declaration><![CDATA[PROPERTY pBuffer : POINTER TO I_Object]]></Declaration>
+      <Get Name="Get" Id="{33c39764-3862-0df0-0390-31060a2252c6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[pBuffer := THIS^.fbBuffer.pBuffer;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Remove" Id="{c78f7a59-fd40-0868-172c-5551d6ad8aa7}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD Remove
+VAR_INPUT
+	ipObject	: I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveAt" Id="{815f2227-6866-0206-0e82-6f52e1ffa7b5}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD RemoveAt : BOOL
+VAR_INPUT
+	nIdx	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

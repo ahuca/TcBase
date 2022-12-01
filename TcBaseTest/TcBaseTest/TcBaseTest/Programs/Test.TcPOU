@@ -3,6 +3,8 @@
   <POU Name="Test" Id="{6350dc1d-88ea-43c9-9a34-501ba75d0b98}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Test
 VAR
+    fbObjectTest: FB_Object_Test;
+    fbListTest: FB_List_Test;
     fbCallCtrlTest: FB_InvocationControl_Test;
     fbObserverTest: FB_ObserverPattern_Test;
 END_VAR
