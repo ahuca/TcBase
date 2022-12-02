@@ -33,6 +33,12 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Method Name="CopyFrom" Id="{dd250599-2642-4103-9bda-ac1b79477603}">
+      <Declaration><![CDATA[METHOD CopyFrom
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
     <Method Name="IndexOfItem" Id="{cd5c4961-8ca3-07d9-13f3-7aad6fe7ff28}">
       <Declaration><![CDATA[METHOD IndexOfItem : DINT
 // Returns the zero-based index of the object if it was found in the list,
@@ -58,6 +64,12 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Method Name="LastIndexOf" Id="{a9caae11-76a3-4fdf-a2dd-1831abd52e61}">
+      <Declaration><![CDATA[METHOD LastIndexOf : DINT
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
     <Property Name="nCount" Id="{a476dfee-d478-03e7-0628-890d79afb6fb}">
       <Declaration><![CDATA[PROPERTY nCount : UDINT
 ]]></Declaration>
@@ -66,7 +78,7 @@ END_VAR
       </Get>
     </Property>
     <Method Name="Remove" Id="{9a676453-6f6e-0153-1868-08c54a1da136}">
-      <Declaration><![CDATA[METHOD Remove
+      <Declaration><![CDATA[METHOD Remove : BOOL
 // Remove the first occurerence of a specific object from the list
 VAR_INPUT
     ipObject:       I_Object;

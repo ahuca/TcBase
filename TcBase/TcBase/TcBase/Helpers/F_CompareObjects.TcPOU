@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_CompareObjects" Id="{fc180723-9f9e-440c-aaf8-4cd3ca30bb42}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_CompareObjects : BOOL
+VAR_INPUT
+    ipObject1:      I_Object;
+    ipObject2:      I_Object;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF ipObject1 = ipObject2
+    AND_THEN ipObject1 <> 0 THEN
+    F_CompareObjects := TRUE;
+END_IF
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

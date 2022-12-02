@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <GVL Name="GVL_IntegerTypeBounds" Id="{ff293f75-046f-067e-316a-aa12bc9ef1c8}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
-VAR_GLOBAL
+VAR_GLOBAL CONSTANT
     BYTE_UPPER_BOUND:       BYTE := 16#FF;
     WORD_UPPER_BOUND:       WORD := 16#FFFF;
     DWORD_UPPER_BOUND:      DWORD := 16#FFFF_FFFF;

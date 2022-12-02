@@ -39,6 +39,7 @@
     <Folder Include="Cyclic Task" />
     <Folder Include="Invocation Control" />
     <Folder Include="Collection" />
+    <Folder Include="Helpers" />
     <Folder Include="Object" />
     <Folder Include="Observer" />
     <Folder Include="Observer\Abstraction" />
@@ -68,6 +69,9 @@
     <Compile Include="GVL_IntegerTypeBounds.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Helpers\F_CompareObjects.TcPOU">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Invocation Control\FB_InvocationControl.TcPOU">
       <SubType>Code</SubType>

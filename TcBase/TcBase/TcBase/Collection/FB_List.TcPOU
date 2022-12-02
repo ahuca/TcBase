@@ -82,10 +82,32 @@ END_VAR
       </Implementation>
     </Method>
     <Method Name="Contains" Id="{e8902ae8-937d-0e9c-2799-5637622ee1a4}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD Contains : BOOL
+      <Declaration><![CDATA[METHOD Contains : BOOL
 VAR_INPUT
-	ipObject	: I_Object;
+    ipObject:       I_Object;
+END_VAR
+VAR
+    i:              DINT;
+    ipTmp:          I_Object;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipObject = 0 THEN
+    RETURN;
+END_IF
+
+FOR i := 0 TO THIS^.nLastIdx DO
+    IF F_CompareObjects(ipObject, THIS^.ItemAt(i)) THEN
+        Contains := TRUE;
+        RETURN;
+    END_IF
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CopyFrom" Id="{82fd7cfd-ccea-4821-9028-f218afcf0f77}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD CopyFrom
+VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -105,14 +127,28 @@ END_VAR
       </Implementation>
     </Method>
     <Method Name="IndexOfItem" Id="{f7e53ae0-cf34-07c7-1000-7e57010e6b64}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD IndexOfItem : DINT
+      <Declaration><![CDATA[METHOD IndexOfItem : DINT
 VAR_INPUT
-	ipObject	: I_Object;
+    ipObject:   I_Object;
 END_VAR
-]]></Declaration>
+VAR
+    i:          DINT;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[IF ipObject = 0 THEN
+    IndexOfItem := -1;
+    RETURN;
+END_IF
+
+FOR i := 0 TO THIS^.nLastIdx DO
+    IF F_CompareObjects(THIS^.ItemAt(i), ipObject) THEN
+        IndexOfItem := i;
+        RETURN;
+    END_IF
+END_FOR
+
+IndexOfItem := -1;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Insert" Id="{77a6d124-8e25-0160-2603-5cc7fd52e20d}">
@@ -147,6 +183,16 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="LastIndexOf" Id="{8e4f2e47-21f3-40ec-b58f-1dd566a9f877}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD LastIndexOf : DINT
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="nCount" Id="{1f12488a-7040-079f-323b-3cb46e3d0c32}">
       <Declaration><![CDATA[{warning 'add property implementation'}
 PROPERTY nCount : UDINT
@@ -157,7 +203,7 @@ END_VAR
 ]]></Declaration>
         <Implementation>
           <ST><![CDATA[IF THIS^.fbBuffer.nBufferSize > 0 THEN
-    nCount := THIS^.nLastIdx + 1;
+    nCount := TO_UDINT(THIS^.nLastIdx) + 1;
 ELSE
     nCount := 0;
 END_IF
@@ -182,7 +228,7 @@ END_IF
       </Get>
     </Property>
     <Property Name="pBuffer" Id="{77e9ccb7-bd64-0330-2eb7-1b02a4db0799}">
-      <Declaration><![CDATA[PROPERTY pBuffer : POINTER TO I_Object]]></Declaration>
+      <Declaration><![CDATA[PROPERTY PROTECTED pBuffer : POINTER TO I_Object]]></Declaration>
       <Get Name="Get" Id="{33c39764-3862-0df0-0390-31060a2252c6}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -195,24 +241,75 @@ END_VAR
     </Property>
     <Method Name="Remove" Id="{c78f7a59-fd40-0868-172c-5551d6ad8aa7}">
       <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD Remove
+METHOD Remove : BOOL
 VAR_INPUT
-	ipObject	: I_Object;
+    ipObject:   I_Object;
 END_VAR
-]]></Declaration>
+VAR
+    i:          DINT;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[IF ipObject = 0 THEN
+    RETURN;
+END_IF
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="RemoveAt" Id="{815f2227-6866-0206-0e82-6f52e1ffa7b5}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD RemoveAt : BOOL
+      <Declaration><![CDATA[METHOD RemoveAt : BOOL
 VAR_INPUT
-	nIdx	: DINT;
+    nIdx:       DINT;
+END_VAR
+VAR
+    pBuffer:    POINTER TO I_Object;
+    pTmp:       POINTER TO BYTE;
+    nTmpLength: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT THIS^.ValidateIndex(nIdx) THEN
+    RETURN;
+END_IF
+
+nTmpLength := THIS^.fbBuffer.nBufferSize - SIZEOF(POINTER TO I_Object);
+pTmp := __NEW(BYTE, nTmpLength);
+
+pBuffer := THIS^.pBuffer;
+Tc2_System.MEMCPY(destAddr := pTmp,
+                  srcAddr := pBuffer,
+                  n := TO_UDINT(nIdx));
+
+IF nIdx < THIS^.nLastIdx THEN
+    Tc2_System.MEMCPY(destAddr := pTmp,
+                      srcAddr := ADR(pBuffer[nIdx + 1]),
+                      n := TO_UDINT(THIS^.nLastIdx - nIdx));
+END_IF
+
+THIS^.fbBuffer.Resize(nSize := nTmpLength,
+                      bPreserve := FALSE,
+                      bReset := TRUE);
+
+Tc2_System.MEMCPY(destAddr := THIS^.pBuffer,
+                  srcAddr := pTmp,
+                  n := nTmpLength);
+
+IF pTmp <> 0 THEN
+    __DELETE(pTmp);
+END_IF
+
+RemoveAt := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateIndex" Id="{0ea38052-127a-471c-bdf2-c6656fc2dff6}">
+      <Declaration><![CDATA[METHOD PRIVATE ValidateIndex : BOOL
+VAR_INPUT
+    nIdx:       DINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[ValidateIndex := (0 <= nIdx) AND_THEN (nIdx <= THIS^.nLastIdx);
+]]></ST>
       </Implementation>
     </Method>
   </POU>
