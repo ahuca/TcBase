@@ -77,6 +77,12 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
+    <Property Name="nItemSize" Id="{6fac33a3-45fc-0061-283b-1d60afdfcf05}">
+      <Declaration><![CDATA[PROPERTY nItemSize : UDINT // Byte-size of each item]]></Declaration>
+      <Get Name="Get" Id="{5070520f-b322-079e-36f4-d8d79ae1c474}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
     <Method Name="Remove" Id="{9a676453-6f6e-0153-1868-08c54a1da136}">
       <Declaration><![CDATA[METHOD Remove : BOOL
 // Remove the first occurerence of a specific object from the list

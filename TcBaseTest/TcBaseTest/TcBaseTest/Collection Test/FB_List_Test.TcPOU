@@ -14,7 +14,10 @@ TestClearList();
 TestContains();
 TestEmptyListMustHaveNoItem();
 TestIndexOfItem();
+TestRemoveByIndexFromEmptyListExpectFailure();
 TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess();
+TestRemoveByInvalidIndexFromListOfItemsExpectFailure();
+TestRemoveValidItemFromListExpectSuccess();
 ]]></ST>
     </Implementation>
     <Method Name="TestAdd5DifferentItemsExpectAll5Added" Id="{cb169e4c-2c88-4b92-b5e5-764cc08e99d9}">
@@ -22,7 +25,7 @@ TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess();
 VAR_INST
     fbList: FB_List;
 
-    aObjects: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject(0);
     ipTmp: I_Object;
     ipCmp: I_Object;
     i: UDINT;
@@ -31,19 +34,19 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestAdd5DifferentItemsExpectAll5Added');
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
     THIS^.AssertEquals_DINT(Expected := TO_DINT(i - 1),
-                            Actual := fbList.AddItem(aObjects[i]),
+                            Actual := fbList.AddItem(aObject[i]),
                             Message := 'Failed to add object to list');
 END_FOR
 
-THIS^.AssertEquals_UDINT(Expected := SIZEOF(aObjects)/SIZEOF(aObjects[1]),
+THIS^.AssertEquals_UDINT(Expected := SIZEOF(aObject)/SIZEOF(aObject[1]),
                          Actual := fbList.nCount,
                          Message := 'Unexpected number of items added to list');
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
     ipTmp := fbList.ItemAt(TO_DINT(i - 1));
-    ipCmp := aObjects[i];
+    ipCmp := aObject[i];
     THIS^.AssertTrue(Condition := ipTmp = ipCmp,
                      Message := CONCAT('Unexpected item at index ', TO_STRING(i)));
 END_FOR
@@ -56,7 +59,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    nTimesToAdd: UDINT := 5;
+    nTimesToAdd: UDINT;
     fbObject: FB_TestObject(0);
     ipTmp: I_Object;
     ipCmp: I_Object;
@@ -65,6 +68,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestAdd5TimesSameObjectExpectAll5Copies');
+
+nTimesToAdd := 5;
 
 FOR i := 1 TO nTimesToAdd DO
     THIS^.AssertEquals_DINT(Expected := TO_DINT(i - 1),
@@ -96,13 +101,14 @@ VAR_INST
 
     ipTmp: I_Object;
     ipCmp: I_Object;
-    nNumberOfTimesToAdd: UDINT
-        := 100000;
+    nNumberOfTimesToAdd: UDINT;
     i: UDINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestAddManyItemsExpectSuccess');
+
+nNumberOfTimesToAdd := 100000;
 
 FOR i := 1 TO nNumberOfTimesToAdd DO
     fbList.AddItem(fbObject);
@@ -146,18 +152,18 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObjects: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject(0);
     ipTmp: I_Object;
     i: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestClearList');
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    fbList.AddItem(aObjects[i]);
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    fbList.AddItem(aObject[i]);
 END_FOR
 
-THIS^.AssertEquals_UDINT(Expected := SIZEOF(aObjects)/SIZEOF(aObjects[1]),
+THIS^.AssertEquals_UDINT(Expected := SIZEOF(aObject)/SIZEOF(aObject[1]),
                          Actual := fbList.nCount,
                          Message := 'Unexpected number of items added to list');
 
@@ -167,7 +173,7 @@ THIS^.AssertEquals_UDINT(Expected := 0,
                          Actual := fbList.nCount,
                          Message := 'List was not correctly cleared');
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
     ipTmp := fbList.ItemAt(TO_DINT(i));
     THIS^.AssertTrue(Condition := ipTmp = 0,
                      Message := 'List was not correctly cleared');
@@ -185,7 +191,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObjects: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject(0);
 
     ipNull: I_Object;
     i: UDINT;
@@ -194,12 +200,12 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestContains');
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    fbList.AddItem(aObjects[i]);
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    fbList.AddItem(aObject[i]);
 END_FOR
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    THIS^.AssertTrue(Condition := fbList.Contains(aObjects[i]),
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    THIS^.AssertTrue(Condition := fbList.Contains(aObject[i]),
                      Message := 'List does not contain added item');
 END_FOR
 
@@ -234,7 +240,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObjects: ARRAY [1..10] OF FB_TestObject(0);
+    aObject: ARRAY [1..10] OF FB_TestObject(0);
     fbObject1: FB_TestObject(0);
     fbObject2: FB_TestObject(0);
     fbObject3: FB_TestObject(0);
@@ -245,21 +251,21 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestIndexQuerryCorrectness');
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    fbList.AddItem(aObjects[i]);
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    fbList.AddItem(aObject[i]);
 END_FOR
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
     THIS^.AssertEquals_DINT(Expected := TO_DINT(i - 1),
-                            Actual := fbList.IndexOfItem(aObjects[i]),
+                            Actual := fbList.IndexOfItem(aObject[i]),
                             Message := 'Unexpected index of added item');
 END_FOR
 
 fbList.Clear();
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
     THIS^.AssertEquals_DINT(Expected := -1,
-                            Actual := fbList.IndexOfItem(aObjects[i]),
+                            Actual := fbList.IndexOfItem(aObject[i]),
                             Message := 'Item still found from list even though it has been cleared');
 END_FOR
 
@@ -287,61 +293,144 @@ THIS^.AssertEquals_DINT(Expected := 3,
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="TestRemoveByIndexFromEmptyListExpectFailure" Id="{d01caaa3-9424-4c89-9f9d-d1844e47312b}">
+      <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromEmptyListExpectFailure
+VAR_INST
+    fbList: FB_List;
+
+    aIdx: ARRAY[1..10] OF DINT := 
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestRemoveByIndexFromEmptyListExpectFailure');
+
+FOR i := 1 TO SIZEOF(aIdx)/SIZEOF(aIdx[1]) DO
+    THIS^.AssertFalse(Condition := fbList.RemoveAt(aIdx[i]),
+                      Message := 'Empty list should not have any item to be removed');
+END_FOR
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess" Id="{5a95b608-27ac-4a43-a9d1-799cb7b76773}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess
 VAR_INST
     fbList: FB_List;
 
-    aObjects: ARRAY [1..5] OF FB_TestObject(0);
+    aIdx: ARRAY[1..5] OF DINT := 
+        [-1, 5, 6, 7, 10];
 
+    aObject: ARRAY [1..5] OF FB_TestObject(0);
+
+    nArraySize: UDINT;
     i: UDINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestRemoveItemFromListOf5DifferentItemsExpectSuccess');
+nArraySize := SIZEOF(aObject)/SIZEOF(aObject[1]);
 
 // Remove from last to first
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    fbList.AddItem(aObjects[i]);
+FOR i := 1 TO nArraySize DO
+    fbList.AddItem(aObject[i]);
 END_FOR
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    THIS^.AssertTrue(Condition := fbList.RemoveAt(TO_DINT(5 - i)),
+FOR i := 1 TO nArraySize DO
+    THIS^.AssertTrue(Condition := fbList.RemoveAt(TO_DINT(nArraySize - i)),
                      Message := 'Could not remove added item');
 
-    THIS^.AssertEquals_UDINT(Expected := 5 - i,
+    THIS^.AssertEquals_UDINT(Expected := nArraySize - i,
                              Actual := fbList.nCount,
                              Message := 'Unexpected number of items after removal');
 END_FOR
 
 // Remove from first
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    fbList.AddItem(aObjects[i]);
+FOR i := 1 TO nArraySize DO
+    fbList.AddItem(aObject[i]);
 END_FOR
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+FOR i := 1 TO nArraySize DO
     THIS^.AssertTrue(Condition := fbList.RemoveAt(0),
                      Message := 'Could not remove added item');
 
-    THIS^.AssertEquals_UDINT(Expected := 5 - i,
+    THIS^.AssertEquals_UDINT(Expected := nArraySize - i,
                              Actual := fbList.nCount,
                              Message := 'Unexpected number of items after removal');
 END_FOR
 
 // Remove from middle to first
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
-    fbList.AddItem(aObjects[i]);
+FOR i := 1 TO nArraySize DO
+    fbList.AddItem(aObject[i]);
 END_FOR
 
-FOR i := 1 TO SIZEOF(aObjects)/SIZEOF(aObjects[1]) DO
+FOR i := 1 TO nArraySize DO
     THIS^.AssertTrue(Condition := fbList.RemoveAt(MAX(0, 3 - TO_DINT(i))),
                      Message := 'Could not remove added item');
 
-    THIS^.AssertEquals_UDINT(Expected := 5 - i,
+    THIS^.AssertEquals_UDINT(Expected := nArraySize - i,
                              Actual := fbList.nCount,
                              Message := 'Unexpected number of items after removal');
 END_FOR
 
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestRemoveByInvalidIndexFromListOfItemsExpectFailure" Id="{e59636a8-9445-4317-ac9c-3e5911a9f2ce}">
+      <Declaration><![CDATA[METHOD PRIVATE TestRemoveByInvalidIndexFromListOfItemsExpectFailure
+VAR_INST
+    fbList: FB_List;
+
+    aIdx: ARRAY[1..10] OF DINT := 
+        [-1, 5, 6, 7, 10, -10, -3, -4, -2, 9];
+    aObject: ARRAY [1..5] OF FB_TestObject(0);
+
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestRemoveByInvalidIndexFromListOfItemsExpectFailure');
+
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    fbList.AddItem(aObject[i]);
+END_FOR
+
+FOR i := 1 TO SIZEOF(aIdx)/SIZEOF(aIdx[1]) DO
+    THIS^.AssertFalse(Condition := fbList.RemoveAt(aIdx[i]),
+                      Message := 'Removing item with out-of-bound index should not succeed');
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := 5,
+                         Actual := fbList.nCount,
+                         Message := 'Item(s) were successfully removed from list with out-of-bound index');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestRemoveValidItemFromListExpectSuccess" Id="{fa22c7d3-93bf-4f09-9db9-90f6a8724484}">
+      <Declaration><![CDATA[METHOD PRIVATE TestRemoveValidItemFromListExpectSuccess
+VAR_INST
+    fbList: FB_List;
+
+    aObject: ARRAY [1..10] OF FB_TestObject(0);
+
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestRemoveValidItemFromListExpectSuccess');
+
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    fbList.AddItem(aObject[i]);
+END_FOR
+
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    THIS^.AssertTrue(Condition := fbList.Remove(aObject[i]),
+                     Message := 'Could not remove added item');
+
+    THIS^.AssertEquals_UDINT(Expected := SIZEOF(aObject)/SIZEOF(aObject[1]) - i,
+                             Actual := fbList.nCount,
+                             Message := 'Unexpected number of items after removal');
+END_FOR
 
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>

@@ -5,6 +5,8 @@
 VAR
     fbMemMan:       FB_DynMem_Manager;
     fbBuffer:       FB_DynMem_Buffer(ipMemMan := fbMemMan);
+
+    aPip:           ARRAY [0..1000] OF POINTER TO I_Object; // Debug array
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -28,6 +30,7 @@ IF THIS^.nCount >= TO_UDINT(GVL_IntegerTypeBounds.DINT_UPPER_BOUND) THEN
 END_IF
 
 AddItem := THIS^.AppendToBuffer(ipObject);
+THIS^.UpdateDebugArray();
 ]]></ST>
       </Implementation>
     </Method>
@@ -133,6 +136,7 @@ VAR_INPUT
 END_VAR
 VAR
     i:          DINT;
+    ipTmp:      I_Object;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ipObject = 0 THEN
@@ -141,7 +145,8 @@ END_VAR]]></Declaration>
 END_IF
 
 FOR i := 0 TO THIS^.nLastIdx DO
-    IF F_CompareObjects(THIS^.ItemAt(i), ipObject) THEN
+    ipTmp := THIS^.ItemAt(i);
+    IF F_CompareObjects(ipTmp, ipObject) THEN
         IndexOfItem := i;
         RETURN;
     END_IF
@@ -211,6 +216,18 @@ END_IF
         </Implementation>
       </Get>
     </Property>
+    <Property Name="nItemSize" Id="{cbfc7e42-77e5-0111-006c-4c532f400c29}">
+      <Declaration><![CDATA[PROPERTY nItemSize : UDINT]]></Declaration>
+      <Get Name="Get" Id="{ae47a41e-a6f1-06bd-157e-7159aee7d0f6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nItemSize := SIZEOF(POINTER TO I_Object);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="nLastIdx" Id="{f5b11e21-f8ae-0e25-3022-1dce5f47fd43}">
       <Declaration><![CDATA[PROPERTY PRIVATE nLastIdx : DINT]]></Declaration>
       <Get Name="Get" Id="{1cd81378-769b-0500-1fca-8e5a97da3e08}">
@@ -240,19 +257,20 @@ END_VAR
       </Get>
     </Property>
     <Method Name="Remove" Id="{c78f7a59-fd40-0868-172c-5551d6ad8aa7}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD Remove : BOOL
+      <Declaration><![CDATA[METHOD Remove : BOOL
 VAR_INPUT
-    ipObject:   I_Object;
+    ipObject:       I_Object;
 END_VAR
 VAR
-    i:          DINT;
+    nIdxToRemove:   DINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ipObject = 0 THEN
     RETURN;
 END_IF
 
+nIdxToRemove := THIS^.IndexOfItem(ipObject);
+Remove := THIS^.RemoveAt(nIdxToRemove);
 ]]></ST>
       </Implementation>
     </Method>
@@ -267,7 +285,8 @@ VAR
     nTmpLength: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT THIS^.ValidateIndex(nIdx) THEN
+        <ST><![CDATA[IF NOT THIS^.ValidateIndex(nIdx)
+    OR_ELSE THIS^.nCount = 0 THEN
     RETURN;
 END_IF
 
@@ -277,12 +296,12 @@ pTmp := __NEW(BYTE, nTmpLength);
 pBuffer := THIS^.pBuffer;
 Tc2_System.MEMCPY(destAddr := pTmp,
                   srcAddr := pBuffer,
-                  n := TO_UDINT(nIdx));
+                  n := TO_UDINT(nIdx)*THIS^.nItemSize);
 
 IF nIdx < THIS^.nLastIdx THEN
     Tc2_System.MEMCPY(destAddr := pTmp,
                       srcAddr := ADR(pBuffer[nIdx + 1]),
-                      n := TO_UDINT(THIS^.nLastIdx - nIdx));
+                      n := TO_UDINT(THIS^.nLastIdx - nIdx)*THIS^.nItemSize);
 END_IF
 
 THIS^.fbBuffer.Resize(nSize := nTmpLength,
@@ -297,7 +316,35 @@ IF pTmp <> 0 THEN
     __DELETE(pTmp);
 END_IF
 
+THIS^.UpdateDebugArray();
 RemoveAt := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="UpdateDebugArray" Id="{7464111a-bcff-0dff-38ea-b59cece95cfc}">
+      <Declaration><![CDATA[METHOD PRIVATE UpdateDebugArray : BOOL
+VAR_INPUT
+END_VAR
+VAR
+    i:                  UDINT;
+    pTmp:               POINTER TO I_Object;
+    nEndIdx:            UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{IF defined(variable: aPip)}
+MEMSET(
+    destAddr := ADR(THIS^.aPip),
+    fillByte := 0,
+    n := SIZEOF(THIS^.aPip));
+
+pTmp := THIS^.pBuffer;
+nEndIdx := MIN(SIZEOF(THIS^.aPip)/SIZEOF(THIS^.aPip[0]),
+               TO_UDINT(THIS^.nLastIdx));
+
+FOR i := 0 TO nEndIdx DO
+    THIS^.aPip[i] := ADR(pTmp[i]);
+END_FOR
+{END_IF}
 ]]></ST>
       </Implementation>
     </Method>
