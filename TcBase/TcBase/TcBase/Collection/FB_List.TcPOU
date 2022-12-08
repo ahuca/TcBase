@@ -24,7 +24,7 @@ END_VAR
     RETURN;
 END_IF
 
-IF THIS^.nCount >= TO_UDINT(GVL_IntegerTypeBounds.DINT_UPPER_BOUND) THEN
+IF THIS^.IsFull() THEN
     AddItem := -1;
     RETURN;
 END_IF
@@ -48,7 +48,7 @@ END_VAR]]></Declaration>
     RETURN;
 END_IF
 
-THIS^.fbBuffer.Resize(nSize := THIS^.fbBuffer.nBufferSize + SIZEOF(POINTER TO I_Object),
+THIS^.fbBuffer.Resize(nSize := THIS^.fbBuffer.nBufferSize + THIS^.nItemSize,
                       bPreserve := TRUE,
                       bReset := FALSE);
 
@@ -56,6 +56,8 @@ pTmp := THIS^.pBuffer;
 IF pTmp <> 0 THEN
     pTmp[THIS^.nLastIdx] := ipObject;
 END_IF
+
+THIS^.UpdateDebugArray();
 
 AppendToBuffer := THIS^.nLastIdx;
 ]]></ST>
@@ -109,10 +111,14 @@ END_FOR
     </Method>
     <Method Name="CopyFrom" Id="{82fd7cfd-ccea-4821-9028-f218afcf0f77}">
       <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD CopyFrom
+METHOD CopyFrom : BOOL
 VAR_INPUT
+    ipCollection:   I_Collection;
+    nIdx:           DINT; // Index at which to copy to. If -1 then data will be appended
 END_VAR
-]]></Declaration>
+VAR
+    i:              UDINT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[]]></ST>
       </Implementation>
@@ -157,17 +163,63 @@ IndexOfItem := -1;
       </Implementation>
     </Method>
     <Method Name="Insert" Id="{77a6d124-8e25-0160-2603-5cc7fd52e20d}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD Insert : BOOL
+      <Declaration><![CDATA[METHOD Insert : BOOL
 VAR_INPUT
 	(* Zero-based index at which object should be inserted*)
 	nIdx	: DINT;
 	(* Object to be inserted*)
 	ipObject	: I_Object;
 END_VAR
+VAR
+    nIdxTmp:    DINT;
+    pBuffer:    POINTER TO I_Object;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipObject = 0
+    OR_ELSE THIS^.IsFull() THEN
+    RETURN;
+END_IF
+
+IF nIdx < 0 THEN
+    RETURN;
+END_IF
+
+// If given index is larger than (last idx + 1) then limit
+// the index so that the item is appended to the end
+nIdxTmp := MIN(nIdx, THIS^.nLastIdx + 1);
+
+IF nIdxTmp = (THIS^.nLastIdx + 1) THEN
+    Insert := THIS^.AppendToBuffer(ipObject) <> -1;
+    RETURN;
+END_IF
+
+THIS^.fbBuffer.Resize(nSize := THIS^.fbBuffer.nBufferSize + THIS^.nItemSize,
+                      bPreserve := TRUE,
+                      bReset := FALSE);
+
+pBuffer := THIS^.fbBuffer.pBuffer;
+
+Tc2_System.MEMMOVE(destAddr := ADR(pBuffer[nIdx + 1]),
+                   srcAddr := ADR(pBuffer[nIdx]),
+                   n := TO_UDINT(THIS^.nLastIdx - nIdx + 1)*THIS^.nItemSize);
+
+pBuffer[nIdx] := ipObject;
+
+THIS^.UpdateDebugArray();
+Insert := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="IsFull" Id="{3b1d9e80-a093-012a-36b8-a6d7952f5ff5}">
+      <Declaration><![CDATA[METHOD PROTECTED IsFull : BOOL
+VAR_INPUT
+END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[IF THIS^.nCount >= TO_UDINT(GVL_IntegerTypeBounds.DINT_UPPER_BOUND) THEN
+    IsFull := TRUE;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="ItemAt" Id="{238f3b9c-2aef-0eae-1903-43fa04efd7f9}">
@@ -179,9 +231,9 @@ VAR
     pTmp:       POINTER TO I_Object;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[pTmp := THIS^.fbBuffer.pBuffer;
+        <ST><![CDATA[pTmp := THIS^.pBuffer;
 IF nIdx >= 0
-    AND_THEN nIdx <= GVL_IntegerTypeBounds.DINT_UPPER_BOUND
+    AND_THEN nIdx <= THIS^.nLastIdx
     AND_THEN pTmp <> 0 THEN
     ItemAt := pTmp[nIdx];
 END_IF
@@ -235,8 +287,8 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[IF THIS^.fbBuffer.nBufferSize > 0 THEN
-    nLastIdx := TO_DINT(THIS^.fbBuffer.nBufferSize/SIZEOF(POINTER TO I_Object) - 1);
+          <ST><![CDATA[IF THIS^.fbBuffer.nBufferSize > 0 AND_THEN THIS^.nItemSize > 0 THEN
+    nLastIdx := TO_DINT(THIS^.fbBuffer.nBufferSize/THIS^.nItemSize - 1);
 ELSE
     nLastIdx := 0;
 END_IF
@@ -290,7 +342,7 @@ END_VAR]]></Declaration>
     RETURN;
 END_IF
 
-nTmpLength := THIS^.fbBuffer.nBufferSize - SIZEOF(POINTER TO I_Object);
+nTmpLength := THIS^.fbBuffer.nBufferSize - THIS^.nItemSize;
 pTmp := __NEW(BYTE, nTmpLength);
 
 pBuffer := THIS^.pBuffer;

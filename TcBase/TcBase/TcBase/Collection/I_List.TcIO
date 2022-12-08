@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <Itf Name="I_List" Id="{0a9765a5-b03e-0475-3a9d-bcc0b738d24b}">
-    <Declaration><![CDATA[INTERFACE I_List
+    <Declaration><![CDATA[INTERFACE I_List EXTENDS I_Collection
 ]]></Declaration>
     <Method Name="AddItem" Id="{84b87bd3-d30a-0279-2a28-36482a97c639}">
       <Declaration><![CDATA[METHOD AddItem : DINT
@@ -34,8 +34,10 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Method Name="CopyFrom" Id="{dd250599-2642-4103-9bda-ac1b79477603}">
-      <Declaration><![CDATA[METHOD CopyFrom
+      <Declaration><![CDATA[METHOD CopyFrom : BOOL
 VAR_INPUT
+    ipCollection:   I_Collection;
+    nIdx:           DINT; // Index at which to copy to. If -1 then data will be appended
 END_VAR
 ]]></Declaration>
     </Method>

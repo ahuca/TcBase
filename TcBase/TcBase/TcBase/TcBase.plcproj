@@ -54,6 +54,9 @@
     <Compile Include="Collection\FB_List.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Collection\I_Collection.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Collection\I_List.TcIO">
       <SubType>Code</SubType>
     </Compile>

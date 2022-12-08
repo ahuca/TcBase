@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_Collection" Id="{57a1c343-f7a5-0e93-3b2c-627111f2aa09}">
+    <Declaration><![CDATA[INTERFACE I_Collection
+]]></Declaration>
+    <Method Name="AddItem" Id="{278aeec7-af48-0b0a-2f2d-99b98cd1435c}">
+      <Declaration><![CDATA[METHOD AddItem : DINT
+// Returns the index to which the new object is added into the list,
+// or -1  to indicate that the object was not inserted
+VAR_INPUT
+    ipObject:       I_Object;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="bIsReadOnly" Id="{ddfe6a60-1324-0225-18b1-9b2f280f05bd}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY bIsReadOnly : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{58021a4f-d43d-0d07-3a31-f543aa7438cb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Clear" Id="{00c28f34-bd13-0119-0c75-c72092195800}">
+      <Declaration><![CDATA[METHOD Clear
+// Remove all items from the list
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Contains" Id="{e324a86c-08eb-082c-0f99-c1ff9c7c3df6}">
+      <Declaration><![CDATA[METHOD Contains : BOOL
+// Determines whether the list contains the querried object
+VAR_INPUT
+    ipObject:       I_Object;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="CopyFrom" Id="{1758ea08-9022-0973-3194-33e146e9bac3}">
+      <Declaration><![CDATA[METHOD CopyFrom : BOOL
+VAR_INPUT
+    ipCollection:   I_Collection;
+    nIdx:           DINT; // Index at which to copy to. If -1 then data will be appended
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="nCount" Id="{1d1d43a8-3c3c-067f-2ddc-54e64e241229}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY nCount : UDINT
+]]></Declaration>
+      <Get Name="Get" Id="{8f75c5e1-31e9-089c-08f2-b1d64ab1d1f5}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Remove" Id="{c9999731-75db-0087-1c58-bf38395be654}">
+      <Declaration><![CDATA[METHOD Remove : BOOL
+// Remove the first occurerence of a specific object from the list
+VAR_INPUT
+    ipObject:       I_Object;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>
