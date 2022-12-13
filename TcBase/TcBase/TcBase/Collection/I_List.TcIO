@@ -12,12 +12,6 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Property Name="bIsReadOnly" Id="{967d08dc-47ec-0782-07c1-09267a9109a8}">
-      <Declaration><![CDATA[PROPERTY bIsReadOnly : BOOL]]></Declaration>
-      <Get Name="Get" Id="{434a0a0c-8d8c-07b6-288b-51788921b9fb}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-    </Property>
     <Method Name="Clear" Id="{fc92d270-56d8-0a15-09d6-6eed49b759a3}">
       <Declaration><![CDATA[METHOD Clear
 // Remove all items from the list
@@ -33,11 +27,15 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Method Name="CopyFrom" Id="{dd250599-2642-4103-9bda-ac1b79477603}">
-      <Declaration><![CDATA[METHOD CopyFrom : BOOL
+    <Method Name="CopyToArray" Id="{dd250599-2642-4103-9bda-ac1b79477603}">
+      <Declaration><![CDATA[METHOD CopyToArray : BOOL
+// Copies the whole list to a compatible one-dimensional array,
+// starting at a specified index
+VAR_IN_OUT
+    aDest:          ARRAY [*] OF I_Object;
+END_VAR
 VAR_INPUT
-    ipCollection:   I_Collection;
-    nIdx:           DINT; // Index at which to copy to. If -1 then data will be appended
+    nIdx:           DINT;
 END_VAR
 ]]></Declaration>
     </Method>
@@ -69,6 +67,7 @@ END_VAR
     <Method Name="LastIndexOf" Id="{a9caae11-76a3-4fdf-a2dd-1831abd52e61}">
       <Declaration><![CDATA[METHOD LastIndexOf : DINT
 VAR_INPUT
+    ipObject:       I_Object;
 END_VAR
 ]]></Declaration>
     </Method>

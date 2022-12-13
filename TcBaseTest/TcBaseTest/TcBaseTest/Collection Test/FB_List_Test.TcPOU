@@ -12,10 +12,14 @@ TestAdd5TimesSameObjectExpectAll5Copies();
 TestAddNullInterfaceExpectNothingAdded();
 TestClearList();
 TestContains();
+TestCopyToArrayOfCompatibleSizeExpectSuccess();
+TestCopyToArrayOfIncompatibleSizeExpectFailure();
+TestCopyToArrayWithInvalidIndexExpectFailure();
 TestEmptyListMustHaveNoItem();
 TestIndexOfItem();
 TestInsertIntoEmptyListExpectSuccess();
 TestInsertIntoListOfItemsExpectSuccess();
+TestLastIndexOfListOfMixedDuplicatesAndUniques();
 TestRemoveByIndexFromEmptyListExpectFailure();
 TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess();
 TestRemoveByInvalidIndexFromListOfItemsExpectFailure();
@@ -218,6 +222,125 @@ fbList.Clear();
 
 THIS^.AssertFalse(Condition := fbList.Contains(ipNull),
                   Message := 'List should not contain null object');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCopyToArrayOfCompatibleSizeExpectSuccess" Id="{7aeb8850-c55b-4c1f-a36e-43b82cdce4fd}">
+      <Declaration><![CDATA[METHOD PRIVATE TestCopyToArrayOfCompatibleSizeExpectSuccess
+VAR_INST
+    fbList: FB_List;
+    nObjectCount: UDINT;
+    aSrcObject: ARRAY [1..10] OF FB_TestObject(0);
+    aDestObject: ARRAY [1..10] OF I_Object;
+    aDestObject2: ARRAY [1..30] OF I_Object;
+    i: UDINT;
+    ipObject: I_Object;
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestCopyToArrayOfCompatibleSizeExpectSuccess');
+
+nObjectCount := SIZEOF(aSrcObject)/SIZEOF(aSrcObject[1]);
+FOR i := 1 TO nObjectCount DO
+    fbList.AddItem(aSrcObject[i]);
+END_FOR
+
+// Copy to same size array without offset
+THIS^.AssertTrue(Condition := fbList.CopyToArray(aDestObject, 1),
+                 Message := 'Failed to copy list to array of same size');
+
+FOR i := 1 TO nObjectCount DO
+    ipObject := aSrcObject[i];
+    THIS^.AssertTrue(Condition := ipObject = aDestObject[i],
+                     Message := 'Expected the same object after in array after copying from list');
+END_FOR
+
+// Copy to bigger array with offset
+THIS^.AssertTrue(Condition := fbList.CopyToArray(aDestObject2, 14),
+                 Message := 'Failed to copy list to array with bigger size');
+
+FOR i := 1 TO nObjectCount DO
+    ipObject := aSrcObject[i];
+    THIS^.AssertTrue(Condition := ipObject = aDestObject2[i + 13],
+                     Message := 'Expected the same object after in array after copying from list');
+END_FOR
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCopyToArrayOfIncompatibleSizeExpectFailure" Id="{d7d9578f-cdbb-4a89-8974-08a9d4211850}">
+      <Declaration><![CDATA[METHOD PRIVATE TestCopyToArrayOfIncompatibleSizeExpectFailure
+VAR_INST
+    fbList: FB_List;
+    nObjectCount: UDINT;
+    aSrcObject: ARRAY [1..10] OF FB_TestObject(0);
+    aDestObject: ARRAY [1..5] OF I_Object;
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestCopyToArrayOfIncompatibleSizeExpectFailure');
+
+nObjectCount := SIZEOF(aSrcObject)/SIZEOF(aSrcObject[1]);
+FOR i := 1 TO nObjectCount DO
+    fbList.AddItem(aSrcObject[i]);
+END_FOR
+
+THIS^.AssertFalse(Condition := fbList.CopyToArray(aDestObject, 1),
+                  Message := 'Failed to copy list to array of same size');
+
+FOR i := 1 TO SIZEOF(aDestObject)/SIZEOF(aDestObject[1]) DO
+    THIS^.AssertTrue(Condition := aDestObject[i] = 0,
+                     Message := 'Array should be "empty" after copying due to being smaller than list');
+END_FOR
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCopyToArrayWithInvalidIndexExpectFailure" Id="{4285853a-0737-480a-a671-36685f6e8120}">
+      <Declaration><![CDATA[METHOD PRIVATE TestCopyToArrayWithInvalidIndexExpectFailure
+VAR_INST
+    fbList: FB_List;
+    nObjectCount: UDINT;
+    aSrcObject: ARRAY [1..10] OF FB_TestObject(0);
+    aDestObject: ARRAY [1..10] OF I_Object;
+    aDestObject2: ARRAY [1..30] OF I_Object;
+    i: UDINT;
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestCopyToArrayWithInvalidIndexExpectFailure');
+
+nObjectCount := SIZEOF(aSrcObject)/SIZEOF(aSrcObject[1]);
+FOR i := 1 TO nObjectCount DO
+    fbList.AddItem(aSrcObject[i]);
+END_FOR
+
+// Copy to same size array
+THIS^.AssertFalse(Condition := fbList.CopyToArray(aDestObject, 2),
+                  Message := 'List should not copy items to array using invalid index');
+
+FOR i := 1 TO nObjectCount DO
+    THIS^.AssertTrue(Condition := 0 = aDestObject[i],
+                     Message := 'Array should be "empty" after copying due to being smaller than list');
+END_FOR
+
+// Copy to bigger array
+THIS^.AssertFalse(Condition := fbList.CopyToArray(aDestObject2, 22),
+                  Message := 'List should not copy items to array using invalid index');
+
+FOR i := 1 TO nObjectCount DO
+    THIS^.AssertTrue(Condition := 0 = aDestObject2[i + 13],
+                     Message := 'Array should be "empty" after copying due to being smaller than list');
+END_FOR
+
+THIS^.AssertFalse(Condition := fbList.CopyToArray(aDestObject2, 0),
+                  Message := 'List should not copy items to array using invalid index');
+
+FOR i := 1 TO nObjectCount DO
+    THIS^.AssertTrue(Condition := 0 = aDestObject2[i + 13],
+                     Message := 'Array should be "empty" after copying due to being smaller than list');
+END_FOR
 
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
@@ -430,6 +553,52 @@ FOR i := 1 TO SIZEOF(aObjectToInsert)/SIZEOF(aObjectToInsert[1]) DO
                      Message := 'List does not contain inserted item');
 END_FOR
 {endregion}
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestLastIndexOfListOfMixedDuplicatesAndUniques" Id="{30892e4a-3ae2-42af-9409-ea7362353cda}">
+      <Declaration><![CDATA[METHOD PRIVATE TestLastIndexOfListOfMixedDuplicatesAndUniques
+VAR_INST
+    fbList: FB_List;
+
+    aObject: ARRAY [1..5] OF FB_TestObject(0);
+    aAddOrder: ARRAY[1..20] OF I_Object;
+    aExpLastIdx: ARRAY [1..5] OF DINT;
+    nIdx: UDINT;
+    nObjectCount: UDINT;
+    nTimesToAdd: UDINT;
+    i: UDINT;
+    fbRand: DRAND := (Seed := 128);
+    sMessage: STRING(255);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestLastIndexOfListOfMixedDuplicatesAndUniques');
+
+nObjectCount := SIZEOF(aObject)/SIZEOF(aObject[1]);
+nTimesToAdd := SIZEOF(aAddOrder)/SIZEOF(aAddOrder[1]);
+
+FOR i := 1 TO nTimesToAdd DO
+    fbRand();
+    nIdx := TO_UDINT(fbRand.Num*(nObjectCount - 1)) + 1;
+    aAddOrder[i] := aObject[nIdx];
+
+    IF aExpLastIdx[nIdx] < TO_DINT(i) THEN
+        aExpLastIdx[nIdx] := TO_DINT(i);
+    END_IF
+END_FOR
+
+FOR i := 1 TO nTimesToAdd DO
+    fbList.AddItem(aAddOrder[i]);
+END_FOR
+
+FOR i := 1 TO nObjectCount DO
+    sMessage := Tc2_Standard.CONCAT('Unexpected last index of object at idx ', TO_STRING(i));
+    THIS^.AssertEquals_DINT(Expected := aExpLastIdx[i] - 1,
+                            Actual := fbList.LastIndexOf(aObject[i]),
+                            Message := sMessage);
+END_FOR
 
 TcUnit.TEST_FINISHED();
 ]]></ST>

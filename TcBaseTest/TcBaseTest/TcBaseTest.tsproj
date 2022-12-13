@@ -2,8 +2,8 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.35">
 	<Project ProjectGUID="{CD56CAEA-4333-4FE4-889F-97D2DC67F984}" Target64Bit="true" ShowHideConfigurations="#x3c7">
 		<System>
-			<Settings>
-				<Cpu RtLimit="90"/>
+			<Settings MaxCpus="4">
+				<Cpu CpuId="3" RtLimit="90"/>
 			</Settings>
 			<Tasks>
 				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
@@ -13,7 +13,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{7A834E3F-7422-4192-AC4B-1C362BCC8F6F}" Name="TcBaseTest" PrjFilePath="TcBaseTest\TcBaseTest.plcproj" TmcFilePath="TcBaseTest\TcBaseTest.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{1DDDDC80-CD05-4D1D-186E-C5F359911DCB}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{2B11B3F2-0DAE-800A-578C-039268394E5D}">
 					<Name>TcBaseTest Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

@@ -63,19 +63,6 @@ AppendToBuffer := THIS^.nLastIdx;
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="bIsReadOnly" Id="{ea05ed59-e6d5-04a8-1de2-ffb7506213f8}">
-      <Declaration><![CDATA[{warning 'add property implementation'}
-PROPERTY bIsReadOnly : BOOL
-]]></Declaration>
-      <Get Name="Get" Id="{a4d9e74a-16d7-0e1b-1c5e-f81bb0e3b24c}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
     <Method Name="Clear" Id="{a137cbbb-95f2-09f4-3dc3-74fa015dc829}">
       <Declaration><![CDATA[METHOD Clear
 ]]></Declaration>
@@ -109,25 +96,53 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="CopyFrom" Id="{82fd7cfd-ccea-4821-9028-f218afcf0f77}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD CopyFrom : BOOL
+    <Method Name="CopyToArray" Id="{e78ad417-d20c-0d04-38a2-0344c4699d72}">
+      <Declaration><![CDATA[METHOD CopyToArray : BOOL
+// Copies the whole list to a compatible one-dimensional array,
+// starting at a specified index
+VAR_IN_OUT
+    aDest:          ARRAY [*] OF I_Object;
+END_VAR
 VAR_INPUT
-    ipCollection:   I_Collection;
-    nIdx:           DINT; // Index at which to copy to. If -1 then data will be appended
+    nIdx:           DINT;
 END_VAR
 VAR
-    i:              UDINT;
+    nLowerBnd:      DINT;
+    nUpperBnd:      DINT;
+    i:              DINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[// Nothing to copy
+IF THIS^.nCount = 0 THEN
+    RETURN;
+END_IF
+
+nLowerBnd := LOWER_BOUND(aDest, 1);
+nUpperBnd := UPPER_BOUND(aDest, 1);
+
+// Invalid index given
+IF nIdx < nLowerBnd OR_ELSE nUpperBnd < nIdx THEN
+    RETURN;
+END_IF
+
+// Array not big enough
+IF TO_UDINT(nUpperBnd - nIdx + 1) < THIS^.nCount THEN
+    RETURN;
+END_IF
+
+Tc2_System.MEMCPY(destAddr := ADR(aDest[nIdx]),
+                  srcAddr := THIS^.pBuffer,
+                  n := THIS^.nCount*THIS^.nItemSize);
+
+CopyToArray := TRUE;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="FB_init" Id="{8965c983-9c90-0eff-34d5-5f9bc7e316ec}">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
-	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    bInitRetains:   BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:    BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -241,18 +256,36 @@ END_IF
       </Implementation>
     </Method>
     <Method Name="LastIndexOf" Id="{8e4f2e47-21f3-40ec-b58f-1dd566a9f877}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-METHOD LastIndexOf : DINT
+      <Declaration><![CDATA[METHOD LastIndexOf : DINT
 VAR_INPUT
+    ipObject:       I_Object;
 END_VAR
-]]></Declaration>
+VAR
+    i:              UDINT;
+    ipTmp:          I_Object;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[IF THIS^.nCount = 0
+    OR_ELSE ipObject = 0 THEN
+    LastIndexOf := -1;
+    RETURN;
+END_IF
+
+FOR i := 0 TO TO_UDINT(THIS^.nLastIdx) DO
+    ipTmp := THIS^.ItemAt(TO_DINT(i));
+    IF ipTmp = ipObject THEN
+        LastIndexOf := TO_DINT(i);
+    END_IF
+END_FOR
+
+IF LastIndexOf = 0 THEN
+    LastIndexOf := -1;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Property Name="nCount" Id="{1f12488a-7040-079f-323b-3cb46e3d0c32}">
-      <Declaration><![CDATA[{warning 'add property implementation'}
-PROPERTY nCount : UDINT
+      <Declaration><![CDATA[PROPERTY nCount : UDINT
 ]]></Declaration>
       <Get Name="Get" Id="{bb42c317-8361-0ccf-0e90-3eba5d86d3f8}">
         <Declaration><![CDATA[VAR
