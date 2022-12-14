@@ -1,8 +1,36 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.35">
-	<Project ProjectGUID="{F7432368-E70B-45A5-9F37-917C241B38A8}" ShowHideConfigurations="#x106">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.35" TcProjectVariant="ReleaseVariant1">
+	<Project ProjectGUID="{F7432368-E70B-45A5-9F37-917C241B38A8}" Target64Bit="true" ShowHideConfigurations="#x106">
 		<Plc>
-			<Project GUID="{553D344D-26D1-4070-8621-D82B73140D8A}" Name="TcBase" PrjFilePath="TcBase\TcBase.plcproj" TmcFilePath="TcBase\TcBase.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e"/>
+			<Project GUID="{553D344D-26D1-4070-8621-D82B73140D8A}" Name="TcBase" PrjFilePath="TcBase\TcBase.plcproj" TmcFilePath="TcBase\TcBase.tmc" EnableImplicitDefines="true" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e">
+				<ProjectVariant PvUseDefine="true">
+					<Variant>
+						<Name>DebugVariant1</Name>
+						<Name>ReleaseVariant1</Name>
+						<Defines></Defines>
+					</Variant>
+				</ProjectVariant>
+			</Project>
 		</Plc>
+		<Variants SpecificLocalBootFolder="true">
+			<Group>
+				<Name>Release</Name>
+				<Desc><![CDATA[Release build]]></Desc>
+				<Member>ReleaseVariant1</Member>
+			</Group>
+			<Group>
+				<Name>Debug</Name>
+				<Desc><![CDATA[Debug build]]></Desc>
+				<Member>DebugVariant1</Member>
+			</Group>
+			<Variant Save="true">
+				<Name>ReleaseVariant1</Name>
+				<Desc><![CDATA[ReleaseVariant1]]></Desc>
+			</Variant>
+			<Variant>
+				<Name>DebugVariant1</Name>
+				<Desc><![CDATA[DebugVariant1]]></Desc>
+			</Variant>
+		</Variants>
 	</Project>
 </TcSmProject>

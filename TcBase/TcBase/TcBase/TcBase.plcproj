@@ -33,11 +33,14 @@
     </SelectedLibraryCategories>
     <Description>Base library providing basic framework and design patterns.</Description>
     <CombineIds>true</CombineIds>
+    <CompilerDefines />
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Context" />
     <Folder Include="Cyclic Task" />
     <Folder Include="Invocation Control" />
+    <Folder Include="Collection" />
+    <Folder Include="Helpers" />
     <Folder Include="Object" />
     <Folder Include="Observer" />
     <Folder Include="Observer\Abstraction" />
@@ -49,6 +52,15 @@
     <Folder Include="Version" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collection\FB_List.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collection\I_Collection.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collection\I_List.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Context\FB_Context.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -56,6 +68,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Cyclic Task\I_CyclicTask.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GVL_IntegerTypeBounds.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Helpers\F_CompareObjects.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Invocation Control\FB_InvocationControl.TcPOU">

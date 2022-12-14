@@ -5,6 +5,7 @@
 FUNCTION_BLOCK ABSTRACT FB_Object IMPLEMENTS I_Object
 VAR
     _nIdentity:         ULINT;
+    _ipSelf:            I_Object;
     _ipParent:          I_Object;
 
     {attribute 'instance-path'}
@@ -27,16 +28,14 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="EqualsTo" Id="{e0d9c976-b19a-4134-8e2d-cb5c401117cc}">
-      <Declaration><![CDATA[METHOD EqualsTo : BOOL
+    <Method Name="Equals" Id="{4dbc8323-794f-0282-2947-c58e1a140702}">
+      <Declaration><![CDATA[METHOD Equals : BOOL
 VAR_INPUT
-    ipComparedObject:           I_Object;
+    ipObject:       I_Object;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF ipComparedObject.nIdentity <> 0 THEN
-    EqualsTo := ipComparedObject.nIdentity = THIS^._nIdentity;
-END_IF
+        <ST><![CDATA[Equals := ipObject = THIS^._ipSelf;
 ]]></ST>
       </Implementation>
     </Method>
@@ -49,8 +48,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_nIdentity := ADR(THIS^);
-_ipParent := ipParentObject;
+        <ST><![CDATA[THIS^._nIdentity := ADR(THIS^);
+THIS^._ipParent := ipParentObject;
+THIS^._ipSelf := THIS^;
 ]]></ST>
       </Implementation>
     </Method>
