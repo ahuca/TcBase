@@ -8,7 +8,6 @@ END_VAR
     <Implementation>
       <ST><![CDATA[TestAdd5DifferentItemsExpectAll5Added();
 TestAdd5TimesSameObjectExpectAll5Copies();
-//TestAddManyItemsExpectSuccess();
 TestAddNullInterfaceExpectNothingAdded();
 TestClearList();
 TestContains();
@@ -24,7 +23,11 @@ TestRemoveByIndexFromEmptyListExpectFailure();
 TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess();
 TestRemoveByInvalidIndexFromListOfItemsExpectFailure();
 TestRemoveInvalidItemFromListExpectFailure();
-TestRemoveValidItemFromListExpectSuccess();]]></ST>
+TestRemoveValidItemFromListExpectSuccess();
+{IF defined (LongTest)}
+TestMeasureAddPerformanceWithVeryManyItemsAdded();
+{END_IF}
+]]></ST>
     </Implementation>
     <Method Name="TestAdd5DifferentItemsExpectAll5Added" Id="{cb169e4c-2c88-4b92-b5e5-764cc08e99d9}">
       <Declaration><![CDATA[METHOD PRIVATE TestAdd5DifferentItemsExpectAll5Added
@@ -93,36 +96,6 @@ FOR i := 1 TO nTimesToAdd DO
     THIS^.AssertTrue(Condition := ipTmp = ipCmp,
                      Message := 'Unexpected item added to list');
 END_FOR
-
-TcUnit.TEST_FINISHED();
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="TestAddManyItemsExpectSuccess" Id="{2904a91f-4ce0-4d64-afe1-9d8098bff3b5}">
-      <Declaration><![CDATA[METHOD PRIVATE TestAddManyItemsExpectSuccess
-VAR_INST
-    fbList: FB_List;
-
-    fbObject: FB_TestObject(0);
-
-    ipTmp: I_Object;
-    ipCmp: I_Object;
-    nNumberOfTimesToAdd: UDINT;
-    i: UDINT;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestAddManyItemsExpectSuccess');
-
-nNumberOfTimesToAdd := 100000;
-
-FOR i := 1 TO nNumberOfTimesToAdd DO
-    fbList.AddItem(fbObject);
-END_FOR
-
-THIS^.AssertEquals_UDINT(Expected := TO_UDINT(nNumberOfTimesToAdd),
-                         Actual := fbList.nCount,
-                         Message := 'Unexpected number of items added to list');
 
 TcUnit.TEST_FINISHED();
 ]]></ST>
@@ -602,6 +575,55 @@ END_FOR
 
 TcUnit.TEST_FINISHED();
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestMeasureAddPerformanceWithVeryManyItemsAdded" Id="{95251384-4ffc-423e-8a32-087e4bb14dc3}">
+      <Declaration><![CDATA[METHOD PRIVATE TestMeasureAddPerformanceWithVeryManyItemsAdded
+VAR_INST
+    fbList: FB_List;
+    fbObject: FB_TestObject(0);
+    fbProfiler: Tc2_Utilities.Profiler;
+
+    nTimesToAdd: UDINT := 100000;
+    i: UDINT;
+    stProfileData: Tc2_Utilities.PROFILERSTRUCT;
+    fTimeTakenPerItem: LREAL; // In microseconds
+    sMsg: STRING(255);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('TestMeasureAddPerformanceWithVeryManyItemsAdded') THEN
+    IF nTimesToAdd > 0 THEN
+        fbProfiler(START := TRUE, RESET := TRUE);
+        FOR i := 1 TO nTimesToAdd DO
+            fbList.AddItem(fbObject);
+        END_FOR
+
+        THIS^.AssertEquals_UDINT(Expected := TO_UDINT(nTimesToAdd),
+                                 Actual := fbList.nCount,
+                                 Message := 'Unexpected number of items added to list');
+
+        fbProfiler(START := FALSE);
+        stProfileData := fbProfiler.DATA;
+        fTimeTakenPerItem := stProfileData.LastExecTime/nTimesToAdd;
+
+        sMsg := 'Took ';
+        sMsg := CONCAT(sMsg, TO_STRING(stProfileData.LastExecTime));
+        sMsg := CONCAT(sMsg, 'us to add ');
+        sMsg := CONCAT(sMsg, TO_STRING(nTimesToAdd));
+        sMsg := CONCAT(sMsg, ' item(s) to list. ');
+        sMsg := CONCAT(sMsg, 'On average ');
+        sMsg := CONCAT(sMsg, TO_STRING(fTimeTakenPerItem));
+        sMsg := CONCAT(sMsg, 'us');
+        sMsg := CONCAT(sMsg, ' per item');
+
+        Tc2_System.ADSLOGSTR(msgCtrlMask := Tc2_System.ADSLOG_MSGTYPE_ERROR,
+                             msgFmtStr := sMsg,
+                             strArg := '');
+    END_IF
+
+    TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="TestRemoveByIndexFromEmptyListExpectFailure" Id="{d01caaa3-9424-4c89-9f9d-d1844e47312b}">

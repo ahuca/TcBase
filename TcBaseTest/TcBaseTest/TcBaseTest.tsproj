@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.35">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.35" TcProjectVariant="NormalTest1">
 	<Project ProjectGUID="{CD56CAEA-4333-4FE4-889F-97D2DC67F984}" Target64Bit="true" ShowHideConfigurations="#x3c7">
 		<System>
 			<Settings MaxCpus="4">
@@ -12,8 +12,15 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project GUID="{7A834E3F-7422-4192-AC4B-1C362BCC8F6F}" Name="TcBaseTest" PrjFilePath="TcBaseTest\TcBaseTest.plcproj" TmcFilePath="TcBaseTest\TcBaseTest.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{2B11B3F2-0DAE-800A-578C-039268394E5D}">
+			<Project GUID="{7A834E3F-7422-4192-AC4B-1C362BCC8F6F}" Name="TcBaseTest" PrjFilePath="TcBaseTest\TcBaseTest.plcproj" TmcFilePath="TcBaseTest\TcBaseTest.tmc" EnableImplicitDefines="true" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<ProjectVariant PvUseDefine="true">
+					<Variant>
+						<Name>LongTest1</Name>
+						<Name>NormalTest1</Name>
+						<Defines></Defines>
+					</Variant>
+				</ProjectVariant>
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{67284519-AF83-80A3-A93C-41C6B359FACE}">
 					<Name>TcBaseTest Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -33,5 +40,25 @@
 				</Instance>
 			</Project>
 		</Plc>
+		<Variants SpecificLocalBootFolder="true">
+			<Group>
+				<Name>NormalTest</Name>
+				<Desc><![CDATA[Includes only normal tests]]></Desc>
+				<Member>NormalTest1</Member>
+			</Group>
+			<Group>
+				<Name>LongTest</Name>
+				<Desc><![CDATA[Includes long tests in addition to normal tests]]></Desc>
+				<Member>LongTest1</Member>
+			</Group>
+			<Variant Save="true">
+				<Name>NormalTest1</Name>
+				<Desc><![CDATA[Will only execute normal tests]]></Desc>
+			</Variant>
+			<Variant>
+				<Name>LongTest1</Name>
+				<Desc><![CDATA[Will execute long tests in addition to normal test]]></Desc>
+			</Variant>
+		</Variants>
 	</Project>
 </TcSmProject>

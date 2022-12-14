@@ -15,6 +15,7 @@
     <Implicit_KindOfTask>{0a627c80-02ab-413a-8f01-a71459f83f48}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{69d393fd-4121-439a-b0b7-46356afbf8d2}</Implicit_Jitter_Distribution>
     <LibraryReferences>{90450cb6-af16-45a8-8664-0a5ea7215673}</LibraryReferences>
+    <CompilerDefines />
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Collection Test\FB_List_Test.TcPOU">

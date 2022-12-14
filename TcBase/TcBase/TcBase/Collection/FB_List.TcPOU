@@ -6,7 +6,9 @@ VAR
     fbMemMan:       FB_DynMem_Manager;
     fbBuffer:       FB_DynMem_Buffer(ipMemMan := fbMemMan);
 
+    {IF defined (Debug)}
     aPip:           ARRAY [0..1000] OF POINTER TO I_Object; // Debug array
+    {END_IF}
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -413,22 +415,22 @@ END_VAR
 VAR
     i:                  UDINT;
     pTmp:               POINTER TO I_Object;
-    nEndIdx:            UDINT;
+    nItems:             UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{IF defined(variable: aPip)}
+        <ST><![CDATA[{IF defined (variable: aPip)}
 MEMSET(
     destAddr := ADR(THIS^.aPip),
     fillByte := 0,
     n := SIZEOF(THIS^.aPip));
 
 pTmp := THIS^.pBuffer;
-nEndIdx := MIN(SIZEOF(THIS^.aPip)/SIZEOF(THIS^.aPip[0]),
-               TO_UDINT(THIS^.nLastIdx));
+nItems := MIN(SIZEOF(THIS^.aPip)/SIZEOF(THIS^.aPip[0]),
+              TO_UDINT(THIS^.nCount));
 
-FOR i := 0 TO nEndIdx DO
-    THIS^.aPip[i] := ADR(pTmp[i]);
-END_FOR
+MEMCPY(destAddr := ADR(THIS^.aPip),
+       srcAddr := pTmp,
+       n := nItems*THIS^.nItemSize);
 {END_IF}
 ]]></ST>
       </Implementation>

@@ -33,6 +33,7 @@
     </SelectedLibraryCategories>
     <Description>Base library providing basic framework and design patterns.</Description>
     <CombineIds>true</CombineIds>
+    <CompilerDefines />
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Context" />
