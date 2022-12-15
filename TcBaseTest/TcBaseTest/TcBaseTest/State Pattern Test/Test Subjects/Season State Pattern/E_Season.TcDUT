@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_Season" Id="{0919d227-6a8b-4ea6-a538-0e150a127bd5}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_Season :
+(
+    Autumn,
+    Winter,
+    Spring,
+    Summer
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -33,7 +33,7 @@
     <Compile Include="Object Test\FB_TestObject.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer Test\FB_ObserverPattern_Test.TcPOU">
+    <Compile Include="Observer Pattern Test\FB_ObserverPattern_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
@@ -42,13 +42,68 @@
     <Compile Include="Programs\Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="State Pattern Test\FB_StatePattern_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Dummy State Pattern\FB_State1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Dummy State Pattern\FB_State2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Dummy State Pattern\FB_State3.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Dummy State Pattern\FB_State4.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Dummy State Pattern\FB_StateMachine1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\E_Season.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_Autumn.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_Default.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_SeasonBase.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_SeasonStateMachine.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_Spring.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_Summer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_Winter.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\FB_Year.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\I_SeasonControl.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\I_SeasonState.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Invocation Control Test" />
     <Folder Include="Collection Test" />
+    <Folder Include="State Pattern Test" />
     <Folder Include="Object Test" />
-    <Folder Include="Observer Test" />
+    <Folder Include="Observer Pattern Test" />
     <Folder Include="Programs" />
+    <Folder Include="State Pattern Test\Test Subjects" />
+    <Folder Include="State Pattern Test\Test Subjects\Dummy State Pattern" />
+    <Folder Include="State Pattern Test\Test Subjects\Season State Pattern" />
   </ItemGroup>
   <ItemGroup>
     <PlaceholderReference Include="Tc2_Standard">

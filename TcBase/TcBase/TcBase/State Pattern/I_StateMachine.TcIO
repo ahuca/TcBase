@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_StateMachine" Id="{4a0d89db-90a2-4e67-905f-d9610447f770}">
+    <Declaration><![CDATA[INTERFACE I_StateMachine EXTENDS I_Object, I_CyclicTask, I_Restorable]]></Declaration>
+    <Method Name="AddState" Id="{66f0ae37-7f71-0279-3933-b6473e480c3f}">
+      <Declaration><![CDATA[METHOD AddState : BOOL
+VAR_INPUT
+    ipState:        I_State;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ClearStates" Id="{6bc54f14-7192-0b63-28d4-338e38e1f0c2}">
+      <Declaration><![CDATA[METHOD ClearStates
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Contains" Id="{2249af7e-cac5-028b-19a2-0ac3b9bebec5}">
+      <Declaration><![CDATA[METHOD Contains : BOOL
+VAR_INPUT
+    ipState:        I_State;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="ipPrevState" Id="{77c7b4b2-34f2-0105-1bc6-8f6d64592d51}">
+      <Declaration><![CDATA[PROPERTY ipPrevState : I_State]]></Declaration>
+      <Get Name="Get" Id="{f55c60e5-3c18-0cb9-1249-94c13d90fedc}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="ipState" Id="{ed4df960-badb-40a4-aea0-9e501337821c}">
+      <Declaration><![CDATA[PROPERTY ipState : I_State]]></Declaration>
+      <Get Name="Get" Id="{6a50bb69-f66a-4c8b-89bb-2b4f58c60887}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="nStateCount" Id="{945676c3-a0dc-0c0d-1403-fa2d2c95f3f2}">
+      <Declaration><![CDATA[PROPERTY nStateCount : UDINT]]></Declaration>
+      <Get Name="Get" Id="{afb9438c-be6b-01c3-1ddd-9132a901c666}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="SetState" Id="{27ac3804-69f9-40d3-878a-89e3047186d6}">
+      <Declaration><![CDATA[METHOD SetState : BOOL
+VAR_INPUT
+    newState:           I_State;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="StateAt" Id="{5710127d-caf8-07e1-309e-a2c059d2de27}">
+      <Declaration><![CDATA[METHOD StateAt : I_State
+VAR_INPUT
+    nIdx:       DINT; // Zero-based index to list of state
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

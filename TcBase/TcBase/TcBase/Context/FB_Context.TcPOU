@@ -91,7 +91,7 @@ END_VAR
       </Implementation>
     </Method>
     <Method Name="Run" Id="{cc23d326-e734-4649-8614-a30d0e8170e6}">
-      <Declaration><![CDATA[METHOD FINAL Run : BOOL
+      <Declaration><![CDATA[METHOD FINAL Run
 VAR_INPUT
 END_VAR
 ]]></Declaration>

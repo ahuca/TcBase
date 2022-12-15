@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_StatePattern_Test" Id="{53e33bdc-cd56-4eed-afc1-96d71a2048da}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_StatePattern_Test EXTENDS TcUnit.FB_TestSuite IMPLEMENTS TcBase.I_Object
+VAR
+    _ipSelf:            I_Object;
+
+    fbStateMachine1:    FB_StateMachine1(THIS^);
+    fbState11:          FB_State1(THIS^, 0);
+    fbState12:          FB_State2(THIS^, 0);
+    fbState13:          FB_State3(THIS^, 0);
+    fbState14:          FB_State4(THIS^, 0);
+
+    fbStateMachine2:    FB_StateMachine1(THIS^);
+    fbState21:          FB_State1(THIS^, THIS^.fbStateMachine2);
+    fbState22:          FB_State2(THIS^, THIS^.fbStateMachine2);
+    fbState23:          FB_State3(THIS^, THIS^.fbStateMachine2);
+    fbState24:          FB_State4(THIS^, THIS^.fbStateMachine2);
+
+    fbYear:             FB_Year(THIS^);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestAdd4StatesByInitializationExpectSuccess();
+TestAdd4StatesManuallyExpectSuccess();
+TestClearAllStatesExpectSuccess();
+TestSeasonStateMachineAllSeasons();
+]]></ST>
+    </Implementation>
+    <Method Name="Equals" Id="{cf81290c-44a1-4a1b-b928-aa9bffa80cfe}">
+      <Declaration><![CDATA[METHOD Equals : BOOL
+VAR_INPUT
+    ipObject:       TcBase.I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Equals := ipObject = THIS^._ipSelf;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ipContext" Id="{24b37eac-62da-4944-956e-d48031d40f05}">
+      <Declaration><![CDATA[PROPERTY ipContext : TcBase.I_Context
+]]></Declaration>
+      <Get Name="Get" Id="{7759406f-9bcb-4c3e-b3e0-d3097446994c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipContext := 0;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nIdentity" Id="{f985c710-96f5-4722-a71d-309f50242358}">
+      <Declaration><![CDATA[PROPERTY nIdentity : ULINT
+]]></Declaration>
+      <Get Name="Get" Id="{451034c5-1093-47e6-accc-fa4a46aa382b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nIdentity := ADR(THIS^);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="sPath" Id="{1f285bd3-89f2-40a7-b866-4a8ce13bff4b}">
+      <Declaration><![CDATA[PROPERTY sPath : STRING(MAX_STRING_LENGTH)
+]]></Declaration>
+      <Get Name="Get" Id="{128a93ac-92e2-4054-9654-cf2e78daa617}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[sPath := '';
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="TestAdd4StatesByInitializationExpectSuccess" Id="{4a0fea2f-9159-4aff-8246-bfad9b1f6c10}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAdd4StatesByInitializationExpectSuccess
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAdd4StatesByInitializationExpectSuccess');
+
+THIS^.AssertEquals_UDINT(Expected := 4,
+                         Actual := THIS^.fbStateMachine2.nStateCount,
+                         Message := 'Unexpected number of states added to state machine');
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine2.Contains(THIS^.fbState21),
+                 Message := 'State machine does not contain added state fbState5');
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine2.Contains(THIS^.fbState22),
+                 Message := 'State machine does not contain added state fbState6');
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine2.Contains(THIS^.fbState23),
+                 Message := 'State machine does not contain added state fbState7');
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine2.Contains(THIS^.fbState24),
+                 Message := 'State machine does not contain added state fbState8');
+
+THIS^.AssertTrue(Condition := THIS^.fbState21.ipStateMachine.Equals(THIS^.fbStateMachine2),
+                 Message := 'State fbState5 does not point to the correct state machine');
+THIS^.AssertTrue(Condition := THIS^.fbState22.ipStateMachine.Equals(THIS^.fbStateMachine2),
+                 Message := 'State fbState6 does not point to the correct state machine');
+THIS^.AssertTrue(Condition := THIS^.fbState23.ipStateMachine.Equals(THIS^.fbStateMachine2),
+                 Message := 'State fbState7 does not point to the correct state machine');
+THIS^.AssertTrue(Condition := THIS^.fbState24.ipStateMachine.Equals(THIS^.fbStateMachine2),
+                 Message := 'State fbState8 does not point to the correct state machine');
+
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestAdd4StatesManuallyExpectSuccess" Id="{683a1105-45a2-46cf-a897-3868dc9e8c1c}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAdd4StatesManuallyExpectSuccess
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST_ORDERED('TestAdd4StatesManuallyExpectSuccess');
+
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState11),
+                 Message := 'Failed to add fbState1 to fbStateMachine');
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState11),
+                  Message := 'fbState1 has already been added to fbStateMachine');
+THIS^.AssertEquals_UDINT(Expected := 1,
+                         Actual := THIS^.fbStateMachine1.nStateCount,
+                         Message := 'Unexpected number of states added to state machine');
+THIS^.AssertTrue(Condition := THIS^.fbState11.ipStateMachine.Equals(THIS^.fbStateMachine1),
+                 Message := 'State fbState1 does not point to the correct state machine');
+
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState12),
+                 Message := 'Failed to add fbState2 to fbStateMachine');
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState12),
+                  Message := 'fbState2 has already been added to fbStateMachine');
+THIS^.AssertEquals_UDINT(Expected := 2,
+                         Actual := THIS^.fbStateMachine1.nStateCount,
+                         Message := 'Unexpected number of states added to state machine');
+THIS^.AssertTrue(Condition := THIS^.fbState12.ipStateMachine.Equals(THIS^.fbStateMachine1),
+                 Message := 'State fbState2 does not point to the correct state machine');
+
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState13),
+                 Message := 'Failed to add fbState3 to fbStateMachine');
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState13),
+                  Message := 'fbState2 has already been added to fbStateMachine');
+THIS^.AssertEquals_UDINT(Expected := 3,
+                         Actual := THIS^.fbStateMachine1.nStateCount,
+                         Message := 'Unexpected number of states added to state machine');
+THIS^.AssertTrue(Condition := THIS^.fbState13.ipStateMachine.Equals(THIS^.fbStateMachine1),
+                 Message := 'State fbState3 does not point to the correct state machine');
+
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState14),
+                 Message := 'Failed to add fbState4 to fbStateMachine');
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.AddState(THIS^.fbState14),
+                  Message := 'fbState2 has already been added to fbStateMachine');
+THIS^.AssertEquals_UDINT(Expected := 4,
+                         Actual := THIS^.fbStateMachine1.nStateCount,
+                         Message := 'Unexpected number of states added to state machine');
+THIS^.AssertTrue(Condition := THIS^.fbState14.ipStateMachine.Equals(THIS^.fbStateMachine1),
+                 Message := 'State fbState4 does not point to the correct state machine');
+
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState11),
+                 Message := 'State machine does not contain added state fbState1');
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState12),
+                 Message := 'State machine does not contain added state fbState2');
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState13),
+                 Message := 'State machine does not contain added state fbState3');
+THIS^.AssertTrue(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState14),
+                 Message := 'State machine does not contain added state fbState4');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestClearAllStatesExpectSuccess" Id="{174a1ff4-01f6-4e2d-8e21-88daa8f4bfd1}">
+      <Declaration><![CDATA[METHOD PRIVATE TestClearAllStatesExpectSuccess
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST_ORDERED('TestClearAllStatesExpectSuccess');
+
+THIS^.fbStateMachine1.ClearStates();
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := THIS^.fbStateMachine1.nStateCount,
+                         Message := 'State machine did not clear all states correctly');
+
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState11),
+                  Message := 'Cleared state should not be in state machine');
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState12),
+                  Message := 'Cleared state should not be in state machine');
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState13),
+                  Message := 'Cleared state should not be in state machine');
+THIS^.AssertFalse(Condition := THIS^.fbStateMachine1.Contains(THIS^.fbState14),
+                  Message := 'Cleared state should not be in state machine');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestSeasonStateMachineAllSeasons" Id="{78f75ccf-d3ea-4cf4-a9dd-45ff9652d3b6}">
+      <Declaration><![CDATA[METHOD PRIVATE TestSeasonStateMachineAllSeasons
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestSeasonStateMachineAllSeasons');
+
+THIS^.fbYear.Run();
+
+// Summer
+THIS^.AssertEquals_BYTE(Expected := 1,
+                        Actual := THIS^.fbYear.CurrentState().nTyresType,
+                        Message := 'Tyres initialization is incorrect for Summer');
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().Equals(THIS^.fbYear.StateSummer),
+                 Message := 'Expected Summer to be the starting season');
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().bSunShining,
+                 Message := 'Expected the sun to shine during Summer');
+THIS^.AssertEquals_BYTE(Expected := 1,
+                        Actual := THIS^.fbYear.CurrentState().nLeavesState,
+                        Message := 'Expected the color of the leaves to be green');
+THIS^.fbYear.ChangeToWinterTyres();
+THIS^.AssertEquals_BYTE(Expected := 1,
+                        Actual := THIS^.fbYear.CurrentState().nTyresType,
+                        Message := 'Must not be able to put winter tyres on during Summer');
+
+// Autumn
+THIS^.fbYear.NextSeason();
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().Equals(THIS^.fbYear.StateAutumn),
+                 Message := 'Expected Autumn to be after Summer');
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().bWindBlowing,
+                 Message := 'Expected the wind to blow during Autumn');
+THIS^.AssertEquals_BYTE(Expected := 2,
+                        Actual := THIS^.fbYear.CurrentState().nLeavesState,
+                        Message := 'Expected the color of the leaves to be (changing to) yelow/orange/red');
+THIS^.fbYear.ChangeToWinterTyres();
+THIS^.AssertEquals_BYTE(Expected := 1,
+                        Actual := THIS^.fbYear.CurrentState().nTyresType,
+                        Message := 'Must not be able to put winter tyres on during Autumn');
+
+// Winter
+THIS^.fbYear.NextSeason();
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().Equals(THIS^.fbYear.StateWinter),
+                 Message := 'Expected Winter to be after Autumn');
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().bSnowing,
+                 Message := 'Expected snow during Winter');
+THIS^.AssertEquals_BYTE(Expected := 0,
+                        Actual := THIS^.fbYear.CurrentState().nLeavesState,
+                        Message := 'Expected (some) leaves to have been fallen off');
+THIS^.fbYear.ChangeToWinterTyres();
+THIS^.AssertEquals_BYTE(Expected := 0,
+                        Actual := THIS^.fbYear.CurrentState().nTyresType,
+                        Message := 'Failed to be able to put winter tyres on');
+
+// Spring
+THIS^.fbYear.NextSeason();
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().Equals(THIS^.fbYear.StateSpring),
+                 Message := 'Expected Spring to be after Winter');
+THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().bRaining,
+                 Message := 'Expected rain during Spring');
+THIS^.AssertEquals_BYTE(Expected := 1,
+                        Actual := THIS^.fbYear.CurrentState().nLeavesState,
+                        Message := 'Expected the color of the leaves to be green');
+THIS^.fbYear.ChangeToSummerTyres();
+THIS^.AssertEquals_BYTE(Expected := 1,
+                        Actual := THIS^.fbYear.CurrentState().nTyresType,
+                        Message := 'Failed to be able to put summer tyres on');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

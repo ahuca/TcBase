@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Spring" Id="{3921a95a-def8-4684-80c2-5c5aa3716243}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Spring EXTENDS FB_SeasonBase
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="ChangeToSummerTyres" Id="{a3e93717-ff32-4f39-ba65-b3a10ce5f0da}">
+      <Declaration><![CDATA[METHOD ChangeToSummerTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTyresType := 1;
+Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                     msgFmtStr := 'Changed to summer tyres',
+                     strArg := '');
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{c8139c82-1b18-43cd-855a-a86968a34c9f}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    ipParentObject:         I_Object;
+    ipStateMachine:         I_StateMachine;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._eState := E_Season.Spring;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NextSeason" Id="{111fa8b5-fd58-47a9-99dd-562d52a5e48b}">
+      <Declaration><![CDATA[METHOD  NextSeason
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.ipStateMachine.SetState(THIS^.ipSeasonCtrl.StateSummer);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnEntry" Id="{d6b5dffe-3a55-4d85-8bc2-153cb570d300}">
+      <Declaration><![CDATA[METHOD OnEntry
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.OnEntry();
+THIS^._bWindBlowing     := FALSE;
+THIS^._bRaining         := TRUE;
+THIS^._bSunShining      := FALSE;
+THIS^._bSnowing         := TRUE;
+THIS^._nLeavesState     := 1;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnExit" Id="{6cb36855-ee1a-4ca1-aee7-e15d7b3c7943}">
+      <Declaration><![CDATA[METHOD OnExit
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.OnExit();
+THIS^._bWindBlowing     := FALSE;
+THIS^._bRaining         := FALSE;
+THIS^._bSunShining      := FALSE;
+THIS^._bSnowing         := TRUE;
+THIS^._nLeavesState     := 1;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

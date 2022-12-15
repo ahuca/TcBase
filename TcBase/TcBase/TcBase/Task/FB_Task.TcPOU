@@ -249,7 +249,7 @@ Restore := THIS^;
       </Implementation>
     </Method>
     <Method Name="Run" Id="{4a3124ce-aaa4-40fc-bfdd-6eec8224c877}">
-      <Declaration><![CDATA[METHOD Run : BOOL
+      <Declaration><![CDATA[METHOD Run
 VAR_INPUT
 END_VAR
 ]]></Declaration>
