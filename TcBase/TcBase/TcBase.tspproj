@@ -6,6 +6,9 @@
 				<ProjectVariant PvUseDefine="true">
 					<Variant>
 						<Name>DebugVariant1</Name>
+						<Defines/>
+					</Variant>
+					<Variant>
 						<Name>ReleaseVariant1</Name>
 						<Defines></Defines>
 					</Variant>

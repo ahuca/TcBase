@@ -6,7 +6,8 @@ VAR
     fbObjectTest: FB_Object_Test;
     fbListTest: FB_List_Test;
     fbCallCtrlTest: FB_InvocationControl_Test;
-    fbObserverTest: FB_ObserverPattern_Test;
+    fbObserverPatternTest: FB_ObserverPattern_Test;
+    fbStatePatternTest: FB_StatePattern_Test;
 END_VAR
 ]]></Declaration>
     <Implementation>

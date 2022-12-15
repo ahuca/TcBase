@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_State" Id="{78f523dd-b10e-48af-9696-be0082d49d72}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_State EXTENDS FB_Object IMPLEMENTS I_State
+VAR
+    _ipStateMachine:        I_StateMachine;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AssignStateMachine" Id="{6ab89e45-b90d-0906-1b30-33e7f3e26484}">
+      <Declaration><![CDATA[METHOD AssignStateMachine : BOOL
+VAR_INPUT
+    ipStateMachine:     I_StateMachine;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipStateMachine <> 0
+    AND_THEN THIS^._ipStateMachine = 0 THEN
+    THIS^._ipStateMachine := ipStateMachine;
+    AssignStateMachine := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{a2b0e38c-0fd1-0957-280b-1239c5d74439}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    ipParentObject:         I_Object;
+    ipStateMachine:         I_StateMachine;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipStateMachine <> 0 THEN
+    ipStateMachine.AddState(THIS^);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ipStateMachine" Id="{5656867c-d360-0388-0d92-dc11108e7f4a}">
+      <Declaration><![CDATA[PROPERTY ipStateMachine : I_StateMachine]]></Declaration>
+      <Get Name="Get" Id="{62a9e685-3aa0-0c9b-3c65-63b727297ef3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipStateMachine := THIS^._ipStateMachine;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="MakeOrphan" Id="{a42e4e87-cff3-0f1c-12e1-9b76bf3b511f}">
+      <Declaration><![CDATA[METHOD MakeOrphan
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._ipStateMachine := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnEntry" Id="{4827bf9d-4efc-4534-b327-d8caa3685450}">
+      <Declaration><![CDATA[METHOD OnEntry
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnExit" Id="{75371a96-da45-4aac-8255-1aa82ef7ac67}">
+      <Declaration><![CDATA[METHOD OnExit
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Restore" Id="{af3d4717-3c54-4afc-babd-3daee56cfe5b}">
+      <Declaration><![CDATA[METHOD Restore : I_Restorable
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Restore := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{8a249019-9492-0981-2ebc-8a36483cd1da}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

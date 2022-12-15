@@ -4,7 +4,7 @@
     <Declaration><![CDATA[INTERFACE I_CyclicTask EXTENDS __SYSTEM.IQueryInterface
 ]]></Declaration>
     <Method Name="Run" Id="{676981b5-670e-448f-a624-da6140f640f1}">
-      <Declaration><![CDATA[METHOD Run : BOOL
+      <Declaration><![CDATA[METHOD Run
 VAR_INPUT
 END_VAR
 ]]></Declaration>

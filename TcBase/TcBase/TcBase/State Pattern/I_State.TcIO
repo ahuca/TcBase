@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_State" Id="{d0774aa8-d167-42f9-abda-f16771fab9bf}">
+    <Declaration><![CDATA[INTERFACE I_State EXTENDS I_Object, I_CyclicTask, I_Restorable
+]]></Declaration>
+    <Method Name="AssignStateMachine" Id="{c95c91fc-6412-0296-1d4b-c754cc75ab0f}">
+      <Declaration><![CDATA[METHOD AssignStateMachine : BOOL
+VAR_INPUT
+    ipStateMachine:     I_StateMachine;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="ipStateMachine" Id="{245a9c52-dc9e-0e39-280f-58526b5b4feb}">
+      <Declaration><![CDATA[PROPERTY ipStateMachine : I_StateMachine]]></Declaration>
+      <Get Name="Get" Id="{fe027f38-3124-052d-1447-a7a2fad14240}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="MakeOrphan" Id="{a9730408-5a8b-0c4a-2eca-411ff916d70b}">
+      <Declaration><![CDATA[METHOD MakeOrphan
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="OnEntry" Id="{0c43d4ef-c2ed-49c7-b57a-e9530adbb5a1}">
+      <Declaration><![CDATA[METHOD OnEntry
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="OnExit" Id="{178599ec-0942-4cf4-a9df-f753f7c04af7}">
+      <Declaration><![CDATA[METHOD OnExit
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

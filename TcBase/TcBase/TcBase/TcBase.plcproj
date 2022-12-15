@@ -18,7 +18,7 @@
     <Company>TcBase</Company>
     <Released>false</Released>
     <Title>TcBase</Title>
-    <ProjectVersion>0.0.0</ProjectVersion>
+    <ProjectVersion>0.1.0</ProjectVersion>
     <DefaultNamespace>TcBase</DefaultNamespace>
     <Author>Giang Nguyen</Author>
     <LibraryCategories>
@@ -42,11 +42,11 @@
     <Folder Include="Collection" />
     <Folder Include="Helpers" />
     <Folder Include="Object" />
-    <Folder Include="Observer" />
-    <Folder Include="Observer\Abstraction" />
+    <Folder Include="Observer Pattern" />
+    <Folder Include="Observer Pattern\Abstraction" />
     <Folder Include="Project Information" />
     <Folder Include="Restorable" />
-    <Folder Include="State Machine" />
+    <Folder Include="State Pattern" />
     <Folder Include="Task" />
     <Folder Include="Task\Data Type" />
     <Folder Include="Version" />
@@ -89,52 +89,52 @@
     <Compile Include="Object\I_Object.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\Abstraction\FB_AbstractObservable.TcPOU">
+    <Compile Include="Observer Pattern\Abstraction\FB_AbstractObservable.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\Abstraction\FB_AbstractObserver.TcPOU">
+    <Compile Include="Observer Pattern\Abstraction\FB_AbstractObserver.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\Abstraction\I_Observable.TcIO">
+    <Compile Include="Observer Pattern\Abstraction\I_Observable.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\Abstraction\I_Observer.TcIO">
+    <Compile Include="Observer Pattern\Abstraction\I_Observer.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observable_DINT.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observable_DINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observable_LREAL.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observable_LREAL.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observable_REAL.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observable_REAL.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observable_UDINT.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observable_UDINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observable_UINT.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observable_UINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_ObserverExt.TcPOU">
+    <Compile Include="Observer Pattern\FB_ObserverExt.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observer_DINT.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observer_DINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observer_LREAL.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observer_LREAL.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observer_REAL.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observer_REAL.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observer_UDINT.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observer_UDINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\FB_Observer_UINT.TcPOU">
+    <Compile Include="Observer Pattern\FB_Observer_UINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Observer\Param_Observer.TcGVL">
+    <Compile Include="Observer Pattern\Param_Observer.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
@@ -156,16 +156,16 @@
     <Compile Include="Restorable\I_Restorable.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="State Machine\FB_State.TcPOU">
+    <Compile Include="State Pattern\FB_State.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="State Machine\FB_StateMachine.TcPOU">
+    <Compile Include="State Pattern\FB_StateMachine.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="State Machine\I_State.TcIO">
+    <Compile Include="State Pattern\I_State.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="State Machine\I_StateMachine.TcIO">
+    <Compile Include="State Pattern\I_StateMachine.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Task\Data Type\E_TaskState.TcDUT">

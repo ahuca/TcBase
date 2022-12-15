@@ -53,7 +53,7 @@ THIS^._nCycleCounter := 0;
       </Implementation>
     </Method>
     <Method Name="Run" Id="{a11e5a69-3166-40ec-a4f1-5ca469a7936a}">
-      <Declaration><![CDATA[METHOD Run : BOOL
+      <Declaration><![CDATA[METHOD Run
 VAR_INPUT
 END_VAR
 ]]></Declaration>

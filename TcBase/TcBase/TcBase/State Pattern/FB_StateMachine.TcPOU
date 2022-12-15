@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_StateMachine" Id="{fde30d05-33cb-4c8b-b55e-62aa88e8a800}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_StateMachine EXTENDS FB_Object IMPLEMENTS I_StateMachine
+VAR
+    _ipState:               I_State; // Current state
+    _ipPrevState:           I_State; // Previous state
+    _nStateChangeCount:     UDINT := 0;
+    fbStateList:            FB_List; // List of states
+    fbRunCallCtrl:          FB_InvocationControl;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddState" Id="{489a07ea-a571-020f-0300-5433a3885df3}">
+      <Declaration><![CDATA[METHOD AddState : BOOL
+VAR_INPUT
+    ipState:        I_State;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipState = 0
+    OR_ELSE THIS^.Contains(ipState) THEN
+    RETURN;
+END_IF
+
+AddState := THIS^.fbStateList.AddItem(ipState) <> -1;
+IF AddState THEN
+    THIS^.TryAssignSelfToState(ipState);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ClearStates" Id="{d6fe96da-325b-023e-089c-d7e2d2991592}">
+      <Declaration><![CDATA[METHOD ClearStates
+VAR
+    i:          DINT;
+    ipState:    I_State;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO THIS^.nLastIdx DO
+    THIS^.TryMakeStateOrphan(THIS^.StateAt(i));
+END_FOR
+
+THIS^.fbStateList.Clear();
+THIS^._ipPrevState := THIS^._ipState;
+THIS^._ipState := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Contains" Id="{d5b2d310-fbd6-0532-37ee-5dc50e316508}">
+      <Declaration><![CDATA[METHOD Contains : BOOL
+VAR_INPUT
+    ipState:        I_State;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Contains := THIS^.fbStateList.Contains(ipState);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ipPrevState" Id="{dd37e782-3259-48d5-bbdd-e492214b4e1d}">
+      <Declaration><![CDATA[// Previous state
+PROPERTY ipPrevState : I_State]]></Declaration>
+      <Get Name="Get" Id="{e615f0e3-c5fd-4003-a6dc-12e9df41e5ea}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipPrevState := THIS^._ipPrevState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ipState" Id="{bc54c102-419f-4792-8ddb-88a43ac6e58c}">
+      <Declaration><![CDATA[// Current state
+PROPERTY ipState : I_State]]></Declaration>
+      <Get Name="Get" Id="{e6c63ae4-e32d-4571-9341-0970144ab421}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipState := THIS^._ipState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nLastIdx" Id="{0bbfe844-b4e1-0932-3dee-db5a9ad38550}">
+      <Declaration><![CDATA[PROPERTY PROTECTED nLastIdx : DINT]]></Declaration>
+      <Get Name="Get" Id="{b17184b9-7068-0dd7-1aa4-28e4acd20470}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF THIS^.fbStateList.nCount > 0 THEN
+    nLastIdx := TO_DINT(THIS^.fbStateList.nCount - 1);
+END_IF]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nStateCount" Id="{e1e3184e-41ab-05fd-30d7-d3f0c4dba420}">
+      <Declaration><![CDATA[PROPERTY nStateCount : UDINT
+]]></Declaration>
+      <Get Name="Get" Id="{720912d4-8a38-06fc-18c9-ed3f651451ac}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nStateCount := THIS^.fbStateList.nCount;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Restore" Id="{42b72c3e-d9d8-45fa-ad44-56fb04f59513}">
+      <Declaration><![CDATA[METHOD Restore : I_Restorable
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Restore := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{a53bf7b3-e505-04cc-31b9-7bde95fb74fc}">
+      <Declaration><![CDATA[METHOD Run
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.fbRunCallCtrl.Track();
+
+IF THIS^._ipState <> 0 THEN
+    THIS^._ipState.Run();
+ELSE
+    IF THIS^.fbRunCallCtrl.bNewInvocation THEN
+        Tc2_System.ADSLOGSTR(msgCtrlMask := Tc2_System.ADSLOG_MSGTYPE_ERROR,
+                             msgFmtStr := 'Current state for %s is not yet initialized',
+                             strArg := THIS^.sPath);
+    END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetState" Id="{c0a40504-cddb-40b7-affb-fd6284bdb099}">
+      <Declaration><![CDATA[METHOD SetState : BOOL
+VAR_INPUT
+    newState:           I_State;
+END_VAR
+VAR_INST
+    fbCallCtrl:         FB_InvocationControl;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbCallCtrl.Track();
+
+IF NOT THIS^.fbRunCallCtrl.bCalledCyclically THEN
+    IF fbCallCtrl.bNewInvocation THEN
+        Tc2_System.ADSLOGSTR(msgCtrlMask := Tc2_System.ADSLOG_MSGTYPE_ERROR,
+                             msgFmtStr := '%s state machine is not being runned',
+                             strArg := THIS^.sPath);
+    END_IF
+END_IF
+
+IF newState = 0
+    OR_ELSE newState = THIS^.ipState THEN
+    RETURN;
+END_IF
+
+IF fbStateList.nCount <= 0 THEN
+    IF fbCallCtrl.bNewInvocation THEN
+        Tc2_System.ADSLOGSTR(msgCtrlMask := Tc2_System.ADSLOG_MSGTYPE_ERROR,
+                             msgFmtStr := '%s state machine is empty, please add states to the state machine',
+                             strArg := THIS^.sPath);
+    END_IF
+
+    RETURN;
+END_IF
+
+IF NOT THIS^.fbStateList.Contains(newState) THEN
+    RETURN;
+END_IF
+
+IF THIS^._ipState <> 0 THEN
+    THIS^._ipState.OnExit();
+END_IF
+
+THIS^._ipPrevState := _ipState;
+THIS^._ipState := newState;
+
+IF THIS^._ipState <> 0 THEN
+    THIS^._ipState.OnEntry();
+END_IF
+
+THIS^._nStateChangeCount := THIS^._nStateChangeCount + 1;
+
+SetState := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="StateAt" Id="{2fc81718-0a86-0fa7-1ac3-cf84fbe992c1}">
+      <Declaration><![CDATA[METHOD StateAt : I_State
+VAR_INPUT
+    nIdx:       DINT; // Zero-based index to list of state
+END_VAR
+VAR
+    ipObject:   I_Object;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ipObject := THIS^.fbStateList.ItemAt(nIdx);
+
+IF ipObject <> 0 THEN
+    __QUERYINTERFACE(ipObject, StateAt);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TryAssignSelfToState" Id="{4896367b-3a44-0019-2b3f-92c9c34b3d85}">
+      <Declaration><![CDATA[METHOD PROTECTED TryAssignSelfToState : BOOL
+VAR_INPUT
+    ipState:        I_State;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipState <> 0
+    AND_THEN THIS^.fbStateList.Contains(ipState) THEN
+    ipState.AssignStateMachine(THIS^);
+    TryAssignSelfToState := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TryMakeStateOrphan" Id="{55d80391-b34f-036b-0236-898ef36582fe}">
+      <Declaration><![CDATA[METHOD PROTECTED TryMakeStateOrphan : BOOL
+VAR_INPUT
+    ipState:        I_State;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ipState <> 0 THEN
+    ipState.MakeOrphan();
+    TryMakeStateOrphan := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
