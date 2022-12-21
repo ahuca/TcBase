@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <POU Name="FB_Observable_DINT" Id="{6de3a4c4-474b-46c8-abeb-2912757def04}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_DINT EXTENDS FB_AbstractObservable
+  <POU Name="FB_Observable_USINT" Id="{df32fa4f-80a2-0fa3-3ffb-2809d40a7d2a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_USINT EXTENDS FB_AbstractObservable
 VAR
-    _nVal:              DINT;
-    _nOldVal:           DINT;
+    _nVal:              USINT;
+    _nOldVal:           USINT;
 END_VAR
-
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="FB_init" Id="{6962c5dd-d23f-0cfe-06d1-b81f49c6f4dc}">
+    <Method Name="FB_init" Id="{404da6a5-566c-0b67-11b8-31fecbba6568}">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
     bInitRetains:       BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
@@ -20,50 +19,50 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_DINT;
+        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_USINT;
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="nDataSize" Id="{4c034ca1-003d-47b0-8cb3-b0f6f52bcea9}">
+    <Property Name="nDataSize" Id="{059688f0-64f3-0350-3ac4-3e40872834c4}">
       <Declaration><![CDATA[PROPERTY nDataSize : UDINT]]></Declaration>
-      <Get Name="Get" Id="{3d907f8e-1f44-4da0-afe1-b39929fb8aef}">
+      <Get Name="Get" Id="{d6e9f9e1-2955-03c1-1cca-aa8a89faffd9}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[nDataSize := SIZEOF(DINT);
+          <ST><![CDATA[nDataSize := SIZEOF(USINT);
 ]]></ST>
         </Implementation>
       </Get>
     </Property>
-    <Property Name="nValue32" Id="{8c6e5650-be92-461f-8538-94a03dc98106}">
-      <Declaration><![CDATA[PROPERTY nValue32 : DINT]]></Declaration>
-      <Get Name="Get" Id="{8fd5783a-ed1c-4ca8-980a-76c10d0027c7}">
+    <Property Name="nValue8" Id="{943b19d9-d338-0d9d-162c-969292bc534b}">
+      <Declaration><![CDATA[PROPERTY nValue8 : USINT]]></Declaration>
+      <Get Name="Get" Id="{017c5fac-b6a8-0cab-2206-a9ce52cb44aa}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[nValue32 := THIS^._nVal;
+          <ST><![CDATA[nValue8 := THIS^._nVal;
 ]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{7690aef0-1b32-4f34-b842-7c699fcf50f7}">
+      <Set Name="Set" Id="{c62a7ebc-f1de-08bf-0fbc-5e9f63399214}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
           <ST><![CDATA[THIS^._nOldVal := THIS^._nVal;
-THIS^._nVal := nValue32;
+THIS^._nVal := nValue8;
 
 THIS^.NotifyWithConditions();
 ]]></ST>
         </Implementation>
       </Set>
     </Property>
-    <Property Name="pData" Id="{9b5bca01-fad3-4c25-9c57-3ea842b8ebf4}">
+    <Property Name="pData" Id="{8163fc7a-17da-095d-2b49-3602f8b6e9a3}">
       <Declaration><![CDATA[PROPERTY PROTECTED pData : POINTER TO BYTE
 ]]></Declaration>
-      <Get Name="Get" Id="{ff883c77-6cfc-480c-8763-70e9f38ec28b}">
+      <Get Name="Get" Id="{be9f7aa0-2bb9-0e91-3052-825e4cb778a7}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -73,7 +72,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="ValueChanged" Id="{828a2292-a65c-099b-1ba9-cf732316f206}">
+    <Method Name="ValueChanged" Id="{31bddad3-f54e-0545-1dbd-644c94ec8e67}">
       <Declaration><![CDATA[METHOD  ValueChanged : BOOL
 VAR_INPUT
 END_VAR

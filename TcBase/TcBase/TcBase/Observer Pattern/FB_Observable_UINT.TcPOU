@@ -4,8 +4,8 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_UINT EXTENDS FB_AbstractObservable
 VAR
     _nVal:              UINT;
+    _nOldVal:           UINT;
 END_VAR
-
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -23,38 +23,18 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Notify" Id="{e877583d-d78e-4b21-a98f-6f809b093685}">
-      <Declaration><![CDATA[METHOD  Notify : I_Observable
-VAR
-    i:      UDINT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[Notify := THIS^;
-
-IF THIS^.nObserverCount <= 0 THEN
-    RETURN;
-END_IF
-
-FOR i := 0 TO THIS^.nLastIdx DO
-    THIS^.pipObserver[i].Update(THIS^._nVal);
-END_FOR
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="NotifyLast" Id="{d479e08c-8f99-42ea-a71a-fe3a3806deb4}">
-      <Declaration><![CDATA[METHOD  NotifyLast : I_Observable
+    <Property Name="nDataSize" Id="{10d98ff7-fb78-4548-99e7-5a2a26b39e70}">
+      <Declaration><![CDATA[PROPERTY nDataSize : UDINT]]></Declaration>
+      <Get Name="Get" Id="{27478cea-7c50-4fe9-ad87-127a0ce7570c}">
+        <Declaration><![CDATA[VAR
+END_VAR
 ]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[NotifyLast := THIS^;
-
-IF THIS^.nObserverCount <= 0 THEN
-    RETURN;
-END_IF
-
-THIS^.pipObserver[THIS^.nLastIdx].Update(THIS^._nVal);
+        <Implementation>
+          <ST><![CDATA[nDataSize := SIZEOF(UINT);
 ]]></ST>
-      </Implementation>
-    </Method>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="nValue16" Id="{af502dac-a26d-48ef-8a2d-4ee091e8d385}">
       <Declaration><![CDATA[PROPERTY nValue16 : UINT]]></Declaration>
       <Get Name="Get" Id="{f747421d-9861-4e67-82a8-164d0b8556a2}">
@@ -71,14 +51,36 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[THIS^._nVal := nValue16;
+          <ST><![CDATA[THIS^._nOldVal := THIS^._nVal;
+THIS^._nVal := nValue16;
 
-IF THIS^._bAutoNotify THEN
-    THIS^.Notify();
-END_IF
+THIS^.NotifyWithConditions();
 ]]></ST>
         </Implementation>
       </Set>
     </Property>
+    <Property Name="pData" Id="{ff871db6-7dd8-4611-acda-6b03ac39c9ac}">
+      <Declaration><![CDATA[PROPERTY PROTECTED pData : POINTER TO BYTE
+]]></Declaration>
+      <Get Name="Get" Id="{63c9fd73-b318-4041-b3a2-bd5445f39df2}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[pData := ADR(THIS^._nVal);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ValueChanged" Id="{0f03086f-698e-00fd-3ab2-3bf86cc1a756}">
+      <Declaration><![CDATA[METHOD  ValueChanged : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValueChanged := THIS^._nOldVal <> THIS^._nVal;
+]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>

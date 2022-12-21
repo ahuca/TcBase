@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observer_ULINT" Id="{824a1673-2aeb-0640-0a92-6fb92ce1a64d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observer_ULINT EXTENDS FB_AbstractObserver
+VAR
+    _nVal:              ULINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{3beba01c-12a7-00b2-31aa-10f8eae14b74}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_ULINT;
+THIS^._pVal := ADR(THIS^._nVal);
+THIS^._nSize := SIZEOF(THIS^._nVal);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nValue64" Id="{e4fccded-9aaa-03cc-16c9-873e6f32628b}">
+      <Declaration><![CDATA[PROPERTY nValue64 : ULINT]]></Declaration>
+      <Get Name="Get" Id="{4bc01161-7215-0490-3c8c-4608e232d494}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nValue64 := THIS^._nVal;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

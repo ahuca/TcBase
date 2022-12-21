@@ -18,7 +18,7 @@
     <Company>TcBase</Company>
     <Released>false</Released>
     <Title>TcBase</Title>
-    <ProjectVersion>0.1.1</ProjectVersion>
+    <ProjectVersion>0.1.2</ProjectVersion>
     <DefaultNamespace>TcBase</DefaultNamespace>
     <Author>Giang Nguyen</Author>
     <LibraryCategories>
@@ -101,7 +101,22 @@
     <Compile Include="Observer Pattern\Abstraction\I_Observer.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_BOOL.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_LINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_ULINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_SINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Observer Pattern\FB_Observable_DINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_LWORD.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Pattern\FB_Observable_LREAL.TcPOU">
@@ -110,16 +125,43 @@
     <Compile Include="Observer Pattern\FB_Observable_REAL.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_INT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_USINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Observer Pattern\FB_Observable_UDINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_DWORD.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Pattern\FB_Observable_UINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_BYTE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observable_WORD.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Observer Pattern\FB_ObserverExt.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_LINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_ULINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_SINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Observer Pattern\FB_Observer_DINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_LWORD.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Pattern\FB_Observer_LREAL.TcPOU">
@@ -128,10 +170,28 @@
     <Compile Include="Observer Pattern\FB_Observer_REAL.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_INT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_USINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Observer Pattern\FB_Observer_UDINT.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_DWORD.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Observer Pattern\FB_Observer_UINT.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_BOOL.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_BYTE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\FB_Observer_WORD.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Pattern\Param_Observer.TcGVL">

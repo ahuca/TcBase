@@ -10,7 +10,7 @@ VAR
     _eState:                E_TaskState;
     _eOldState:             E_TaskState;
     _nStartCounter:         UDINT := 0;
-    fbExecutionTimer:       TON := (PT := TO_TIME(4294967295));
+    fbExecutionTimer:       TON := (PT := TO_TIME(GVL_IntegerTypeBounds.DWORD_UPPER_BOUND));
     fbExecuteCallCtrl:      FB_InvocationControl;
 END_VAR
 ]]></Declaration>

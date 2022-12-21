@@ -60,20 +60,5 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Update" Id="{44645ec1-2c3e-42ea-bf9f-043f0f604e0b}">
-      <Declaration><![CDATA[METHOD Update : I_Observer
-VAR_INPUT
-    anyVal:         ANY;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF anyVal.TypeClass = THIS^._nTypeClass THEN
-    MEMCPY(destAddr := THIS^._pVal,
-           srcAddr := anyVal.pValue,
-           n := TO_UDINT(anyVal.diSize));
-END_IF
-]]></ST>
-      </Implementation>
-    </Method>
   </POU>
 </TcPlcObject>

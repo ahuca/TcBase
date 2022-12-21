@@ -16,14 +16,11 @@
 				<ProjectVariant PvUseDefine="true">
 					<Variant>
 						<Name>LongTest1</Name>
-						<Defines/>
-					</Variant>
-					<Variant>
 						<Name>NormalTest1</Name>
 						<Defines></Defines>
 					</Variant>
 				</ProjectVariant>
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{B763DA91-0DF9-F6CA-7EDC-18CF7743821D}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{25DC3E4C-99DB-C55A-10EF-BD843E127738}">
 					<Name>TcBaseTest Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

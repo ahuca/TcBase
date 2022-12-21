@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observable_BOOL" Id="{e475cd33-0f87-4943-ad92-6b9de9e786ed}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observable_BOOL EXTENDS FB_AbstractObservable
+VAR
+    _bVal:      BOOL;
+    _bOldVal:   BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="bVal" Id="{f23f9c6a-2746-43e4-98b6-c47263a24f70}">
+      <Declaration><![CDATA[PROPERTY PUBLIC bVal : BOOL]]></Declaration>
+      <Get Name="Get" Id="{e9e9efc1-d2e2-45f4-94c6-710cd2034ef8}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bVal := THIS^._bVal;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{fce7a4ba-ef1f-49af-a4a1-1cb6d022bd2b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._bOldVal := THIS^._bVal;
+THIS^._bVal := bVal;
+
+THIS^.NotifyWithConditions();
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="FB_init" Id="{12c0545e-d426-4de8-923b-5d409a518793}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:       BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:        BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    bAutoNotify:        BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_BOOL;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nDataSize" Id="{b7d74bea-31bb-44ae-8f4f-a5c54d858b18}">
+      <Declaration><![CDATA[PROPERTY nDataSize : UDINT]]></Declaration>
+      <Get Name="Get" Id="{b3e82757-c606-4ec6-aeec-fa88d88d9798}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nDataSize := SIZEOF(BOOL);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="pData" Id="{2f1cb40d-6db3-4e6f-a64b-49f7bd9a6453}">
+      <Declaration><![CDATA[PROPERTY PROTECTED pData : POINTER TO BYTE
+]]></Declaration>
+      <Get Name="Get" Id="{6e3790d8-6815-4584-834a-0863711c5070}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[pData := ADR(THIS^._bVal);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ValueChanged" Id="{acda710c-9926-04a7-11b3-c101b2c13a60}">
+      <Declaration><![CDATA[METHOD  ValueChanged : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValueChanged := THIS^._bOldVal <> THIS^._bVal;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
