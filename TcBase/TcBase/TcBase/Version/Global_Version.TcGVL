@@ -7,7 +7,7 @@
 // This function has been automatically generated from the project information.
 VAR_GLOBAL CONSTANT
 	{attribute 'const_non_replaced'}
-	stLibVersion_TcBase : ST_LibVersion := (iMajor := 0, iMinor := 1, iBuild := 2, iRevision := 0, nFlags := 0, sVersion := '0.1.2');
+	stLibVersion_TcBase : ST_LibVersion := (iMajor := 0, iMinor := 1, iBuild := 1, iRevision := 0, nFlags := 0, sVersion := '0.1.1');
 END_VAR
 ]]></Declaration>
   </GVL>
