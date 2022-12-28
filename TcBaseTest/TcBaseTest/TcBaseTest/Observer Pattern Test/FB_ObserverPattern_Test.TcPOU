@@ -20,6 +20,9 @@ TestDataTypeConsistencyOfObservables();
 TestDataTypeConsistencyOfObservers();
 TestDetachAddedObserversExpectSuccess();
 TestIncompatileDataTypesExpectNoValueChange();
+TestObservableNotifyAlwaysUponWriteAccess();
+TestObservableNotifyOnlyWhenValueChanged();
+TestObservableNotifyUponAttachmentWithObservers();
 TestObserverExternalWithCompatibleDataTypeExpectValueToUpdate();
 TestOneObservableToManyObserversExpectAllToUpdateValueAccordingly();
 ]]></ST>
@@ -454,7 +457,6 @@ TcUnit.TEST_FINISHED();
       <Declaration><![CDATA[METHOD PRIVATE TestDetachAddedObserversExpectSuccess
 VAR_INST
     fbObservableReal: FB_Observable_REAL(TRUE);
-
     fbObserverReal: ARRAY [1..5] OF FB_Observer_REAL;
 
     i: UDINT;
@@ -520,6 +522,106 @@ FOR i := 1 TO 10 DO
                              Actual := fbObserverLreal.fValue64,
                              Delta := 0.001,
                              Message := 'LREAL observer value is not 0, but it should be 0');
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestObservableNotifyAlwaysUponWriteAccess" Id="{6bd03110-3809-4b9a-be1d-26037011bd0e}">
+      <Declaration><![CDATA[METHOD PRIVATE TestObservableNotifyAlwaysUponWriteAccess
+VAR_INST
+    fbObservable: FB_Observable_LREAL(TRUE);
+    fbObserver: FB_Observer_LREAL_;
+
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestObservableNotifyAlwaysUponWriteAccess');
+
+fbObservable.bNotifyWhenChanged := FALSE;
+fbObservable.Attach(fbObserver);
+
+// Expecte 1 update already because observable always update its observer upon
+// attachment
+THIS^.AssertEquals_UDINT(Expected := 1,
+                         Actual := fbObserver.nUpdateCounter,
+                         Message := 'Unexpected number of updates to observer');
+
+FOR i := 1 TO 5 DO
+    fbObservable.fValue64 := 1.0;
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := 6,
+                         Actual := fbObserver.nUpdateCounter,
+                         Message := 'Unexpected number of updates to observer');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestObservableNotifyOnlyWhenValueChanged" Id="{22acf0a5-0c89-4f61-b880-4714e2c4dc93}">
+      <Declaration><![CDATA[METHOD PRIVATE TestObservableNotifyOnlyWhenValueChanged
+VAR_INST
+    fbObservable: FB_Observable_LREAL(TRUE);
+    fbObserver: FB_Observer_LREAL_;
+    aVal: ARRAY [1..5] OF LREAL :=
+        [2.7183, 3.1415, -1, 1.6180, 6.6261];
+
+    i: UDINT;
+    j: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestObservableNotifyOnlyWhenValueChanged');
+
+fbObservable.Attach(fbObserver);
+
+// Expect 1 update already because observable always update its observer upon
+// attachment
+THIS^.AssertEquals_UDINT(Expected := 1,
+                         Actual := fbObserver.nUpdateCounter,
+                         Message := 'Unexpected number of updates to observer');
+
+FOR i := 1 TO SIZEOF(aVal)/SIZEOF(aVal[1]) DO
+    FOR j := 1 TO 5 DO
+        fbObservable.fValue64 := aVal[i];
+    END_FOR
+
+    THIS^.AssertEquals_UDINT(Expected := i + 1,
+                             Actual := fbObserver.nUpdateCounter,
+                             Message := 'Unexpected number of updates to observer');
+END_FOR
+
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestObservableNotifyUponAttachmentWithObservers" Id="{80e2d94c-c26a-4a53-990f-cd6227123e7b}">
+      <Declaration><![CDATA[METHOD PRIVATE TestObservableNotifyUponAttachmentWithObservers
+VAR_INST
+    fbObservable: FB_Observable_LREAL(TRUE);
+    aObserver: ARRAY [1..5] OF FB_Observer_LREAL_;
+
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestObservableNotifyUponAttachmentWithObservers');
+
+fbObservable.fValue64 := 100.0;
+
+FOR i := 1 TO SIZEOF(aObserver)/SIZEOF(aObserver[1]) DO
+    fbObservable.Attach(aObserver[i]);
+END_FOR
+
+FOR i := 1 TO SIZEOF(aObserver)/SIZEOF(aObserver[1]) DO
+    THIS^.AssertEquals_LREAL(Expected := fbObservable.fValue64,
+                             Actual := aObserver[i].fValue64,
+                             Delta := 0.01,
+                             Message := 'Observer$'s value is not matching its observable upon attachment');
+    THIS^.AssertEquals_UDINT(Expected := 1,
+                             Actual := aObserver[i].nUpdateCounter,
+                             Message := 'Unexpected number of updates to observer');
 END_FOR
 
 TcUnit.TEST_FINISHED();

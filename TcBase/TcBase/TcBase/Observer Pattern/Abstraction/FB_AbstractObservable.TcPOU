@@ -299,9 +299,7 @@ END_FOR
     </Method>
     <Method Name="NotifyLast" Id="{bfb98185-9d2f-403d-8101-4e4bed875c91}">
       <Declaration><![CDATA[METHOD NotifyLast : I_Observable
-VAR
-    i:      UDINT;
-END_VAR]]></Declaration>
+]]></Declaration>
       <Implementation>
         <ST><![CDATA[NotifyLast := THIS^;
 
@@ -309,7 +307,7 @@ IF THIS^.nObserverCount <= 0 THEN
     RETURN;
 END_IF
 
-THIS^.pipObserver[i].UpdateP(THIS^.pData,
+THIS^.pipObserver[THIS^.nLastIdx].UpdateP(THIS^.pData,
                              THIS^.nDataSize,
                              THIS^._nTypeClass);
 ]]></ST>
