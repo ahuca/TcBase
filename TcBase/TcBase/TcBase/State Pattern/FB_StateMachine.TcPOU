@@ -99,6 +99,18 @@ END_IF]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Property Name="nStateChangeCount" Id="{1fb7896e-eaf4-02b9-2b68-3005a118dfef}">
+      <Declaration><![CDATA[PROPERTY nStateChangeCount : UDINT]]></Declaration>
+      <Get Name="Get" Id="{0c71ed72-2788-06da-0191-0605713bb2ee}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nStateChangeCount := THIS^._nStateChangeCount;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="nStateCount" Id="{e1e3184e-41ab-05fd-30d7-d3f0c4dba420}">
       <Declaration><![CDATA[PROPERTY nStateCount : UDINT
 ]]></Declaration>

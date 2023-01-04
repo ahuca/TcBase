@@ -46,7 +46,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_nIdentity := ADR(THIS^);
+        <ST><![CDATA[THIS^._nIdentity := ADR(THIS^);
+THIS^._ipSelf := THIS^;
 ]]></ST>
       </Implementation>
     </Method>

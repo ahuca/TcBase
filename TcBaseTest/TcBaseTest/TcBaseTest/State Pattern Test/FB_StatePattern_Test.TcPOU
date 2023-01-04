@@ -227,7 +227,7 @@ THIS^.AssertTrue(Condition := THIS^.fbYear.CurrentState().bWindBlowing,
                  Message := 'Expected the wind to blow during Autumn');
 THIS^.AssertEquals_BYTE(Expected := 2,
                         Actual := THIS^.fbYear.CurrentState().nLeavesState,
-                        Message := 'Expected the color of the leaves to be (changing to) yelow/orange/red');
+                        Message := 'Expected the color of the leaves to be (changing to) yellow/orange/red');
 THIS^.fbYear.ChangeToWinterTyres();
 THIS^.AssertEquals_BYTE(Expected := 1,
                         Actual := THIS^.fbYear.CurrentState().nTyresType,
