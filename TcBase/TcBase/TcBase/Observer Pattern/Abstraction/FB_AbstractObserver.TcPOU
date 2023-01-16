@@ -49,15 +49,19 @@ METHOD FINAL Update : I_Observer
 VAR_INPUT
     anyVal:         ANY;
 END_VAR
-]]></Declaration>
+VAR
+    nMemcpyRes:     UDINT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.PreUpdate();
 
-THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
 IF anyVal.TypeClass = THIS^._nTypeClass THEN
-    MEMCPY(destAddr := THIS^._pVal,
-           srcAddr := anyVal.pValue,
-           n := TO_UDINT(anyVal.diSize));
+    nMemcpyRes := Tc2_System.MEMCPY(destAddr := THIS^._pVal,
+                                    srcAddr := anyVal.pValue,
+                                    n := TO_UDINT(anyVal.diSize));
+    IF nMemcpyRes <> 0 THEN
+        THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
+    END_IF
 END_IF
 
 THIS^.PostUpdate();
@@ -71,11 +75,12 @@ VAR_INPUT
     nSize:          UDINT;
     nTypeClass:     __SYSTEM.TYPE_CLASS;
 END_VAR
-]]></Declaration>
+VAR
+    nMemcpyRes:     UDINT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.PreUpdate();
 
-THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
 IF nTypeClass <> THIS^._nTypeClass THEN
     RETURN;
 END_IF
@@ -88,9 +93,13 @@ IF pData = 0 THEN
     RETURN;
 END_IF
 
-Tc2_System.MEMCPY(destAddr := THIS^._pVal,
+nMemcpyRes := Tc2_System.MEMCPY(destAddr := THIS^._pVal,
                   srcAddr := pData,
                   n := TO_UDINT(THIS^._nSize));
+
+IF nMemcpyRes <> 0 THEN
+    THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
+END_IF
 
 THIS^.PostUpdate();
 ]]></ST>
