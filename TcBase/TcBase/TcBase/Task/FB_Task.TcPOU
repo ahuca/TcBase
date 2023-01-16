@@ -10,7 +10,7 @@ VAR
     _eState:                E_TaskState;
     _eOldState:             E_TaskState;
     _nStartCounter:         UDINT := 0;
-    fbExecutionTimer:       TON := (PT := TO_TIME(4294967295));
+    fbExecutionTimer:       TON := (PT := TO_TIME(GVL_IntegerTypeBounds.DWORD_UPPER_BOUND));
     fbExecuteCallCtrl:      FB_InvocationControl;
 END_VAR
 ]]></Declaration>
@@ -136,7 +136,7 @@ END_IF
     <Method Name="ErrorWhen" Id="{036c3caa-498b-4897-a6d5-ad8c4e8a1a30}" FolderPath="State Flow\">
       <Declaration><![CDATA[METHOD ErrorWhen : BOOL
 VAR_INPUT
-    bError:         bool;
+    bError:         BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -192,6 +192,8 @@ IF THIS^._eState = E_TaskState.Ready
     OR_ELSE ((THIS^._eState = E_TaskState.Done OR THIS^._eState = E_TaskState.Error) AND fbCallCtrl.bNewInvocation) THEN
 
     THIS^.SetState(E_TaskState.Busy);
+    THIS^._nStartCounter := THIS^._nStartCounter + 1;
+    THIS^.fbExecutionTimer(IN := FALSE);
     THIS^.OnStart();
 END_IF
 
@@ -232,9 +234,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^._nStartCounter := THIS^._nStartCounter + 1;
-THIS^.fbExecutionTimer(IN := FALSE);
-]]></ST>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
     <Method Name="Restore" Id="{d3b160ff-5ff3-41c1-967f-4b834ff372cb}" FolderPath="State Flow\">

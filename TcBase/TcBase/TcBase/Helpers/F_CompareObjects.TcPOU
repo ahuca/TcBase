@@ -10,8 +10,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF ipObject1 = ipObject2
-    AND_THEN ipObject1 <> 0 THEN
+      <ST><![CDATA[IF ipObject1 = ipObject2 THEN
     F_CompareObjects := TRUE;
 END_IF
 ]]></ST>

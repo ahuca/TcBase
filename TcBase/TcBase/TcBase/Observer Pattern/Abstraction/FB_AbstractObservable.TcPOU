@@ -1,20 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_AbstractObservable" Id="{71e23688-66a9-4733-83ac-d64ef266e10a}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_AbstractObservable IMPLEMENTS I_Observable
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_AbstractObservable EXTENDS FB_OrphanObject IMPLEMENTS I_Observable
 VAR
     // Attributes
     _nTypeClass:                __SYSTEM.TYPE_CLASS;
+    _bAutoNotify:               BOOL; // Notify automatically on write access of observable value
+    _bNotifyWhenChanged:        BOOL := TRUE; // Notify only when the value is actually changed
 
     // Dynamic mem
     fbMemMan:                   FB_DynMem_Manager;
     fbBuffer:                   FB_DynMem_Buffer(ipMemMan := fbMemMan);
     pipObserver:                POINTER TO I_Observer;
-
     aPip:                       ARRAY [0..Param_Observer.cMaxNumberOfObservers-1] OF POINTER TO I_Observer; // Debug array
-
-    // Others
-    _bAutoNotify:               BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -85,6 +83,49 @@ Attach := TRUE;
 ]]></ST>
       </Implementation>
     </Method>
+    <Property Name="bAutoNotify" Id="{74df07db-08be-0573-3a37-5dccf1e7dd5d}">
+      <Declaration><![CDATA[(*Notify automatically on write access of observable value*)
+PROPERTY bAutoNotify : BOOL]]></Declaration>
+      <Get Name="Get" Id="{a06b71cf-b5b1-0175-3fce-b660054066b7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bAutoNotify := THIS^._bAutoNotify;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{f620f6a5-c227-0747-3833-7da8408dde07}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._bAutoNotify := bAutoNotify;
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="bNotifyWhenChanged" Id="{fa76d4ca-250f-06a1-1b4a-98443338ae81}">
+      <Declaration><![CDATA[PROPERTY bNotifyWhenChanged : BOOL]]></Declaration>
+      <Get Name="Get" Id="{a9c32db7-d8ca-0b27-2cec-3449b9ed6a56}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bNotifyWhenChanged := THIS^._bNotifyWhenChanged;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{3bd698f8-1830-0ba9-1433-e88070376d5d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._bNotifyWhenChanged := bNotifyWhenChanged;
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Method Name="Detach" Id="{cd87a177-86aa-454f-9754-8649faed008d}">
       <Declaration><![CDATA[METHOD Detach : BOOL
 VAR_INPUT
@@ -191,6 +232,18 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
+    <Property Name="nDataSize" Id="{06add94f-024a-47dc-87bf-b64b73b81f23}">
+      <Declaration><![CDATA[PROPERTY ABSTRACT nDataSize : UDINT
+]]></Declaration>
+      <Get Name="Get" Id="{0f065d40-3079-435c-abd4-35bc9982957a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="nLastIdx" Id="{2c79c953-5622-435d-a939-cc4a5f7e264e}">
       <Declaration><![CDATA[PROPERTY PROTECTED nLastIdx : UDINT]]></Declaration>
       <Get Name="Get" Id="{c29b0475-f6df-4d45-ac76-cc7c5921980f}">
@@ -225,17 +278,60 @@ END_IF
       </Get>
     </Property>
     <Method Name="Notify" Id="{50b7b6ea-de79-46bd-bf28-05ba956e9a25}">
-      <Declaration><![CDATA[METHOD ABSTRACT Notify : I_Observable
-]]></Declaration>
+      <Declaration><![CDATA[METHOD Notify : I_Observable
+VAR
+    i:      UDINT;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[Notify := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+FOR i := 0 TO THIS^.nLastIdx DO
+    THIS^.pipObserver[i].UpdateP(THIS^.pData,
+                                 THIS^.nDataSize,
+                                 THIS^._nTypeClass);
+END_FOR
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="NotifyLast" Id="{bfb98185-9d2f-403d-8101-4e4bed875c91}">
-      <Declaration><![CDATA[METHOD ABSTRACT NotifyLast : I_Observable
+      <Declaration><![CDATA[METHOD NotifyLast : I_Observable
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[NotifyLast := THIS^;
+
+IF THIS^.nObserverCount <= 0 THEN
+    RETURN;
+END_IF
+
+THIS^.pipObserver[THIS^.nLastIdx].UpdateP(THIS^.pData,
+                             THIS^.nDataSize,
+                             THIS^._nTypeClass);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NotifyWithConditions" Id="{b742a386-1bb7-051d-3dff-2af66164d0e9}">
+      <Declaration><![CDATA[METHOD PROTECTED NotifyWithConditions : I_Observable
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[NotifyWithConditions := THIS^;
+
+IF NOT THIS^._bAutoNotify THEN
+    RETURN;
+END_IF
+
+IF THIS^._bNotifyWhenChanged
+    AND_THEN NOT THIS^.ValueChanged() THEN
+    RETURN;
+END_IF
+
+THIS^.Notify();
+]]></ST>
       </Implementation>
     </Method>
     <Property Name="nTypeClass" Id="{1858b07f-e893-0a1d-310c-1f93f7d39211}">
@@ -247,6 +343,17 @@ END_VAR
         <Implementation>
           <ST><![CDATA[nTypeClass := THIS^._nTypeClass;
 ]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="pData" Id="{dc2c7af6-7d54-4c13-8681-c25bac9e7fcb}">
+      <Declaration><![CDATA[PROPERTY PROTECTED ABSTRACT pData : POINTER TO BYTE]]></Declaration>
+      <Get Name="Get" Id="{13c43774-fcc5-43db-b9fd-56325378b403}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -269,6 +376,15 @@ FOR i := 0 TO THIS^.nLastIdx DO
 END_FOR
 {END_IF}
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValueChanged" Id="{010c3d67-bfde-02a5-1223-efc7d35699a5}">
+      <Declaration><![CDATA[METHOD ABSTRACT ValueChanged : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
   </POU>

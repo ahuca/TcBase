@@ -36,6 +36,9 @@
     <Compile Include="Observer Pattern Test\FB_ObserverPattern_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern Test\FB_Observer_LREAL_.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>

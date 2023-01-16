@@ -10,6 +10,27 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Property Name="bAutoNotify" Id="{b2bbc409-bd98-0bad-2172-8600de7556d9}">
+      <Declaration><![CDATA[(*Notify automatically on write access of observable value*)
+PROPERTY bAutoNotify : BOOL]]></Declaration>
+      <Get Name="Get" Id="{28c68bd4-00ea-01a3-1246-c18fa2952457}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{868424c9-4d32-097c-04cf-be577c5a0bca}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="bNotifyWhenChanged" Id="{dba79f02-ec11-0ccb-0ffe-bd21359f971e}">
+      <Declaration><![CDATA[(*Notify only when the value is actually changed*)
+PROPERTY bNotifyWhenChanged : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{111601c9-958a-0fcb-2da5-91de6c92f0b8}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{c362826d-df63-0759-2036-76c0288d7680}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
     <Method Name="Detach" Id="{ebccaf28-c550-4b56-881b-b9dc49898d61}">
       <Declaration><![CDATA[METHOD Detach : BOOL
 VAR_INPUT
@@ -17,6 +38,12 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Property Name="nDataSize" Id="{66ccf410-7b87-46bb-a40d-a3f511a75616}">
+      <Declaration><![CDATA[PROPERTY nDataSize : UDINT]]></Declaration>
+      <Get Name="Get" Id="{a9718243-75e3-46d3-8875-a897e41ceb90}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
     <Property Name="nObserverCount" Id="{07d52f56-10f6-4076-aab3-6b8ebc9310fa}">
       <Declaration><![CDATA[PROPERTY nObserverCount : UDINT]]></Declaration>
       <Get Name="Get" Id="{3a19d823-a61c-41a4-83cb-832f68ece898}">
@@ -41,5 +68,11 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
+    <Method Name="ValueChanged" Id="{fe01f384-fa15-0491-29cb-2dd7249fb59a}">
+      <Declaration><![CDATA[METHOD ABSTRACT ValueChanged : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
   </Itf>
 </TcPlcObject>

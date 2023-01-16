@@ -16,5 +16,14 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Method Name="UpdateP" Id="{47417738-69b5-4e0d-be3c-1496552ef064}">
+      <Declaration><![CDATA[METHOD UpdateP : I_Observer
+VAR_INPUT
+    pData:          POINTER TO BYTE;
+    nSize:          UDINT;
+    nTypeClass:     __SYSTEM.TYPE_CLASS;
+END_VAR
+]]></Declaration>
+    </Method>
   </Itf>
 </TcPlcObject>

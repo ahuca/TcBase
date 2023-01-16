@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observer_BOOL" Id="{b69e048a-892f-4809-8b52-c7b077bb4215}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Observer_BOOL EXTENDS FB_AbstractObserver
+VAR
+    _bVal:      BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="bValue" Id="{a4508b65-b06d-49ac-ade8-4e663f660e99}">
+      <Declaration><![CDATA[PROPERTY bValue : BOOL]]></Declaration>
+      <Get Name="Get" Id="{98ab5782-160e-45c0-a473-069f68784c18}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bValue := THIS^._bVal;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_init" Id="{5a187cdb-5624-4c83-96a8-6a6f18ce82cc}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTypeClass := __SYSTEM.TYPE_CLASS.TYPE_BOOL;
+THIS^._pVal := ADR(THIS^._bVal);
+THIS^._nSize := SIZEOF(THIS^._bVal);
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

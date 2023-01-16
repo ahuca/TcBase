@@ -587,7 +587,6 @@ VAR_INST
     nTimesToAdd: UDINT := 100000;
     i: UDINT;
     stProfileData: Tc2_Utilities.PROFILERSTRUCT;
-    fTimeTakenPerItem: LREAL; // In microseconds
     sMsg: STRING(255);
 END_VAR
 ]]></Declaration>
@@ -605,7 +604,6 @@ END_VAR
 
         fbProfiler(START := FALSE);
         stProfileData := fbProfiler.DATA;
-        fTimeTakenPerItem := stProfileData.LastExecTime/nTimesToAdd;
 
         sMsg := 'Took ';
         sMsg := CONCAT(sMsg, TO_STRING(stProfileData.LastExecTime));
@@ -613,7 +611,7 @@ END_VAR
         sMsg := CONCAT(sMsg, TO_STRING(nTimesToAdd));
         sMsg := CONCAT(sMsg, ' item(s) to list. ');
         sMsg := CONCAT(sMsg, 'On average ');
-        sMsg := CONCAT(sMsg, TO_STRING(fTimeTakenPerItem));
+        sMsg := CONCAT(sMsg, TO_STRING(fbProfiler.DATA.AverageExecTime/nTimesToAdd));
         sMsg := CONCAT(sMsg, 'us');
         sMsg := CONCAT(sMsg, ' per item');
 
