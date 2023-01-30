@@ -308,8 +308,8 @@ IF THIS^.nObserverCount <= 0 THEN
 END_IF
 
 THIS^.pipObserver[THIS^.nLastIdx].UpdateP(THIS^.pData,
-                             THIS^.nDataSize,
-                             THIS^._nTypeClass);
+                                          THIS^.nDataSize,
+                                          THIS^._nTypeClass);
 ]]></ST>
       </Implementation>
     </Method>

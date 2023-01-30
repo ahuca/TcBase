@@ -10,14 +10,14 @@
       </Get>
     </Property>
     <Method Name="Update" Id="{fcb17013-ca2e-40da-951a-a3620cf618d3}">
-      <Declaration><![CDATA[METHOD Update : I_Observer
+      <Declaration><![CDATA[METHOD Update
 VAR_INPUT
     anyVal:         ANY;
 END_VAR
 ]]></Declaration>
     </Method>
     <Method Name="UpdateP" Id="{47417738-69b5-4e0d-be3c-1496552ef064}">
-      <Declaration><![CDATA[METHOD UpdateP : I_Observer
+      <Declaration><![CDATA[METHOD UpdateP
 VAR_INPUT
     pData:          POINTER TO BYTE;
     nSize:          UDINT;

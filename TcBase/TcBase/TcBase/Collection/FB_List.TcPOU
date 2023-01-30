@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_List" Id="{3d09efba-b29b-0efb-0296-650e9b624057}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_List IMPLEMENTS I_List
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_List EXTENDS FB_OrphanObject IMPLEMENTS I_List
 VAR
     fbMemMan:       FB_DynMem_Manager;
     fbBuffer:       FB_DynMem_Buffer(ipMemMan := fbMemMan);

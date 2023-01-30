@@ -12,6 +12,61 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="_Update" Id="{4a80772a-c77d-08e0-0400-3dfaeedba93e}">
+      <Declaration><![CDATA[METHOD PROTECTED _Update
+VAR_INPUT
+    anyVal:         ANY;
+END_VAR
+VAR
+    nMemcpyRes:     UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF anyVal.TypeClass = THIS^._nTypeClass THEN
+    nMemcpyRes := Tc2_System.MEMCPY(destAddr := THIS^._pVal,
+                                    srcAddr := anyVal.pValue,
+                                    n := TO_UDINT(anyVal.diSize));
+END_IF
+
+IF nMemcpyRes <> 0 THEN
+    THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_UpdateP" Id="{04601ce4-ef10-086c-2ba8-698f7bbc7727}">
+      <Declaration><![CDATA[METHOD PROTECTED _UpdateP
+VAR_INPUT
+    pData:          POINTER TO BYTE;
+    nSize:          UDINT;
+    nTypeClass:     __SYSTEM.TYPE_CLASS;
+END_VAR
+VAR
+    nMemcpyRes:     UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nTypeClass <> THIS^._nTypeClass THEN
+    RETURN;
+END_IF
+
+IF nSize <> TO_UDINT(THIS^._nSize) THEN
+    RETURN;
+END_IF
+
+IF pData = 0 THEN
+    RETURN;
+END_IF
+
+nMemcpyRes := Tc2_System.MEMCPY(destAddr := THIS^._pVal,
+                                srcAddr := pData,
+                                n := TO_UDINT(THIS^._nSize));
+
+IF nMemcpyRes <> 0 THEN
+    THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="nTypeClass" Id="{fde940e3-79f9-098e-0135-d3adf4a5926d}">
       <Declaration><![CDATA[PROPERTY nTypeClass : __SYSTEM.TYPE_CLASS
 ]]></Declaration>
@@ -45,61 +100,34 @@ END_VAR
     </Method>
     <Method Name="Update" Id="{db1aebf2-fca2-494e-a52a-f9c476d5cd33}">
       <Declaration><![CDATA[{attribute 'hasanytype'}
-METHOD FINAL Update : I_Observer
+METHOD FINAL Update
+(* Template method for updating using ANY-typed variable *)
 VAR_INPUT
     anyVal:         ANY;
 END_VAR
-VAR
-    nMemcpyRes:     UDINT;
-END_VAR]]></Declaration>
+]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.PreUpdate();
 
-IF anyVal.TypeClass = THIS^._nTypeClass THEN
-    nMemcpyRes := Tc2_System.MEMCPY(destAddr := THIS^._pVal,
-                                    srcAddr := anyVal.pValue,
-                                    n := TO_UDINT(anyVal.diSize));
-    IF nMemcpyRes <> 0 THEN
-        THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
-    END_IF
-END_IF
+THIS^._Update(anyVal);
 
 THIS^.PostUpdate();
 ]]></ST>
       </Implementation>
     </Method>
     <Method Name="UpdateP" Id="{754e5201-247b-4bda-8c15-e31312212f2e}">
-      <Declaration><![CDATA[METHOD FINAL UpdateP : I_Observer
+      <Declaration><![CDATA[METHOD FINAL UpdateP
+(* Template method for updating using explicit
+   variable information *)
 VAR_INPUT
     pData:          POINTER TO BYTE;
     nSize:          UDINT;
     nTypeClass:     __SYSTEM.TYPE_CLASS;
-END_VAR
-VAR
-    nMemcpyRes:     UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.PreUpdate();
 
-IF nTypeClass <> THIS^._nTypeClass THEN
-    RETURN;
-END_IF
-
-IF nSize <> TO_UDINT(THIS^._nSize) THEN
-    RETURN;
-END_IF
-
-IF pData = 0 THEN
-    RETURN;
-END_IF
-
-nMemcpyRes := Tc2_System.MEMCPY(destAddr := THIS^._pVal,
-                  srcAddr := pData,
-                  n := TO_UDINT(THIS^._nSize));
-
-IF nMemcpyRes <> 0 THEN
-    THIS^._nUpdateCounter := THIS^._nUpdateCounter + 1;
-END_IF
+THIS^._UpdateP(pData, nSize, nTypeClass);
 
 THIS^.PostUpdate();
 ]]></ST>
