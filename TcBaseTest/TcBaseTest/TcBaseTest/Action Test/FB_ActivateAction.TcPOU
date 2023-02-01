@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ActivateAction" Id="{7e404be6-fc8b-4051-988f-7033ffb613a4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ActivateAction EXTENDS TcBase.FB_Action
+VAR
+    _bActivated: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{fc2eff42-265e-4bd3-b080-5d930c8ab5c6}">
+      <Declaration><![CDATA[METHOD  Execute
+VAR_INPUT
+    ipObject: I_Object;
+END_VAR
+VAR
+    p: POINTER TO FB_ActionTestObject;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[__QUERYPOINTER(ipObject, p);
+
+IF p <> 0 THEN
+    p^.Activate(THIS^._bActivated);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Inputs" Id="{e6bc8e59-7bf0-479b-a73a-f39b72e7c2f9}">
+      <Declaration><![CDATA[METHOD Inputs : TcBase.I_Action
+VAR_INPUT
+    bActivate: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Inputs := THIS^;
+THIS^._bActivated := bActivate;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

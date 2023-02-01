@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_Action" Id="{693c0bbf-2f16-0239-1f37-9574a10a96e2}">
+    <Declaration><![CDATA[INTERFACE I_Action EXTENDS I_Object
+]]></Declaration>
+    <Method Name="Execute" Id="{75b9d855-fb9c-05fc-252d-ef3f7519ed88}">
+      <Declaration><![CDATA[METHOD Execute
+VAR_INPUT
+    ipObject: I_Object;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

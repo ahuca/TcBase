@@ -18,6 +18,12 @@
     <CompilerDefines />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Action Test\FB_Action_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Action Test\FB_ActivateAction.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Collection Test\FB_List_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -28,9 +34,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Object Test\FB_Object_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Object Test\FB_TestObject.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Pattern Test\FB_ObserverPattern_Test.TcPOU">
@@ -96,10 +99,18 @@
     <Compile Include="State Pattern Test\Test Subjects\Season State Pattern\I_SeasonState.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Test Objects\FB_ActionTestObject.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Test Objects\FB_TestObject.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Invocation Control Test" />
     <Folder Include="Collection Test" />
+    <Folder Include="Action Test" />
+    <Folder Include="Test Objects" />
     <Folder Include="State Pattern Test" />
     <Folder Include="Object Test" />
     <Folder Include="Observer Pattern Test" />

@@ -41,6 +41,7 @@
     <Folder Include="Invocation Control" />
     <Folder Include="Collection" />
     <Folder Include="Helpers" />
+    <Folder Include="Action" />
     <Folder Include="Object" />
     <Folder Include="Observer Pattern" />
     <Folder Include="Observer Pattern\Abstraction" />
@@ -52,6 +53,15 @@
     <Folder Include="Version" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action\FB_Action.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Action\FB_RunCyclicTasksAction.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Action\I_Action.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Collection\FB_List.TcPOU">
       <SubType>Code</SubType>
     </Compile>

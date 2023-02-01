@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_RunCyclicTasksAction" Id="{36e0149e-be33-0243-3d91-faad07c1f86d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_RunCyclicTasksAction EXTENDS FB_Action
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{9ab3fc93-83ee-0789-0ca2-c5a70700af2e}">
+      <Declaration><![CDATA[METHOD  Execute
+VAR_INPUT
+    ipObject: I_Object;
+END_VAR
+VAR
+    ipTask: I_CyclicTask;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF __QUERYINTERFACE(ipObject, ipTask) THEN
+    ipTask.Run();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

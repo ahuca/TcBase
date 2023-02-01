@@ -15,6 +15,8 @@ TestCopyToArrayOfCompatibleSizeExpectSuccess();
 TestCopyToArrayOfIncompatibleSizeExpectFailure();
 TestCopyToArrayWithInvalidIndexExpectFailure();
 TestEmptyListMustHaveNoItem();
+TestForEachWithActivateActionExpectSuccess();
+TestForEachWithCylicTaskActionExpectSuccess();
 TestIndexOfItem();
 TestInsertIntoEmptyListExpectSuccess();
 TestInsertIntoListOfItemsExpectSuccess();
@@ -331,6 +333,67 @@ THIS^.AssertEquals_UDINT(Expected := 0,
                          Message := 'Empty list must not have any item(s)');
 
 TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestForEachWithActivateActionExpectSuccess" Id="{3b3e7959-8980-4d89-bcbf-f4dbf53b8cc9}">
+      <Declaration><![CDATA[METHOD PRIVATE TestForEachWithActivateActionExpectSuccess
+VAR_INST
+    i: UDINT;
+    fbList: FB_List;
+    aObject: ARRAY [1..10] OF FB_ActionTestObject;
+    fbActivateObjects: FB_ActivateAction;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestForEachWithActivateActionExpectSuccess');
+
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    fbList.AddItem(aObject[i]);
+END_FOR
+
+fbList.ForEach(fbActivateObjects.Inputs(TRUE));
+
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+     THIS^.AssertTrue(Condition := aObject[1].bIsActivated,
+                      Message := 'Failed to activate object(s)');
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestForEachWithCylicTaskActionExpectSuccess" Id="{3a19154e-aa35-42cc-9be5-668abcf424ec}">
+      <Declaration><![CDATA[METHOD PRIVATE TestForEachWithCylicTaskActionExpectSuccess
+VAR_INST
+    nCyclesToRun: UDINT := 5;
+    nCounter: UDINT := 0;
+    i: UDINT;
+    fbList: FB_List;
+    aObject: ARRAY [1..10] OF FB_ActionTestObject;
+    fbRunCyclicTask: FB_RunCyclicTasksAction;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestForEachWithCylicTaskActionExpectSuccess');
+
+IF nCounter = 0 THEN
+    FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+        fbList.AddItem(aObject[i]);
+    END_FOR
+END_IF
+
+fbList.ForEach(fbRunCyclicTask);
+nCounter := nCounter + 1;
+
+IF nCyclesToRun = nCounter THEN
+    FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+        THIS^.AssertEquals_UDINT(Expected := nCyclesToRun,
+                                 Actual := aObject[i].nCounter,
+                                 Message := 'Unexpected counter value of cyclic object');
+    END_FOR
+    TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="TestIndexOfItem" Id="{1f2f65e9-8e03-49d4-99e5-ea807ffa6c1b}">

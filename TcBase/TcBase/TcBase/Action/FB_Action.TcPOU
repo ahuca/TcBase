@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Action" Id="{9670fb6d-ea6b-06f7-2dd3-159de82debfe}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_Action EXTENDS FB_OrphanObject IMPLEMENTS I_Action
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{62893402-59f6-0f6f-1dfc-91c974ee37aa}">
+      <Declaration><![CDATA[METHOD ABSTRACT Execute
+VAR_INPUT
+    ipObject: I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

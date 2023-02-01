@@ -8,6 +8,7 @@ VAR
     fbCallCtrlTest: FB_InvocationControl_Test;
     fbObserverPatternTest: FB_ObserverPattern_Test;
     fbStatePatternTest: FB_StatePattern_Test;
+    fbActionTest: FB_Action_Test;
 END_VAR
 ]]></Declaration>
     <Implementation>
