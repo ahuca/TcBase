@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_NotifyObserverAction" Id="{8cb99936-b569-4eab-bcc8-0631bace8fa9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_NotifyObserverAction EXTENDS FB_Action
+VAR
+    _pData: POINTER TO BYTE;
+    _nSize: UDINT;
+    _nTypeClass: __SYSTEM.TYPE_CLASS;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{87f751f9-c536-4b1f-996b-5ae96ee166a6}">
+      <Declaration><![CDATA[METHOD  Execute
+VAR_INPUT
+    ipObject: I_Object;
+END_VAR
+VAR
+    ipObs: I_Observer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[__QUERYINTERFACE(ipObject, ipObs);
+
+IF ipObs = 0 THEN
+    RETURN;
+END_IF
+
+ipObs.UpdateP(pData := THIS^._pData,
+              nTypeClass := THIS^._nTypeClass,
+              nSize := THIS^._nSize);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Inputs" Id="{f57e0d64-abd4-42b5-8230-4dbde712a3ff}">
+      <Declaration><![CDATA[METHOD Inputs : I_Action
+VAR_INPUT
+    pData:          POINTER TO BYTE;
+    nTypeClass:     __SYSTEM.TYPE_CLASS;
+    nSize:          UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Inputs := THIS^;
+
+THIS^._pData := pData;
+THIS^._nTypeClass := nTypeClass;
+THIS^._nSize := nSize;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

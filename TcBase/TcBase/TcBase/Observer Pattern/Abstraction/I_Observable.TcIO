@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <Itf Name="I_Observable" Id="{e9d5ee08-eb7e-494a-b197-8f922f772785}">
-    <Declaration><![CDATA[INTERFACE I_Observable EXTENDS __SYSTEM.IQueryInterface
+    <Declaration><![CDATA[INTERFACE I_Observable EXTENDS I_Object
 ]]></Declaration>
     <Method Name="Attach" Id="{30211a61-21d5-40ca-8122-c8c8f2acdb97}">
       <Declaration><![CDATA[METHOD Attach : BOOL
@@ -50,8 +50,8 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Method Name="Notify" Id="{dca0986e-fc2a-4198-a535-6eefd7c6a6f6}">
-      <Declaration><![CDATA[METHOD Notify : I_Observable
+    <Method Name="NotifyAll" Id="{dca0986e-fc2a-4198-a535-6eefd7c6a6f6}">
+      <Declaration><![CDATA[METHOD NotifyAll : I_Observable
 VAR_INPUT
 END_VAR
 ]]></Declaration>

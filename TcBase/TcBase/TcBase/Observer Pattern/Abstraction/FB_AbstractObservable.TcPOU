@@ -5,14 +5,13 @@
 VAR
     // Attributes
     _nTypeClass:                __SYSTEM.TYPE_CLASS;
-    _bAutoNotify:               BOOL; // Notify automatically on write access of observable value
-    _bNotifyWhenChanged:        BOOL := TRUE; // Notify only when the value is actually changed
+    _bAutoNotify:               BOOL := TRUE; // Notify automatically on write access of observable value
+    _bNotifyWhenChanged:        BOOL; // Notify only when the value is actually changed
 
     // Dynamic mem
-    fbMemMan:                   FB_DynMem_Manager;
-    fbBuffer:                   FB_DynMem_Buffer(ipMemMan := fbMemMan);
-    pipObserver:                POINTER TO I_Observer;
-    aPip:                       ARRAY [0..Param_Observer.cMaxNumberOfObservers-1] OF POINTER TO I_Observer; // Debug array
+    _fbObsList:                 FB_List; // Observer list
+
+    _fbNotifyObservers:         FB_NotifyObserverAction;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -22,64 +21,20 @@ END_VAR
       <Declaration><![CDATA[METHOD Attach : BOOL
 VAR_INPUT
     ipObserver:     I_Observer;
-END_VAR
-VAR
-    i:              UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Validate interface pointer
-IF ipObserver = 0 THEN
+        <ST><![CDATA[IF ipObserver = 0 // Invalid interface pointer
+    OR_ELSE ipObserver.nTypeClass <> THIS^._nTypeClass // Invalid type
+    OR_ELSE THIS^.Contains(ipObserver) // Already added
+    THEN
     RETURN;
 END_IF
 
-// Max number of observers reached
-IF THIS^.nObserverCount >= Param_Observer.cMaxNumberOfObservers THEN
-    RETURN;
-END_IF
+Attach := THIS^._fbObsList.AddItem(ipObserver) <> -1;
 
-// Incompatible type
-IF ipObserver.nTypeClass <> THIS^.nTypeClass THEN
-    RETURN;
-END_IF
-
-// Create buffer and add observer
-IF NOT THIS^.fbBuffer.bAvailable THEN
-    THIS^.fbBuffer.CreateBuffer(nSize := SIZEOF(THIS^.pipObserver),
-                                bReset := TRUE);
-
-    THIS^.pipObserver := THIS^.fbBuffer.pBuffer;
-    THIS^.pipObserver[THIS^.nLastIdx] := ipObserver;
+IF Attach THEN
     THIS^.NotifyLast();
-
-    {IF defined(variable: aPip)}
-    THIS^.UpdateDebugArray();
-    {END_IF}
-
-    Attach := TRUE;
-    RETURN;
 END_IF
-
-// Make sure observer is not already in the buffer
-FOR i := 0 TO THIS^.nLastIdx DO
-    IF THIS^.pipObserver[i] = ipObserver THEN
-        RETURN;
-    END_IF
-END_FOR
-
-// Increase buffer size and add observer
-THIS^.fbBuffer.Resize(nSize := THIS^.fbBuffer.nBufferSize + SIZEOF(THIS^.pipObserver),
-                      bPreserve := TRUE,
-                      bReset := FALSE);
-
-THIS^.pipObserver := THIS^.fbBuffer.pBuffer;
-THIS^.pipObserver[THIS^.nLastIdx] := ipObserver;
-THIS^.NotifyLast();
-
-{IF defined(variable: aPip)}
-THIS^.UpdateDebugArray();
-{END_IF}
-
-Attach := TRUE;
 ]]></ST>
       </Implementation>
     </Method>
@@ -126,109 +81,34 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <Method Name="ClearAll" Id="{d2ff27ca-2474-076b-3175-e48fff67c7aa}">
+      <Declaration><![CDATA[METHOD ClearAll
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._fbObsList.Clear();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Contains" Id="{76aabba0-b9ac-01e9-0b01-8a8b30e6a647}">
+      <Declaration><![CDATA[METHOD Contains : BOOL
+VAR_INPUT
+    ipObserver: I_Observer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Contains := THIS^._fbObsList.Contains(ipObserver);
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Detach" Id="{cd87a177-86aa-454f-9754-8649faed008d}">
       <Declaration><![CDATA[METHOD Detach : BOOL
 VAR_INPUT
     ipObserver:     I_Observer;
-END_VAR
-VAR
-    i:              UDINT;
-    j:              UDINT;
-    bFoundItem:     BOOL;
-    nRemoveIdx:     UDINT;
-    pTmp:           POINTER TO BYTE;
-    nPTmpSize:      UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Validate interface pointer
-IF ipObserver = 0 THEN
-    RETURN;
-END_IF
-
-// Nothing to remove
-IF THIS^.fbBuffer.nBufferSize = 0 THEN
-    RETURN;
-END_IF
-
-// Find correct observer index to remove
-FOR i := 0 TO THIS^.nLastIdx DO
-    IF THIS^.pipObserver[i] = ipObserver THEN
-        nRemoveIdx := i;
-        bFoundItem := TRUE;
-        EXIT;
-    END_IF
-END_FOR
-
-// No item found
-IF NOT bFoundItem THEN
-    RETURN;
-
-// Found the only item to be removed
-ELSIF THIS^.nObserverCount = 1 THEN
-    THIS^.fbBuffer.Resize(nSize := 0,
-                          bPreserve := FALSE,
-                          bReset := TRUE);
-
-    THIS^.pipObserver := THIS^.fbBuffer.pBuffer;
-
-    {IF defined(variable: aPip)}
-    THIS^.UpdateDebugArray();
-    {END_IF}
-
-    Detach := TRUE;
-
-    RETURN;
-END_IF
-
-// Create temporary buffer
-nPTmpSize := fbBuffer.nBufferSize - SIZEOF(THIS^.pipObserver);
-pTmp := __NEW(BYTE, nPTmpSize);
-
-Tc2_System.MEMCPY(destAddr := pTmp,
-                  srcAddr := THIS^.pipObserver,
-                  n := nRemoveIdx*SIZEOF(POINTER TO I_Observer));
-
-IF nRemoveIdx < THIS^.nLastIdx THEN
-    Tc2_System.MEMCPY(destAddr := pTmp,
-                      srcAddr := ADR(THIS^.pipObserver[nRemoveIdx + 1]),
-                      n := (THIS^.nLastIdx - nRemoveIdx)*SIZEOF(POINTER TO I_Observer));
-END_IF
-
-// Shrink main buffer and clean the contents
-THIS^.fbBuffer.Resize(nSize := nPTmpSize,
-                      bPreserve := FALSE,
-                      bReset := TRUE);
-
-THIS^.pipObserver := fbBuffer.pBuffer;
-
-// Copy contents from temp buffer back to main buffer
-Tc2_System.MEMCPY(destAddr := THIS^.pipObserver,
-                  srcAddr := pTmp,
-                  n := nPTmpSize);
-
-// Delete temp buffer after use
-IF pTmp <> 0 THEN
-    __DELETE(pTmp);
-END_IF
-
-{IF defined(variable: aPip)}
-THIS^.UpdateDebugArray();
-{END_IF}
-
-Detach := TRUE;
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="FB_init" Id="{cfb9d78b-f9b9-4c25-a6c3-89cdbb34fd0b}">
-      <Declaration><![CDATA[METHOD FB_init : BOOL
-VAR_INPUT
-    bInitRetains:       BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-    bInCopyCode:        BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-    bAutoNotify:        BOOL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[THIS^._bAutoNotify := bAutoNotify;
+        <ST><![CDATA[Detach := THIS^._fbObsList.Remove(ipObserver);
 ]]></ST>
       </Implementation>
     </Method>
@@ -244,22 +124,6 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="nLastIdx" Id="{2c79c953-5622-435d-a939-cc4a5f7e264e}">
-      <Declaration><![CDATA[PROPERTY PROTECTED nLastIdx : UDINT]]></Declaration>
-      <Get Name="Get" Id="{c29b0475-f6df-4d45-ac76-cc7c5921980f}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[IF THIS^.fbBuffer.nBufferSize > 0 THEN
-    nLastIdx := THIS^.fbBuffer.nBufferSize/SIZEOF(THIS^.pipObserver) - 1;
-ELSE
-    nLastIdx := 0;
-END_IF
-]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
     <Property Name="nObserverCount" Id="{8a1f52c0-3800-483e-a595-61cd3c373210}">
       <Declaration><![CDATA[PROPERTY nObserverCount : UDINT
 ]]></Declaration>
@@ -268,48 +132,40 @@ END_IF
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[IF THIS^.fbBuffer.nBufferSize > 0 THEN
-    nObserverCount := THIS^.nLastIdx + 1;
-ELSE
-    nObserverCount := 0;
-END_IF
+          <ST><![CDATA[nObserverCount := THIS^._fbObsList.nCount;
 ]]></ST>
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Notify" Id="{50b7b6ea-de79-46bd-bf28-05ba956e9a25}">
-      <Declaration><![CDATA[METHOD Notify : I_Observable
-VAR
-    i:      UDINT;
-END_VAR]]></Declaration>
+    <Method Name="NotifyAll" Id="{50b7b6ea-de79-46bd-bf28-05ba956e9a25}">
+      <Declaration><![CDATA[METHOD NotifyAll : I_Observable
+]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Notify := THIS^;
+        <ST><![CDATA[NotifyAll := THIS^;
 
-IF THIS^.nObserverCount <= 0 THEN
-    RETURN;
-END_IF
-
-FOR i := 0 TO THIS^.nLastIdx DO
-    THIS^.pipObserver[i].UpdateP(THIS^.pData,
-                                 THIS^.nDataSize,
-                                 THIS^._nTypeClass);
-END_FOR
+THIS^._fbObsList.ForEach(
+    THIS^._fbNotifyObservers
+         .Inputs(THIS^.pData,
+                 THIS^._nTypeClass,
+                 THIS^.nDataSize));
 ]]></ST>
       </Implementation>
     </Method>
     <Method Name="NotifyLast" Id="{bfb98185-9d2f-403d-8101-4e4bed875c91}">
       <Declaration><![CDATA[METHOD NotifyLast : I_Observable
-]]></Declaration>
+VAR
+    ipLastObs: I_Observer;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[NotifyLast := THIS^;
 
-IF THIS^.nObserverCount <= 0 THEN
-    RETURN;
-END_IF
+ipLastObs := THIS^.ObserverAt(TO_DINT(THIS^.nObserverCount) - 1);
 
-THIS^.pipObserver[THIS^.nLastIdx].UpdateP(THIS^.pData,
-                                          THIS^.nDataSize,
-                                          THIS^._nTypeClass);
+IF ipLastObs <> 0 THEN
+    ipLastObs.UpdateP(pData := THIS^.pData,
+                      nTypeClass := THIS^._nTypeClass,
+                      nSize := THIS^.nDataSize);
+END_IF
 ]]></ST>
       </Implementation>
     </Method>
@@ -330,7 +186,7 @@ IF THIS^._bNotifyWhenChanged
     RETURN;
 END_IF
 
-THIS^.Notify();
+THIS^.NotifyAll();
 ]]></ST>
       </Implementation>
     </Method>
@@ -346,6 +202,17 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="ObserverAt" Id="{b9e320b9-08ab-450b-b4c7-7a324f7bf6f8}">
+      <Declaration><![CDATA[METHOD ObserverAt : I_Observer
+VAR_INPUT
+    nIdx: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[__QUERYINTERFACE(THIS^._fbObsList.ItemAt(nIdx), ObserverAt);
+]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="pData" Id="{dc2c7af6-7d54-4c13-8681-c25bac9e7fcb}">
       <Declaration><![CDATA[PROPERTY PROTECTED ABSTRACT pData : POINTER TO BYTE]]></Declaration>
       <Get Name="Get" Id="{13c43774-fcc5-43db-b9fd-56325378b403}">
@@ -357,27 +224,6 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="UpdateDebugArray" Id="{d2dd83c4-e423-4d5c-abb7-4b336ab5b071}">
-      <Declaration><![CDATA[METHOD PRIVATE UpdateDebugArray : BOOL
-VAR_INPUT
-END_VAR
-VAR
-    i:                  UDINT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[{IF defined(variable: aPip)}
-MEMSET(
-    destAddr := ADR(THIS^.aPip),
-    fillByte := 0,
-    n := SIZEOF(THIS^.aPip));
-
-FOR i := 0 TO THIS^.nLastIdx DO
-    THIS^.aPip[i] := ADR(THIS^.pipObserver[i]);
-END_FOR
-{END_IF}
-]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="ValueChanged" Id="{010c3d67-bfde-02a5-1223-efc7d35699a5}">
       <Declaration><![CDATA[METHOD ABSTRACT ValueChanged : BOOL
 VAR_INPUT

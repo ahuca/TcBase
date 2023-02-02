@@ -45,6 +45,7 @@
     <Folder Include="Object" />
     <Folder Include="Observer Pattern" />
     <Folder Include="Observer Pattern\Abstraction" />
+    <Folder Include="Observer Pattern\Abstraction\Actions" />
     <Folder Include="Project Information" />
     <Folder Include="Restorable" />
     <Folder Include="State Pattern" />
@@ -97,6 +98,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Object\I_Object.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\Abstraction\Actions\FB_NotifyObserverAction.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Pattern\Abstraction\FB_AbstractObservable.TcPOU">
@@ -203,10 +207,6 @@
     </Compile>
     <Compile Include="Observer Pattern\FB_Observer_WORD.TcPOU">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Observer Pattern\Param_Observer.TcGVL">
-      <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="Project Information\F_GetCompany.TcPOU">
       <SubType>Code</SubType>

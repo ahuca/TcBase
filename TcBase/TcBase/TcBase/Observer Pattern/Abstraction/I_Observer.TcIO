@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <Itf Name="I_Observer" Id="{71e9c537-c1c0-4a93-aa9e-3a7f11d757ab}">
-    <Declaration><![CDATA[INTERFACE I_Observer EXTENDS __SYSTEM.IQueryInterface
+    <Declaration><![CDATA[INTERFACE I_Observer EXTENDS I_Object
 ]]></Declaration>
     <Property Name="nTypeClass" Id="{45bcd299-a5df-005e-250a-29bf5493035a}">
       <Declaration><![CDATA[PROPERTY nTypeClass : __SYSTEM.TYPE_CLASS]]></Declaration>
@@ -20,8 +20,8 @@ END_VAR
       <Declaration><![CDATA[METHOD UpdateP
 VAR_INPUT
     pData:          POINTER TO BYTE;
-    nSize:          UDINT;
     nTypeClass:     __SYSTEM.TYPE_CLASS;
+    nSize:          UDINT;
 END_VAR
 ]]></Declaration>
     </Method>

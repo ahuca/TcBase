@@ -14,24 +14,24 @@ END_VAR
       <ST><![CDATA[TestAdd5CompatibleObserversExpectAll5();
 TestAdd6IncompatibleObserversExpectNone();
 TestAddDuplicateObserversExpectFailure();
-TestAddMoreObserversThanAllowedExpectOnlyMaxCount();
+TestAddNullObserverExpectFailure();
+TestClearAllObserversExpectSuccess();
 TestCompatibleDataTypesExpectValuesToUpdate();
 TestDataTypeConsistencyOfObservables();
 TestDataTypeConsistencyOfObservers();
 TestDetachAddedObserversExpectSuccess();
+TestExternalWithCompatibleDataTypeExpectValueToUpdate();
 TestIncompatileDataTypesExpectNoValueChange();
-TestObservableNotifyAlwaysUponWriteAccess();
-TestObservableNotifyOnlyWhenValueChanged();
-TestObservableNotifyUponAttachmentWithObservers();
-TestObserverExternalWithCompatibleDataTypeExpectValueToUpdate();
+TestNotifyAlwaysUponWriteAccess();
+TestNotifyOnlyWhenValueChanged();
+TestNotifyUponAttachmentWithObservers();
 TestOneObservableToManyObserversExpectAllToUpdateValueAccordingly();
 ]]></ST>
     </Implementation>
     <Method Name="TestAdd5CompatibleObserversExpectAll5" Id="{791da87e-3b1e-4df9-be32-6b1c00308983}">
       <Declaration><![CDATA[METHOD PRIVATE TestAdd5CompatibleObserversExpectAll5
 VAR_INST
-    fbObservableReal: FB_Observable_REAL(TRUE);
-
+    fbObservableReal: FB_Observable_REAL;
     aObserverReal: ARRAY [1..5] OF FB_Observer_REAL;
 
     i: UDINT;
@@ -57,11 +57,11 @@ TcUnit.TEST_FINISHED();
       <Declaration><![CDATA[METHOD PRIVATE TestAdd6IncompatibleObserversExpectNone
 VAR_INST
     // Test can be less manual with dynamic list
-    fbObservableDint: FB_Observable_DINT(TRUE);
-    fbObservableUdint: FB_Observable_UDINT(TRUE);
-    fbObservableUint: FB_Observable_UINT(TRUE);
-    fbObservableReal: FB_Observable_REAL(TRUE);
-    fbObservableLreal: FB_Observable_LREAL(TRUE);
+    fbObservableDint: FB_Observable_DINT;
+    fbObservableUdint: FB_Observable_UDINT;
+    fbObservableUint: FB_Observable_UINT;
+    fbObservableReal: FB_Observable_REAL;
+    fbObservableLreal: FB_Observable_LREAL;
 
     fbObserverDint: ARRAY [1..6] OF FB_Observer_DINT;
     fbObserverUdint: ARRAY [1..6] OF FB_Observer_UDINT;
@@ -130,7 +130,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestAddDuplicateObserversExpectFailure" Id="{541af2f9-185f-04a2-08d3-89d5044bece3}">
       <Declaration><![CDATA[METHOD PRIVATE TestAddDuplicateObserversExpectFailure
 VAR_INST
-    fbObservableReal: FB_Observable_REAL(TRUE);
+    fbObservableReal: FB_Observable_REAL;
 
     fbObserverReal: FB_Observer_REAL;
 
@@ -158,26 +158,45 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TestAddMoreObserversThanAllowedExpectOnlyMaxCount" Id="{0c149026-c1e8-4c39-92b6-923e4107cb0e}">
-      <Declaration><![CDATA[METHOD PRIVATE TestAddMoreObserversThanAllowedExpectOnlyMaxCount
+    <Method Name="TestAddNullObserverExpectFailure" Id="{3d253d5b-1e64-4c0a-b007-ed6e12377370}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAddNullObserverExpectFailure
 VAR_INST
-    fbObservableReal: FB_Observable_REAL(TRUE);
+    ipNullObs: I_Observer;
+    fbObservable: FB_Observable_LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAddNullObserverExpectFailure');
 
-    fbObserverReal: ARRAY [1..(TcBase.Param_Observer.cMaxNumberOfObservers+10)] OF FB_Observer_REAL;
+fbObservable.Attach(ipNullObs);
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbObservable.nObserverCount,
+                         Message := 'Invalid observer added');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestClearAllObserversExpectSuccess" Id="{902743db-2fee-42b6-86b8-67b8f28610c2}">
+      <Declaration><![CDATA[METHOD PRIVATE TestClearAllObserversExpectSuccess
+VAR_INST
+    fbObservableReal: FB_Observable_REAL;
+    aObserverReal: ARRAY [1..5] OF FB_Observer_REAL;
 
     i: UDINT;
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestAddMoreObserversThanAllowedExpectOnlyMaxCount');
+        <ST><![CDATA[TcUnit.TEST('TestClearAllObserversExpectSuccess');
 
-FOR i := 1 TO SIZEOF(fbObserverReal)/SIZEOF(fbObserverReal[1]) DO
-    fbObservableReal.Attach(fbObserverReal[i]);
+FOR i := 1 TO SIZEOF(aObserverReal)/SIZEOF(aObserverReal[1]) DO
+    fbObservableReal.Attach(aObserverReal[i]);
 END_FOR
 
-THIS^.AssertEquals_UDINT(Expected := TcBase.Param_Observer.cMaxNumberOfObservers,
+fbObservableReal.ClearAll();
+
+THIS^.AssertEquals_UDINT(Expected := 0,
                          Actual := fbObservableReal.nObserverCount,
-                         Message := 'Unexpected number of observers attached');
+                         Message := 'Failed to clear all observers');
 
 TcUnit.TEST_FINISHED();
 ]]></ST>
@@ -186,21 +205,21 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestCompatibleDataTypesExpectValuesToUpdate" Id="{a0c42179-d282-4d90-9f50-7c032bf816e4}">
       <Declaration><![CDATA[METHOD PRIVATE TestCompatibleDataTypesExpectValuesToUpdate
 VAR_INST
-    fbObservableBool: FB_Observable_BOOL(TRUE);
-    fbObservableByte: FB_Observable_BYTE(TRUE);
-    fbObservableWord: FB_Observable_WORD(TRUE);
-    fbObservableDword: FB_Observable_DWORD(TRUE);
-    fbObservableLword: FB_Observable_LWORD(TRUE);
-    fbObservableSint: FB_Observable_SINT(TRUE);
-    fbObservableUsint: FB_Observable_USINT(TRUE);
-    fbObservableInt: FB_Observable_INT(TRUE);
-    fbObservableUint: FB_Observable_UINT(TRUE);
-    fbObservableDint: FB_Observable_DINT(TRUE);
-    fbObservableUdint: FB_Observable_UDINT(TRUE);
-    fbObservableLint: FB_Observable_LINT(TRUE);
-    fbObservableUlint: FB_Observable_ULINT(TRUE);
-    fbObservableLreal: FB_Observable_LREAL(TRUE);
-    fbObservableReal: FB_Observable_REAL(TRUE);
+    fbObservableBool: FB_Observable_BOOL;
+    fbObservableByte: FB_Observable_BYTE;
+    fbObservableWord: FB_Observable_WORD;
+    fbObservableDword: FB_Observable_DWORD;
+    fbObservableLword: FB_Observable_LWORD;
+    fbObservableSint: FB_Observable_SINT;
+    fbObservableUsint: FB_Observable_USINT;
+    fbObservableInt: FB_Observable_INT;
+    fbObservableUint: FB_Observable_UINT;
+    fbObservableDint: FB_Observable_DINT;
+    fbObservableUdint: FB_Observable_UDINT;
+    fbObservableLint: FB_Observable_LINT;
+    fbObservableUlint: FB_Observable_ULINT;
+    fbObservableLreal: FB_Observable_LREAL;
+    fbObservableReal: FB_Observable_REAL;
 
     fbObserverBool: FB_Observer_BOOL;
     fbObserverByte: FB_Observer_BYTE;
@@ -332,21 +351,21 @@ VAR_INST
         ];
 
     fbList: FB_List;
-    fbObservableBool: FB_Observable_BOOL(TRUE);
-    fbObservableByte: FB_Observable_BYTE(TRUE);
-    fbObservableWord: FB_Observable_WORD(TRUE);
-    fbObservableDword: FB_Observable_DWORD(TRUE);
-    fbObservableLword: FB_Observable_LWORD(TRUE);
-    fbObservableSint: FB_Observable_SINT(TRUE);
-    fbObservableUsint: FB_Observable_USINT(TRUE);
-    fbObservableInt: FB_Observable_INT(TRUE);
-    fbObservableUint: FB_Observable_UINT(TRUE);
-    fbObservableDint: FB_Observable_DINT(TRUE);
-    fbObservableUdint: FB_Observable_UDINT(TRUE);
-    fbObservableLint: FB_Observable_LINT(TRUE);
-    fbObservableUlint: FB_Observable_ULINT(TRUE);
-    fbObservableLreal: FB_Observable_LREAL(TRUE);
-    fbObservableReal: FB_Observable_REAL(TRUE);
+    fbObservableBool: FB_Observable_BOOL;
+    fbObservableByte: FB_Observable_BYTE;
+    fbObservableWord: FB_Observable_WORD;
+    fbObservableDword: FB_Observable_DWORD;
+    fbObservableLword: FB_Observable_LWORD;
+    fbObservableSint: FB_Observable_SINT;
+    fbObservableUsint: FB_Observable_USINT;
+    fbObservableInt: FB_Observable_INT;
+    fbObservableUint: FB_Observable_UINT;
+    fbObservableDint: FB_Observable_DINT;
+    fbObservableUdint: FB_Observable_UDINT;
+    fbObservableLint: FB_Observable_LINT;
+    fbObservableUlint: FB_Observable_ULINT;
+    fbObservableLreal: FB_Observable_LREAL;
+    fbObservableReal: FB_Observable_REAL;
 
     ipTmp: I_Observable;
     i: UDINT;
@@ -456,7 +475,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestDetachAddedObserversExpectSuccess" Id="{d0a8dd44-ed9b-0741-3658-2e78db7d42e9}">
       <Declaration><![CDATA[METHOD PRIVATE TestDetachAddedObserversExpectSuccess
 VAR_INST
-    fbObservableReal: FB_Observable_REAL(TRUE);
+    fbObservableReal: FB_Observable_REAL;
     fbObserverReal: ARRAY [1..5] OF FB_Observer_REAL;
 
     i: UDINT;
@@ -483,10 +502,36 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="TestExternalWithCompatibleDataTypeExpectValueToUpdate" Id="{10be65a2-219d-0b3c-1bbe-50f6d1861ef6}">
+      <Declaration><![CDATA[METHOD PRIVATE TestExternalWithCompatibleDataTypeExpectValueToUpdate
+VAR_INST
+    fbObservableLreal: FB_Observable_LREAL;
+    fbObserverExt: FB_ObserverExt(THIS^.fVal);
+    aTestVal: ARRAY [1..5] OF LREAL :=
+        [2.7183, 3.1415, -1, 1.6180, 6.6261];
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestObserverExternalWithCompatibleDataTypeExpectValueToUpdate');
+
+fbObservableLreal.Attach(fbObserverExt);
+
+FOR i := 1 TO SIZEOF(aTestVal)/SIZEOF(aTestVal[1]) DO
+    fbObservableLreal.fValue64 := aTestVal[i];
+    THIS^.AssertEquals_LREAL(Expected := aTestVal[i],
+                             Actual := THIS^.fVal,
+                             Delta := 0.001,
+                             Message := 'External observer typed LREAL failed to update value according to observable');
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="TestIncompatileDataTypesExpectNoValueChange" Id="{0979a056-7376-4db3-99e3-658aa0013606}">
       <Declaration><![CDATA[METHOD PRIVATE TestIncompatileDataTypesExpectNoValueChange
 VAR_INST
-    fbObservableReal: FB_Observable_REAL(TRUE);
+    fbObservableReal: FB_Observable_REAL;
 
     fbObserverDint: FB_Observer_DINT;
     fbObserverUdint: FB_Observer_UDINT;
@@ -528,21 +573,21 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TestObservableNotifyAlwaysUponWriteAccess" Id="{6bd03110-3809-4b9a-be1d-26037011bd0e}">
-      <Declaration><![CDATA[METHOD PRIVATE TestObservableNotifyAlwaysUponWriteAccess
+    <Method Name="TestNotifyAlwaysUponWriteAccess" Id="{6bd03110-3809-4b9a-be1d-26037011bd0e}">
+      <Declaration><![CDATA[METHOD PRIVATE TestNotifyAlwaysUponWriteAccess
 VAR_INST
-    fbObservable: FB_Observable_LREAL(TRUE);
+    fbObservable: FB_Observable_LREAL;
     fbObserver: FB_Observer_LREAL_;
 
     i: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestObservableNotifyAlwaysUponWriteAccess');
+        <ST><![CDATA[TcUnit.TEST('TestNotifyAlwaysUponWriteAccess');
 
 fbObservable.bNotifyWhenChanged := FALSE;
 fbObservable.Attach(fbObserver);
 
-// Expecte 1 update already because observable always update its observer upon
+// Expect 1 update already because observable always update its observer upon
 // attachment
 THIS^.AssertEquals_UDINT(Expected := 1,
                          Actual := fbObserver.nUpdateCounter,
@@ -560,10 +605,10 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TestObservableNotifyOnlyWhenValueChanged" Id="{22acf0a5-0c89-4f61-b880-4714e2c4dc93}">
-      <Declaration><![CDATA[METHOD PRIVATE TestObservableNotifyOnlyWhenValueChanged
+    <Method Name="TestNotifyOnlyWhenValueChanged" Id="{22acf0a5-0c89-4f61-b880-4714e2c4dc93}">
+      <Declaration><![CDATA[METHOD PRIVATE TestNotifyOnlyWhenValueChanged
 VAR_INST
-    fbObservable: FB_Observable_LREAL(TRUE);
+    fbObservable: FB_Observable_LREAL;
     fbObserver: FB_Observer_LREAL_;
     aVal: ARRAY [1..5] OF LREAL :=
         [2.7183, 3.1415, -1, 1.6180, 6.6261];
@@ -572,8 +617,9 @@ VAR_INST
     j: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestObservableNotifyOnlyWhenValueChanged');
+        <ST><![CDATA[TcUnit.TEST('TestNotifyOnlyWhenValueChanged');
 
+fbObservable.bNotifyWhenChanged := TRUE;
 fbObservable.Attach(fbObserver);
 
 // Expect 1 update already because observable always update its observer upon
@@ -597,16 +643,16 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TestObservableNotifyUponAttachmentWithObservers" Id="{80e2d94c-c26a-4a53-990f-cd6227123e7b}">
-      <Declaration><![CDATA[METHOD PRIVATE TestObservableNotifyUponAttachmentWithObservers
+    <Method Name="TestNotifyUponAttachmentWithObservers" Id="{80e2d94c-c26a-4a53-990f-cd6227123e7b}">
+      <Declaration><![CDATA[METHOD PRIVATE TestNotifyUponAttachmentWithObservers
 VAR_INST
-    fbObservable: FB_Observable_LREAL(TRUE);
+    fbObservable: FB_Observable_LREAL;
     aObserver: ARRAY [1..5] OF FB_Observer_LREAL_;
 
     i: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestObservableNotifyUponAttachmentWithObservers');
+        <ST><![CDATA[TcUnit.TEST('TestNotifyUponAttachmentWithObservers');
 
 fbObservable.fValue64 := 100.0;
 
@@ -628,36 +674,10 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TestObserverExternalWithCompatibleDataTypeExpectValueToUpdate" Id="{10be65a2-219d-0b3c-1bbe-50f6d1861ef6}">
-      <Declaration><![CDATA[METHOD PRIVATE TestObserverExternalWithCompatibleDataTypeExpectValueToUpdate
-VAR_INST
-    fbObservableLreal: FB_Observable_LREAL(TRUE);
-    fbObserverExt: FB_ObserverExt(THIS^.fVal);
-    aTestVal: ARRAY [1..5] OF LREAL :=
-        [2.7183, 3.1415, -1, 1.6180, 6.6261];
-    i: UDINT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestObserverExternalWithCompatibleDataTypeExpectValueToUpdate');
-
-fbObservableLreal.Attach(fbObserverExt);
-
-FOR i := 1 TO SIZEOF(aTestVal)/SIZEOF(aTestVal[1]) DO
-    fbObservableLreal.fValue64 := aTestVal[i];
-    THIS^.AssertEquals_LREAL(Expected := aTestVal[i],
-                             Actual := THIS^.fVal,
-                             Delta := 0.001,
-                             Message := 'External observer typed LREAL failed to update value according to observable');
-END_FOR
-
-TcUnit.TEST_FINISHED();
-]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="TestOneObservableToManyObserversExpectAllToUpdateValueAccordingly" Id="{6c79a3a7-11b6-0c82-0376-6a2fc2c49511}">
       <Declaration><![CDATA[METHOD PRIVATE TestOneObservableToManyObserversExpectAllToUpdateValueAccordingly
 VAR_INST
-    fbObservableLreal: FB_Observable_LREAL(TRUE);
+    fbObservableLreal: FB_Observable_LREAL;
     aObservers: ARRAY [1..5] OF FB_Observer_LREAL;
     aTestVal: ARRAY [1..5] OF LREAL :=
         [2.7183, 3.1415, -1, 1.6180, 6.6261];
