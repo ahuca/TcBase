@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_AbstractObserver" Id="{59366400-b2f5-4598-9c5c-2530302a1d7f}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_AbstractObserver EXTENDS FB_OrphanObject IMPLEMENTS I_Observer
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_AbstractObserver EXTENDS FB_Object IMPLEMENTS I_Observer
 VAR
     _nTypeClass:        __SYSTEM.TYPE_CLASS;
     _pVal:              POINTER TO BYTE;

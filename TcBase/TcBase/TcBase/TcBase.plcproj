@@ -91,10 +91,13 @@
     <Compile Include="Invocation Control\FB_InvocationControl.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Object\FB_LinkedObject.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Object\FB_Object.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Object\FB_OrphanObject.TcPOU">
+    <Compile Include="Object\I_LinkedObject.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Object\I_Object.TcIO">

@@ -3,11 +3,11 @@
   <POU Name="FB_Year" Id="{ab586e98-5688-4741-8fa9-f6f036cb2866}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Year EXTENDS FB_Object IMPLEMENTS I_SeasonControl, I_CyclicTask
 VAR
-    fbSeasonStateMachine:   FB_SeasonStateMachine(THIS^);
-    fbWinter:               FB_Winter(THIS^, THIS^.fbSeasonStateMachine);
-    fbSpring:               FB_Spring(THIS^, THIS^.fbSeasonStateMachine);
-    fbSummer:               FB_Summer(THIS^, THIS^.fbSeasonStateMachine);
-    fbAutumn:               FB_Autumn(THIS^, THIS^.fbSeasonStateMachine);
+    fbSeasonStateMachine:   FB_SeasonStateMachine;
+    fbWinter:               FB_Winter(THIS^.fbSeasonStateMachine, THIS^);
+    fbSpring:               FB_Spring(THIS^.fbSeasonStateMachine, THIS^);
+    fbSummer:               FB_Summer(THIS^.fbSeasonStateMachine, THIS^);
+    fbAutumn:               FB_Autumn(THIS^.fbSeasonStateMachine, THIS^);
 
     nCounter:               UDINT;
     nModVal:                UDINT := 500;
@@ -50,7 +50,6 @@ END_VAR
 VAR_INPUT
     bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
     bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-    ipParentObject:         I_Object;
 END_VAR
 ]]></Declaration>
       <Implementation>

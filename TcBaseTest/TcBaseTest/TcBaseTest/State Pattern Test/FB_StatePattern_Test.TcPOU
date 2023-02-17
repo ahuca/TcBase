@@ -5,19 +5,19 @@
 VAR
     _ipSelf:            I_Object;
 
-    fbStateMachine1:    FB_StateMachine1(THIS^);
-    fbState11:          FB_State1(THIS^, 0);
-    fbState12:          FB_State2(THIS^, 0);
-    fbState13:          FB_State3(THIS^, 0);
-    fbState14:          FB_State4(THIS^, 0);
+    fbStateMachine1:    FB_StateMachine1;
+    fbState11:          FB_State1(0);
+    fbState12:          FB_State2(0);
+    fbState13:          FB_State3(0);
+    fbState14:          FB_State4(0);
 
-    fbStateMachine2:    FB_StateMachine1(THIS^);
-    fbState21:          FB_State1(THIS^, THIS^.fbStateMachine2);
-    fbState22:          FB_State2(THIS^, THIS^.fbStateMachine2);
-    fbState23:          FB_State3(THIS^, THIS^.fbStateMachine2);
-    fbState24:          FB_State4(THIS^, THIS^.fbStateMachine2);
+    fbStateMachine2:    FB_StateMachine1;
+    fbState21:          FB_State1(THIS^.fbStateMachine2);
+    fbState22:          FB_State2(THIS^.fbStateMachine2);
+    fbState23:          FB_State3(THIS^.fbStateMachine2);
+    fbState24:          FB_State4(THIS^.fbStateMachine2);
 
-    fbYear:             FB_Year(THIS^);
+    fbYear:             FB_Year;
 END_VAR
 ]]></Declaration>
     <Implementation>
