@@ -1,44 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <Itf Name="I_List" Id="{0a9765a5-b03e-0475-3a9d-bcc0b738d24b}">
-    <Declaration><![CDATA[INTERFACE I_List EXTENDS I_Collection
+    <Declaration><![CDATA[INTERFACE I_List EXTENDS I_Collection, I_Enumerable
 ]]></Declaration>
-    <Method Name="AddItem" Id="{84b87bd3-d30a-0279-2a28-36482a97c639}">
-      <Declaration><![CDATA[METHOD AddItem : DINT
-// Returns the index to which the new object is added into the list,
-// or -1  to indicate that the object was not inserted
-VAR_INPUT
-    ipObject:       I_Object;
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="Clear" Id="{fc92d270-56d8-0a15-09d6-6eed49b759a3}">
-      <Declaration><![CDATA[METHOD Clear
-// Remove all items from the list
-VAR_INPUT
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="Contains" Id="{d530e465-3c8f-0908-2dc5-1716a9b56d2f}">
-      <Declaration><![CDATA[METHOD Contains : BOOL
-// Determines whether the list contains the querried object
-VAR_INPUT
-    ipObject:       I_Object;
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="CopyToArray" Id="{dd250599-2642-4103-9bda-ac1b79477603}">
-      <Declaration><![CDATA[METHOD CopyToArray : BOOL
-// Copies the whole list to a compatible one-dimensional array,
-// starting at a specified index
-VAR_IN_OUT
-    aDest:          ARRAY [*] OF I_Object;
-END_VAR
-VAR_INPUT
-    nIdx:           DINT;
-END_VAR
-]]></Declaration>
-    </Method>
     <Method Name="IndexOfItem" Id="{cd5c4961-8ca3-07d9-13f3-7aad6fe7ff28}">
       <Declaration><![CDATA[METHOD IndexOfItem : DINT
 // Returns the zero-based index of the object if it was found in the list,
@@ -84,14 +48,6 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Method Name="Remove" Id="{9a676453-6f6e-0153-1868-08c54a1da136}">
-      <Declaration><![CDATA[METHOD Remove : BOOL
-// Remove the first occurerence of a specific object from the list
-VAR_INPUT
-    ipObject:       I_Object;
-END_VAR
-]]></Declaration>
-    </Method>
     <Method Name="RemoveAt" Id="{dc3fb029-e0f1-0053-0870-b3e5e5776683}">
       <Declaration><![CDATA[METHOD RemoveAt : BOOL
 // Remove an object at the specified index

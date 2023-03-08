@@ -9,8 +9,11 @@ END_VAR
       <ST><![CDATA[TestAdd5DifferentItemsExpectAll5Added();
 TestAdd5TimesSameObjectExpectAll5Copies();
 TestAddNullInterfaceExpectNothingAdded();
-TestClearList();
-TestContains();
+TestClearEmptyListExpectSuccess();
+TestClearNonEmptyListExpectSuccess();
+TestContainsAddedObjectsExpectSuccess();
+TestContainsNullObjectExpectFailure();
+TestContainsNullObjectFromEmptyListExpectFailure();
 TestCopyToArrayOfCompatibleSizeExpectSuccess();
 TestCopyToArrayOfIncompatibleSizeExpectFailure();
 TestCopyToArrayWithInvalidIndexExpectFailure();
@@ -21,8 +24,10 @@ TestIndexOfItem();
 TestInsertIntoEmptyListExpectSuccess();
 TestInsertIntoListOfItemsExpectSuccess();
 TestLastIndexOfListOfMixedDuplicatesAndUniques();
+TestRemoveByIndexAndReAddItemExpectCorrectItemOrder();
 TestRemoveByIndexFromEmptyListExpectFailure();
 TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess();
+TestRemoveByIndexFromListOf5ItemsExpectConsistentContents();
 TestRemoveByInvalidIndexFromListOfItemsExpectFailure();
 TestRemoveInvalidItemFromListExpectFailure();
 TestRemoveValidItemFromListExpectSuccess();
@@ -128,8 +133,26 @@ THIS^.AssertEquals_UDINT(Expected := 0,
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TestClearList" Id="{ec8b00a0-59cd-43b6-a13d-289f5cfc8ce7}">
-      <Declaration><![CDATA[METHOD PRIVATE TestClearList
+    <Method Name="TestClearEmptyListExpectSuccess" Id="{fbd24fe0-6b60-41cd-a631-5b7d9052da5d}">
+      <Declaration><![CDATA[METHOD PRIVATE TestClearEmptyListExpectSuccess
+VAR_INST
+    fbList: FB_List;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestClearEmptyListExpectSuccess');
+
+fbList.Clear();
+
+THIS^.AssertEquals_UDINT(Expected := 0,
+                         Actual := fbList.nCount,
+                         Message := 'List should be empty');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestClearNonEmptyListExpectSuccess" Id="{ec8b00a0-59cd-43b6-a13d-289f5cfc8ce7}">
+      <Declaration><![CDATA[METHOD PRIVATE TestClearNonEmptyListExpectSuccess
 VAR_INST
     fbList: FB_List;
 
@@ -138,7 +161,7 @@ VAR_INST
     i: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestClearList');
+        <ST><![CDATA[TcUnit.TEST('TestClearNonEmptyListExpectSuccess');
 
 FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
     fbList.AddItem(aObject[i]);
@@ -160,15 +183,11 @@ FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
                      Message := 'List was not correctly cleared');
 END_FOR
 
-// Intentionally clear twice to make sure there's no exception
-// when doing so
-fbList.Clear();
-
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TestContains" Id="{f311bee0-7432-4c26-a6c3-86a8d22d7e1c}">
-      <Declaration><![CDATA[METHOD PRIVATE TestContains
+    <Method Name="TestContainsAddedObjectsExpectSuccess" Id="{f311bee0-7432-4c26-a6c3-86a8d22d7e1c}">
+      <Declaration><![CDATA[METHOD PRIVATE TestContainsAddedObjectsExpectSuccess
 VAR_INST
     fbList: FB_List;
 
@@ -179,7 +198,7 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('TestContains');
+        <ST><![CDATA[TcUnit.TEST('TestContainsAddedObjectsExpectSuccess');
 
 FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
     fbList.AddItem(aObject[i]);
@@ -193,12 +212,51 @@ END_FOR
 THIS^.AssertFalse(Condition := fbList.Contains(ipNull),
                   Message := 'List should not contain null object');
 
-fbList.Clear();
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestContainsNullObjectExpectFailure" Id="{349b7336-3fd4-4cce-86b4-a41929879314}">
+      <Declaration><![CDATA[METHOD PRIVATE TestContainsNullObjectExpectFailure
+VAR_INST
+    fbList: FB_List;
+
+    ipNull: I_Object;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestContainsNullObjectExpectFailure');
 
 THIS^.AssertFalse(Condition := fbList.Contains(ipNull),
                   Message := 'List should not contain null object');
 
-TcUnit.TEST_FINISHED();]]></ST>
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestContainsNullObjectFromEmptyListExpectFailure" Id="{f22d518e-268a-42e8-977a-d1a63f441e6d}">
+      <Declaration><![CDATA[METHOD PRIVATE TestContainsNullObjectFromEmptyListExpectFailure
+VAR_INST
+    fbList: FB_List;
+
+    aObject: ARRAY [1..5] OF FB_TestObject;
+
+    ipNull: I_Object;
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestContainsNullObjectFromEmptyListExpectFailure');
+
+FOR i := 1 TO SIZEOF(aObject)/SIZEOF(aObject[1]) DO
+    fbList.AddItem(aObject[i]);
+END_FOR
+
+THIS^.AssertFalse(Condition := fbList.Contains(ipNull),
+                  Message := 'List should not contain null object');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="TestCopyToArrayOfCompatibleSizeExpectSuccess" Id="{7aeb8850-c55b-4c1f-a36e-43b82cdce4fd}">
@@ -687,6 +745,40 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="TestRemoveByIndexAndReAddItemExpectCorrectItemOrder" Id="{71e49675-a6f2-4eee-b9e4-831a4bae9183}">
+      <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexAndReAddItemExpectCorrectItemOrder
+VAR_INST
+    fbList: FB_List;
+    aObject: ARRAY [1..5] OF FB_TestObject;
+    aIdx: ARRAY [1..5] OF UDINT
+        := [3, 2, 4, 5, 1];
+    nArraySize: UDINT;
+    i: UDINT;
+    j: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestRemoveByIndexAndReAddItemExpectCorrectItemOrder');
+nArraySize := SIZEOF(aObject)/SIZEOF(aObject[1]);
+
+FOR i := 1 TO nArraySize DO
+    fbList.AddItem(aObject[i]);
+END_FOR
+
+FOR i := 1 TO nArraySize DO
+    fbList.RemoveAt(fbList.IndexOfItem(aObject[aIdx[i]]));
+    fbList.AddItem(aObject[aIdx[i]]);
+END_FOR
+
+FOR i := 1 TO nArraySize DO
+    THIS^.AssertTrue(Condition := fbList.ItemAt(TO_DINT(i) - 1).Equals(aObject[aIdx[i]]),
+                     Message := CONCAT('Unexpected item found at ', TO_STRING(i - 1)));
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="TestRemoveByIndexFromEmptyListExpectFailure" Id="{d01caaa3-9424-4c89-9f9d-d1844e47312b}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromEmptyListExpectFailure
 VAR_INST
@@ -712,10 +804,6 @@ TcUnit.TEST_FINISHED();]]></ST>
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess
 VAR_INST
     fbList: FB_List;
-
-    aIdx: ARRAY[1..5] OF DINT := 
-        [-1, 5, 6, 7, 10];
-
     aObject: ARRAY [1..5] OF FB_TestObject;
 
     nArraySize: UDINT;
@@ -769,6 +857,40 @@ FOR i := 1 TO nArraySize DO
 END_FOR
 
 TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestRemoveByIndexFromListOf5ItemsExpectConsistentContents" Id="{256128ca-b48d-4a23-ac96-5e26d6a769db}">
+      <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromListOf5ItemsExpectConsistentContents
+VAR_INST
+    fbList: FB_List;
+    aObject: ARRAY [1..5] OF FB_TestObject;
+    nArraySize: UDINT;
+    i: UDINT;
+    j: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestRemoveByIndexFromListOf5ItemsExpectConsistentContents');
+nArraySize := SIZEOF(aObject)/SIZEOF(aObject[1]);
+
+FOR i := 1 TO nArraySize DO
+    fbList.AddItem(aObject[i]);
+END_FOR
+
+FOR i := 1 TO nArraySize DO
+    fbList.RemoveAt(0);
+
+    // After every removal, we check that the content of the list is correct
+    IF fbList.nCount > 0 THEN
+        FOR j := 0 TO fbList.nCount - 1 DO
+            THIS^.AssertTrue(Condition := fbList.ItemAt(TO_DINT(j)).Equals(aObject[i + j + 1]),
+                             Message := 'Unexpected list contents after removing item');
+        END_FOR
+    END_IF
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="TestRemoveByInvalidIndexFromListOfItemsExpectFailure" Id="{e59636a8-9445-4317-ac9c-3e5911a9f2ce}">

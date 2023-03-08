@@ -153,7 +153,7 @@ END_VAR
       </Implementation>
     </Method>
     <Method Name="ForEach" Id="{75802543-7589-0353-3f39-668281217a6c}">
-      <Declaration><![CDATA[METHOD ForEach : I_List
+      <Declaration><![CDATA[METHOD ForEach : I_Enumerable
 VAR_INPUT
     ipAction: I_Action;
 END_VAR
@@ -388,8 +388,8 @@ VAR_INPUT
     nIdx:       DINT;
 END_VAR
 VAR
-    pBuffer:    POINTER TO I_Object;
-    pTmp:       POINTER TO BYTE;
+    pBuffer:    POINTER TO POINTER TO I_Object;
+    pTmp:       POINTER TO POINTER TO I_Object;
     nTmpLength: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
@@ -407,7 +407,7 @@ Tc2_System.MEMCPY(destAddr := pTmp,
                   n := TO_UDINT(nIdx)*THIS^.nItemSize);
 
 IF nIdx < THIS^.nLastIdx THEN
-    Tc2_System.MEMCPY(destAddr := pTmp,
+    Tc2_System.MEMCPY(destAddr := ADR(pTmp[nIdx]),
                       srcAddr := ADR(pBuffer[nIdx + 1]),
                       n := TO_UDINT(THIS^.nLastIdx - nIdx)*THIS^.nItemSize);
 END_IF
