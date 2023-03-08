@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_LinkedObject" Id="{7d3a4e56-9527-01fc-1a73-2082b1d8ceca}">
+    <Declaration><![CDATA[INTERFACE I_LinkedObject EXTENDS I_Object
+]]></Declaration>
+    <Property Name="ipContext" Id="{d54a9832-a1de-45c3-9205-7c8581f64604}">
+      <Declaration><![CDATA[PROPERTY ipContext : I_Context]]></Declaration>
+      <Get Name="Get" Id="{f2c6904c-7ca9-4293-8141-7b24b0bbbb4d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="ipParent" Id="{2c0a360e-cfc4-0237-1414-097f4fc2748c}">
+      <Declaration><![CDATA[PROPERTY ipParent : I_LinkedObject]]></Declaration>
+      <Get Name="Get" Id="{d5eab88b-5363-0f33-3e6e-472a6b3fdf68}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

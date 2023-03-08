@@ -18,7 +18,7 @@ RunThricePerCycleExpectMultipleCallTrue();
       <Declaration><![CDATA[METHOD PRIVATE RunAllTheTimeExpectCalledCyclicallyTrue
 VAR_INST
     fbCallCtrl:             FB_InvocationControl;
-    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -62,7 +62,7 @@ END_IF
       <Declaration><![CDATA[METHOD PRIVATE RunAllTheTimeExpectNewInvocationOnce
 VAR_INST
     fbCallCtrl:             FB_InvocationControl;
-    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -90,7 +90,7 @@ END_IF
       <Declaration><![CDATA[METHOD PRIVATE RunOnceExpectNewInvocationOnce
 VAR_INST
     fbCallCtrl:             FB_InvocationControl;
-    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -117,7 +117,7 @@ END_IF
       <Declaration><![CDATA[METHOD PRIVATE RunOncePerCycleExpectMultipleCallAlwaysFalse
 VAR_INST
     fbCallCtrl:             FB_InvocationControl;
-    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -144,7 +144,7 @@ END_IF
       <Declaration><![CDATA[METHOD PRIVATE RunThricePerCycleExpectMultipleCallTrue
 VAR_INST
     fbCallCtrl:             FB_InvocationControl;
-    fbCallCtrlTestTask:     FB_InvocationControlTestTask(0);
+    fbCallCtrlTestTask:     FB_InvocationControlTestTask;
 END_VAR
 ]]></Declaration>
       <Implementation>

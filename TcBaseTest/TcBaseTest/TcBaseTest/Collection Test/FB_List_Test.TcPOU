@@ -36,7 +36,7 @@ TestMeasureAddPerformanceWithVeryManyItemsAdded();
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject;
     ipTmp: I_Object;
     ipCmp: I_Object;
     i: UDINT;
@@ -71,7 +71,7 @@ VAR_INST
     fbList: FB_List;
 
     nTimesToAdd: UDINT;
-    fbObject: FB_TestObject(0);
+    fbObject: FB_TestObject;
     ipTmp: I_Object;
     ipCmp: I_Object;
     i: UDINT;
@@ -133,7 +133,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject;
     ipTmp: I_Object;
     i: UDINT;
 END_VAR]]></Declaration>
@@ -172,7 +172,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject;
 
     ipNull: I_Object;
     i: UDINT;
@@ -206,7 +206,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
     nObjectCount: UDINT;
-    aSrcObject: ARRAY [1..10] OF FB_TestObject(0);
+    aSrcObject: ARRAY [1..10] OF FB_TestObject;
     aDestObject: ARRAY [1..10] OF I_Object;
     aDestObject2: ARRAY [1..30] OF I_Object;
     i: UDINT;
@@ -249,7 +249,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
     nObjectCount: UDINT;
-    aSrcObject: ARRAY [1..10] OF FB_TestObject(0);
+    aSrcObject: ARRAY [1..10] OF FB_TestObject;
     aDestObject: ARRAY [1..5] OF I_Object;
     i: UDINT;
 END_VAR]]></Declaration>
@@ -277,7 +277,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
     nObjectCount: UDINT;
-    aSrcObject: ARRAY [1..10] OF FB_TestObject(0);
+    aSrcObject: ARRAY [1..10] OF FB_TestObject;
     aDestObject: ARRAY [1..10] OF I_Object;
     aDestObject2: ARRAY [1..30] OF I_Object;
     i: UDINT;
@@ -401,10 +401,10 @@ END_IF
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..10] OF FB_TestObject(0);
-    fbObject1: FB_TestObject(0);
-    fbObject2: FB_TestObject(0);
-    fbObject3: FB_TestObject(0);
+    aObject: ARRAY [1..10] OF FB_TestObject;
+    fbObject1: FB_TestObject;
+    fbObject2: FB_TestObject;
+    fbObject3: FB_TestObject;
 
     ipNull: I_Object;
     i: UDINT;
@@ -459,7 +459,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..10] OF FB_TestObject(0);
+    aObject: ARRAY [1..10] OF FB_TestObject;
     aInsPos: ARRAY [1..10] OF DINT;
     ipTmp: I_Object;
     ipCmp: I_Object;
@@ -507,8 +507,8 @@ TcUnit.TEST_FINISHED();
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..10] OF FB_TestObject(0);
-    aObjectToInsert: ARRAY [1..3] OF FB_TestObject(0);
+    aObject: ARRAY [1..10] OF FB_TestObject;
+    aObjectToInsert: ARRAY [1..3] OF FB_TestObject;
     aInsPos: ARRAY [1..3] OF DINT;
     ipTmp: I_Object;
     ipCmp: I_Object;
@@ -599,7 +599,7 @@ TcUnit.TEST_FINISHED();
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject;
     aAddOrder: ARRAY[1..20] OF I_Object;
     aExpLastIdx: ARRAY [1..5] OF DINT;
     nIdx: UDINT;
@@ -644,7 +644,7 @@ TcUnit.TEST_FINISHED();
       <Declaration><![CDATA[METHOD PRIVATE TestMeasureAddPerformanceWithVeryManyItemsAdded
 VAR_INST
     fbList: FB_List;
-    fbObject: FB_TestObject(0);
+    fbObject: FB_TestObject;
     fbProfiler: Tc2_Utilities.Profiler;
 
     nTimesToAdd: UDINT := 100000;
@@ -716,7 +716,7 @@ VAR_INST
     aIdx: ARRAY[1..5] OF DINT := 
         [-1, 5, 6, 7, 10];
 
-    aObject: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject;
 
     nArraySize: UDINT;
     i: UDINT;
@@ -778,7 +778,7 @@ VAR_INST
 
     aIdx: ARRAY[1..10] OF DINT := 
         [-1, 5, 6, 7, 10, -10, -3, -4, -2, 9];
-    aObject: ARRAY [1..5] OF FB_TestObject(0);
+    aObject: ARRAY [1..5] OF FB_TestObject;
 
     i: UDINT;
 END_VAR]]></Declaration>
@@ -806,9 +806,9 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..10] OF FB_TestObject(0);
+    aObject: ARRAY [1..10] OF FB_TestObject;
     ipNull: I_Object;
-    fbObject: FB_TestObject(0);
+    fbObject: FB_TestObject;
 
     i: UDINT;
 END_VAR]]></Declaration>
@@ -849,7 +849,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INST
     fbList: FB_List;
 
-    aObject: ARRAY [1..10] OF FB_TestObject(0);
+    aObject: ARRAY [1..10] OF FB_TestObject;
 
     i: UDINT;
 END_VAR]]></Declaration>

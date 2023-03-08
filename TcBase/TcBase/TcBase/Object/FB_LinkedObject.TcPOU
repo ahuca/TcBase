@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_LinkedObject" Id="{87ccbc5a-8a98-4cc4-aa55-78ff92f7c37f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_LinkedObject EXTENDS FB_Object IMPLEMENTS I_Object
+VAR
+    _ipParent:          I_LinkedObject;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{058b6abe-0386-4ead-9210-33fdf22e4732}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    ipParentObject:         I_LinkedObject;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._ipParent := ipParentObject;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ipContext" Id="{af011723-3225-42bc-a3cf-ab5677defbfe}">
+      <Declaration><![CDATA[PROPERTY ipContext : I_Context]]></Declaration>
+      <Get Name="Get" Id="{40949f99-26a3-42b6-8031-091b2b3252b0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF THIS^._ipParent <> 0 THEN
+    ipContext := THIS^.ipParent.ipContext;
+END_IF
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ipParent" Id="{476836f0-75a2-440a-a857-bf17b0a7f0dc}">
+      <Declaration><![CDATA[PROPERTY ipParent : I_LinkedObject]]></Declaration>
+      <Get Name="Get" Id="{07e655a1-6465-4a2f-826a-bf0c292f7655}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipParent := THIS^._ipParent;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

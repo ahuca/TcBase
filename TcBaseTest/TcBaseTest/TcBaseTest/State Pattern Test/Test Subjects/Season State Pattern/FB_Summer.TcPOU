@@ -30,8 +30,8 @@ Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
 VAR_INPUT
     bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
     bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-    ipParentObject:         I_Object;
     ipStateMachine:         I_StateMachine;
+    ipParentObject:         I_Object;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^._eState := E_Season.Summer;
