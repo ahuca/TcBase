@@ -12,6 +12,7 @@ END_VAR
     <Implementation>
       <ST><![CDATA[TestAddMoreItemsThanCurrentCapacityExpectCapacityToDouble();
 TestInitializeCapacityWithNonZeroValuesExpectSuccess();
+TestTrimCapacityExpectCapacityEqualsCurrentItemCount();
 ]]></ST>
     </Implementation>
     <Method Name="TestAddMoreItemsThanCurrentCapacityExpectCapacityToDouble" Id="{293877fd-4030-4743-ac22-6b168b91c163}">
@@ -72,6 +73,43 @@ FOR i := 1 TO SIZEOF(aList)/SIZEOF(aList[1]) DO
                              Actual := aList[i].nCapacity,
                              Message := 'Unexpected capacity');
 END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestTrimCapacityExpectCapacityEqualsCurrentItemCount" Id="{7b873bd8-ba5c-40e0-a52e-7e33df410e4b}">
+      <Declaration><![CDATA[METHOD PRIVATE TestTrimCapacityExpectCapacityEqualsCurrentItemCount
+VAR_INST
+    fbList: FB_List_proxy(5);
+
+    nTimesToAdd: UDINT;
+    fbObject: FB_TestObject;
+
+    i: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestTrimCapacityExpectCapacityEqualsCurrentItemCount');
+
+THIS^.AssertEquals_UDINT(Expected := 5,
+                         Actual := fbList.nCapacity,
+                         Message := 'Unexpected initial capacity');
+
+nTimesToAdd := 6;
+
+FOR i := 1 TO 15 DO
+    fbList.AddItem(fbObject);
+END_FOR
+
+THIS^.AssertEquals_UDINT(Expected := 20,
+                         Actual := fbList.nCapacity,
+                         Message := 'Unexpected capacity before trimming');
+
+fbList.TrimCapacity();
+
+THIS^.AssertEquals_UDINT(Expected := 15,
+                         Actual := fbList.nCapacity,
+                         Message := 'Unexpected capacity after trimming');
 
 TcUnit.TEST_FINISHED();
 ]]></ST>

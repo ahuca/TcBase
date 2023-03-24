@@ -458,6 +458,18 @@ THIS^._nCount := THIS^._nCount - 1;
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="TrimCapacity" Id="{8e9fe989-3135-0016-28e3-379ab945c04c}">
+      <Declaration><![CDATA[METHOD PUBLIC TrimCapacity
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.fbBuffer.Resize(nSize := THIS^.nCount*THIS^.nItemSize,
+                      bPreserve := TRUE,
+                      bReset := FALSE);
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="WriteToBuffer" Id="{138b3536-7d11-0817-33a1-6899be3cb22b}">
       <Declaration><![CDATA[METHOD PRIVATE WriteToBuffer : BOOL
 VAR_INPUT
