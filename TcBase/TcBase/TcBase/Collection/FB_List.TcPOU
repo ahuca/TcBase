@@ -416,8 +416,6 @@ VAR_INPUT
     nIdx:       DINT;
 END_VAR
 VAR
-    pBuffer:    POINTER TO POINTER TO I_Object;
-    pTmp:       POINTER TO POINTER TO I_Object;
     nTmpLength: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
@@ -427,34 +425,21 @@ END_VAR]]></Declaration>
 END_IF
 
 nTmpLength := THIS^.fbBuffer.nBufferSize - THIS^.nItemSize;
-pTmp := __NEW(BYTE, nTmpLength);
 
-pBuffer := THIS^.pBuffer;
-Tc2_System.MEMCPY(destAddr := pTmp,
-                  srcAddr := pBuffer,
-                  n := TO_UDINT(nIdx)*THIS^.nItemSize);
+THIS^.WriteToBuffer(nIdx := nIdx, ipObject := 0); // Reset memory at given idx
 
 IF nIdx < THIS^.nLastIdx THEN
-    Tc2_System.MEMCPY(destAddr := ADR(pTmp[nIdx]),
-                      srcAddr := ADR(pBuffer[nIdx + 1]),
-                      n := TO_UDINT(THIS^.nLastIdx - nIdx)*THIS^.nItemSize);
+    Tc2_System.MEMMOVE(destAddr := THIS^.GetOffset(nIdx),
+                       srcAddr := THIS^.GetOffset(nIdx + 1),
+                       n := TO_UDINT(THIS^.nLastIdx - nIdx)*THIS^.nItemSize);
 END_IF
 
 THIS^.fbBuffer.Resize(nSize := nTmpLength,
-                      bPreserve := FALSE,
-                      bReset := TRUE);
-
-Tc2_System.MEMCPY(destAddr := THIS^.pBuffer,
-                  srcAddr := pTmp,
-                  n := nTmpLength);
-
-IF pTmp <> 0 THEN
-    __DELETE(pTmp);
-END_IF
+                      bPreserve := TRUE,
+                      bReset := FALSE);
 
 RemoveAt := TRUE;
 THIS^._nCount := THIS^._nCount - 1;
-
 ]]></ST>
       </Implementation>
     </Method>
@@ -481,8 +466,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT THIS^.IndexIsValid(nIdx) 
-    OR_ELSE ipObject = 0 THEN
+        <ST><![CDATA[IF NOT THIS^.IndexIsValid(nIdx) THEN
     RETURN;
 END_IF
 
