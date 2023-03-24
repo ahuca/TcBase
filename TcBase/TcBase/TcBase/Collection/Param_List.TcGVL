@@ -4,6 +4,7 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
     nDefaultCapacity: UDINT := 4;
+    nMaxLength: UDINT := 16#7FEFFFFF;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

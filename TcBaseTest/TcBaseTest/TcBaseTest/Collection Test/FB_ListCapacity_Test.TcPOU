@@ -10,9 +10,52 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[TestInitializeCapacityWithNonZeroValuesExpectSuccess();
+      <ST><![CDATA[TestAddMoreItemsThanCurrentCapacityExpectCapacityToDouble();
+TestInitializeCapacityWithNonZeroValuesExpectSuccess();
 ]]></ST>
     </Implementation>
+    <Method Name="TestAddMoreItemsThanCurrentCapacityExpectCapacityToDouble" Id="{293877fd-4030-4743-ac22-6b168b91c163}">
+      <Declaration><![CDATA[METHOD PRIVATE TestAddMoreItemsThanCurrentCapacityExpectCapacityToDouble
+VAR_INST
+    fbList: FB_List_proxy(5);
+
+    nTimesToAdd: UDINT;
+    fbObject: FB_TestObject;
+
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestAddMoreItemsThanCurrentCapacityExpectCapacityToDouble');
+
+THIS^.AssertEquals_UDINT(Expected := 5,
+                         Actual := fbList.nCapacity,
+                         Message := 'Unexpected initial capacity');
+
+nTimesToAdd := 6;
+
+FOR i := 1 TO 21 DO
+    fbList.AddItem(fbObject);
+    IF 6 <= i AND_THEN i <= 10 THEN
+        THIS^.AssertEquals_UDINT(Expected := 10,
+                                 Actual := fbList.nCapacity,
+                                 Message := 'Unexpected new capacity');
+    ELSIF 10 < i AND_THEN i <= 11 THEN
+        THIS^.AssertEquals_UDINT(Expected := 20,
+                                 Actual := fbList.nCapacity,
+                                 Message := 'Unexpected new capacity');
+    ELSIF i > 20 THEN
+        THIS^.AssertEquals_UDINT(Expected := 40,
+                                 Actual := fbList.nCapacity,
+                                 Message := 'Unexpected new capacity');
+    END_IF
+END_FOR
+
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="TestInitializeCapacityWithNonZeroValuesExpectSuccess" Id="{ac161ae3-867a-4ce1-bee9-f8aeaf1b6bff}">
       <Declaration><![CDATA[METHOD PRIVATE TestInitializeCapacityWithNonZeroValuesExpectSuccess
 VAR_INST

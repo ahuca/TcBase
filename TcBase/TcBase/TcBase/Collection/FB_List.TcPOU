@@ -16,9 +16,7 @@ END_VAR
 VAR_INPUT
     ipObject:       I_Object;
 END_VAR
-VAR
-    bResized:       BOOL;
-END_VAR]]></Declaration>
+]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ipObject = 0 THEN
     AddItem := -1;
@@ -30,13 +28,8 @@ IF THIS^.IsFull() THEN
     RETURN;
 END_IF
 
-bResized := THIS^.fbBuffer.Resize(nSize := THIS^.fbBuffer.nBufferSize + THIS^.nItemSize,
-                                  bPreserve := TRUE,
-                                  bReset := FALSE);
-
-IF NOT bResized THEN
-    AddItem := -1;
-    RETURN;
+IF THIS^.nCount = THIS^.nCapacity THEN
+    THIS^.EnsureCapacity(THIS^.nCount + 1);
 END_IF
 
 THIS^._nCount := THIS^._nCount + 1;
@@ -119,6 +112,28 @@ Tc2_System.MEMCPY(destAddr := ADR(aDest[nIdx]),
                   n := THIS^.nCount*THIS^.nItemSize);
 
 CopyToArray := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="EnsureCapacity" Id="{67724037-5f40-0885-3e49-d124d9824510}">
+      <Declaration><![CDATA[METHOD PRIVATE EnsureCapacity : BOOL
+VAR_INPUT
+    nMin: UDINT;
+END_VAR
+VAR
+    nNewCapacity: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.nCapacity > nMin THEN
+    RETURN;
+END_IF
+
+nNewCapacity := SEL(THIS^.nCapacity = 0, THIS^.nCapacity * 2, Param_List.nDefaultCapacity);
+nNewCapacity := LIMIT(nMin, nNewCapacity, Param_List.nMaxLength);
+
+EnsureCapacity := THIS^.fbBuffer.Resize(nSize := nNewCapacity*THIS^.nItemSize,
+                                        bPreserve := TRUE,
+                                        bReset := FALSE);
 ]]></ST>
       </Implementation>
     </Method>
@@ -239,9 +254,9 @@ IF nIdxTmp = (THIS^.nLastIdx + 1) THEN
     RETURN;
 END_IF
 
-THIS^.fbBuffer.Resize(nSize := THIS^.fbBuffer.nBufferSize + THIS^.nItemSize,
-                      bPreserve := TRUE,
-                      bReset := FALSE);
+IF THIS^.nCount = THIS^.nCapacity THEN
+    THIS^.EnsureCapacity(THIS^.nCount + 1);
+END_IF
 
 Tc2_System.MEMMOVE(destAddr := THIS^.GetOffset(nIdx := nIdx + 1),
                    srcAddr := THIS^.GetOffset(nIdx := nIdx),

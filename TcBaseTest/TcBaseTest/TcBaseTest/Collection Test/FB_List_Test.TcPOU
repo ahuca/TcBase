@@ -732,7 +732,7 @@ END_VAR
         sMsg := CONCAT(sMsg, TO_STRING(nTimesToAdd));
         sMsg := CONCAT(sMsg, ' item(s) to list. ');
         sMsg := CONCAT(sMsg, 'On average ');
-        sMsg := CONCAT(sMsg, TO_STRING(fbProfiler.DATA.AverageExecTime/nTimesToAdd));
+        sMsg := CONCAT(sMsg, TO_STRING(TO_LREAL(fbProfiler.DATA.AverageExecTime)/TO_LREAL(nTimesToAdd)));
         sMsg := CONCAT(sMsg, 'us');
         sMsg := CONCAT(sMsg, ' per item');
 
