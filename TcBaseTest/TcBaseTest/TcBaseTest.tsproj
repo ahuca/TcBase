@@ -23,7 +23,7 @@
 						<Defines/>
 					</Variant>
 				</ProjectVariant>
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{06717D0A-B57E-9867-3D67-D278DA73E748}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" TmcPath="TcBaseTest\TcBaseTest.tmc" TmcHash="{734015AB-9989-631D-6715-FB603ED064B4}">
 					<Name>TcBaseTest Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

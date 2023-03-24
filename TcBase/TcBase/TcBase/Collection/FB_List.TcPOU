@@ -413,18 +413,16 @@ Remove := THIS^.RemoveAt(nIdxToRemove);
     <Method Name="RemoveAt" Id="{815f2227-6866-0206-0e82-6f52e1ffa7b5}">
       <Declaration><![CDATA[METHOD RemoveAt : BOOL
 VAR_INPUT
-    nIdx:       DINT;
+    nIdx: DINT;
 END_VAR
 VAR
-    nTmpLength: UDINT;
+    nNewCapacity: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF NOT THIS^.IndexIsValid(nIdx)
     OR_ELSE THIS^.nCount = 0 THEN
     RETURN;
 END_IF
-
-nTmpLength := THIS^.fbBuffer.nBufferSize - THIS^.nItemSize;
 
 THIS^.WriteToBuffer(nIdx := nIdx, ipObject := 0); // Reset memory at given idx
 
@@ -434,12 +432,19 @@ IF nIdx < THIS^.nLastIdx THEN
                        n := TO_UDINT(THIS^.nLastIdx - nIdx)*THIS^.nItemSize);
 END_IF
 
-THIS^.fbBuffer.Resize(nSize := nTmpLength,
-                      bPreserve := TRUE,
-                      bReset := FALSE);
+THIS^._nCount := THIS^._nCount - 1;
+
+IF THIS^.nCount*2 <= THIS^.nCapacity THEN
+    nNewCapacity := MAX(Param_List.nDefaultCapacity, THIS^.nCount);
+
+    IF nNewCapacity <> THIS^.nCapacity THEN
+        THIS^.fbBuffer.Resize(nSize := nNewCapacity*THIS^.nItemSize,
+                              bPreserve := TRUE,
+                              bReset := FALSE);
+    END_IF
+END_IF
 
 RemoveAt := TRUE;
-THIS^._nCount := THIS^._nCount - 1;
 ]]></ST>
       </Implementation>
     </Method>
