@@ -9,7 +9,7 @@ VAR
     _bNotifyWhenChanged:        BOOL; // Notify only when the value is actually changed
 
     // Dynamic mem
-    _fbObsList:                 FB_List; // Observer list
+    _fbObsList:                 FB_List(0); // Observer list
 
     _fbNotifyObservers:         FB_NotifyObserverAction;
 END_VAR

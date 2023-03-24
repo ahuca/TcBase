@@ -6,7 +6,7 @@ VAR
     _ipState:               I_State; // Current state
     _ipPrevState:           I_State; // Previous state
     _nStateChangeCount:     UDINT := 0;
-    fbStateList:            FB_List; // List of states
+    fbStateList:            FB_List(0); // List of states
     fbRunCallCtrl:          FB_InvocationControl;
 END_VAR
 ]]></Declaration>

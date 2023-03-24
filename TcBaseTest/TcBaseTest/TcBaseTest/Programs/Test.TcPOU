@@ -5,6 +5,7 @@
 VAR
     fbObjectTest: FB_Object_Test;
     fbListTest: FB_List_Test;
+    fbListEnsureCapacityTest: FB_ListCapacity_Test;
     fbCallCtrlTest: FB_InvocationControl_Test;
     fbObserverPatternTest: FB_ObserverPattern_Test;
     fbStatePatternTest: FB_StatePattern_Test;

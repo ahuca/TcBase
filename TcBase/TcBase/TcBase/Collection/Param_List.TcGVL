@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="Param_List" Id="{317121e1-9a4d-09e4-2c0b-5ad0a839b269}" ParameterList="True">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    nDefaultCapacity: UDINT := 4;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

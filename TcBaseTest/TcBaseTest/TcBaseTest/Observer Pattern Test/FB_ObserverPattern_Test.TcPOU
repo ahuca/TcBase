@@ -350,7 +350,7 @@ VAR_INST
             __SYSTEM.TYPE_CLASS.TYPE_REAL
         ];
 
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     fbObservableBool: FB_Observable_BOOL;
     fbObservableByte: FB_Observable_BYTE;
     fbObservableWord: FB_Observable_WORD;
@@ -422,7 +422,7 @@ VAR_INST
             __SYSTEM.TYPE_CLASS.TYPE_REAL
         ];
 
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     fbObserverBool: FB_Observer_BOOL;
     fbObserverByte: FB_Observer_BYTE;
     fbObserverWord: FB_Observer_WORD;

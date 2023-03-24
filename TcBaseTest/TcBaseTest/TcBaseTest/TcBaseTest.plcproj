@@ -24,6 +24,12 @@
     <Compile Include="Action Test\FB_ActivateAction.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Collection Test\FB_ListCapacity_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collection Test\FB_List_proxy.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Collection Test\FB_List_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>

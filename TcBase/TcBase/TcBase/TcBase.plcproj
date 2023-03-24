@@ -75,6 +75,10 @@
     <Compile Include="Collection\I_List.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Collection\Param_List.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
     <Compile Include="Context\FB_Context.TcPOU">
       <SubType>Code</SubType>
     </Compile>

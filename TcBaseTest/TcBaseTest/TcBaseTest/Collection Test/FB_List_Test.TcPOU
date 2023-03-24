@@ -39,7 +39,7 @@ TestMeasureAddPerformanceWithVeryManyItemsAdded();
     <Method Name="TestAdd5DifferentItemsExpectAll5Added" Id="{cb169e4c-2c88-4b92-b5e5-764cc08e99d9}">
       <Declaration><![CDATA[METHOD PRIVATE TestAdd5DifferentItemsExpectAll5Added
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..5] OF FB_TestObject;
     ipTmp: I_Object;
@@ -73,7 +73,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestAdd5TimesSameObjectExpectAll5Copies" Id="{3ca91ba7-9183-44ac-b311-2309498dfce4}">
       <Declaration><![CDATA[METHOD PRIVATE TestAdd5TimesSameObjectExpectAll5Copies
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     nTimesToAdd: UDINT;
     fbObject: FB_TestObject;
@@ -111,7 +111,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestAddNullInterfaceExpectNothingAdded" Id="{df064f7b-16b4-415e-b378-70531ace6d5a}">
       <Declaration><![CDATA[METHOD PRIVATE TestAddNullInterfaceExpectNothingAdded
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     ipTmp: I_Object;
     i: UDINT;
@@ -136,7 +136,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestClearEmptyListExpectSuccess" Id="{fbd24fe0-6b60-41cd-a631-5b7d9052da5d}">
       <Declaration><![CDATA[METHOD PRIVATE TestClearEmptyListExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestClearEmptyListExpectSuccess');
@@ -154,7 +154,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestClearNonEmptyListExpectSuccess" Id="{ec8b00a0-59cd-43b6-a13d-289f5cfc8ce7}">
       <Declaration><![CDATA[METHOD PRIVATE TestClearNonEmptyListExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..5] OF FB_TestObject;
     ipTmp: I_Object;
@@ -189,7 +189,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestContainsAddedObjectsExpectSuccess" Id="{f311bee0-7432-4c26-a6c3-86a8d22d7e1c}">
       <Declaration><![CDATA[METHOD PRIVATE TestContainsAddedObjectsExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..5] OF FB_TestObject;
 
@@ -219,7 +219,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestContainsNullObjectExpectFailure" Id="{349b7336-3fd4-4cce-86b4-a41929879314}">
       <Declaration><![CDATA[METHOD PRIVATE TestContainsNullObjectExpectFailure
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     ipNull: I_Object;
 END_VAR
@@ -237,7 +237,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestContainsNullObjectFromEmptyListExpectFailure" Id="{f22d518e-268a-42e8-977a-d1a63f441e6d}">
       <Declaration><![CDATA[METHOD PRIVATE TestContainsNullObjectFromEmptyListExpectFailure
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..5] OF FB_TestObject;
 
@@ -262,7 +262,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestCopyToArrayOfCompatibleSizeExpectSuccess" Id="{7aeb8850-c55b-4c1f-a36e-43b82cdce4fd}">
       <Declaration><![CDATA[METHOD PRIVATE TestCopyToArrayOfCompatibleSizeExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     nObjectCount: UDINT;
     aSrcObject: ARRAY [1..10] OF FB_TestObject;
     aDestObject: ARRAY [1..10] OF I_Object;
@@ -305,7 +305,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestCopyToArrayOfIncompatibleSizeExpectFailure" Id="{d7d9578f-cdbb-4a89-8974-08a9d4211850}">
       <Declaration><![CDATA[METHOD PRIVATE TestCopyToArrayOfIncompatibleSizeExpectFailure
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     nObjectCount: UDINT;
     aSrcObject: ARRAY [1..10] OF FB_TestObject;
     aDestObject: ARRAY [1..5] OF I_Object;
@@ -333,7 +333,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestCopyToArrayWithInvalidIndexExpectFailure" Id="{4285853a-0737-480a-a671-36685f6e8120}">
       <Declaration><![CDATA[METHOD PRIVATE TestCopyToArrayWithInvalidIndexExpectFailure
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     nObjectCount: UDINT;
     aSrcObject: ARRAY [1..10] OF FB_TestObject;
     aDestObject: ARRAY [1..10] OF I_Object;
@@ -381,7 +381,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestEmptyListMustHaveNoItem" Id="{e221371c-ce72-442a-9bb2-25587eb6f328}">
       <Declaration><![CDATA[METHOD PRIVATE TestEmptyListMustHaveNoItem
 VAR_INST
-    fbList:     FB_List;
+    fbList:     FB_List_proxy(0);
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('TestEmptyListMustHaveNoItem');
@@ -397,7 +397,7 @@ TcUnit.TEST_FINISHED();]]></ST>
       <Declaration><![CDATA[METHOD PRIVATE TestForEachWithActivateActionExpectSuccess
 VAR_INST
     i: UDINT;
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     aObject: ARRAY [1..10] OF FB_ActionTestObject;
     fbActivateObjects: FB_ActivateAction;
 END_VAR
@@ -426,7 +426,7 @@ VAR_INST
     nCyclesToRun: UDINT := 5;
     nCounter: UDINT := 0;
     i: UDINT;
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     aObject: ARRAY [1..10] OF FB_ActionTestObject;
     fbRunCyclicTask: FB_RunCyclicTasksAction;
 END_VAR
@@ -457,7 +457,7 @@ END_IF
     <Method Name="TestIndexOfItem" Id="{1f2f65e9-8e03-49d4-99e5-ea807ffa6c1b}">
       <Declaration><![CDATA[METHOD PRIVATE TestIndexOfItem
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..10] OF FB_TestObject;
     fbObject1: FB_TestObject;
@@ -515,7 +515,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestInsertIntoEmptyListExpectSuccess" Id="{6e8c8d7f-00a4-47ea-8804-deb61ec5d4cd}">
       <Declaration><![CDATA[METHOD PRIVATE TestInsertIntoEmptyListExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..10] OF FB_TestObject;
     aInsPos: ARRAY [1..10] OF DINT;
@@ -563,7 +563,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestInsertIntoListOfItemsExpectSuccess" Id="{f118cdfd-9a8d-43f8-9ab1-bed66465d3fe}">
       <Declaration><![CDATA[METHOD PRIVATE TestInsertIntoListOfItemsExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..10] OF FB_TestObject;
     aObjectToInsert: ARRAY [1..3] OF FB_TestObject;
@@ -655,7 +655,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestLastIndexOfListOfMixedDuplicatesAndUniques" Id="{30892e4a-3ae2-42af-9409-ea7362353cda}">
       <Declaration><![CDATA[METHOD PRIVATE TestLastIndexOfListOfMixedDuplicatesAndUniques
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..5] OF FB_TestObject;
     aAddOrder: ARRAY[1..20] OF I_Object;
@@ -701,7 +701,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestMeasureAddPerformanceWithVeryManyItemsAdded" Id="{95251384-4ffc-423e-8a32-087e4bb14dc3}">
       <Declaration><![CDATA[METHOD PRIVATE TestMeasureAddPerformanceWithVeryManyItemsAdded
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     fbObject: FB_TestObject;
     fbProfiler: Tc2_Utilities.Profiler;
 
@@ -748,7 +748,7 @@ END_IF]]></ST>
     <Method Name="TestRemoveByIndexAndReAddItemExpectCorrectItemOrder" Id="{71e49675-a6f2-4eee-b9e4-831a4bae9183}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexAndReAddItemExpectCorrectItemOrder
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     aObject: ARRAY [1..5] OF FB_TestObject;
     aIdx: ARRAY [1..5] OF UDINT
         := [3, 2, 4, 5, 1];
@@ -782,7 +782,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestRemoveByIndexFromEmptyListExpectFailure" Id="{d01caaa3-9424-4c89-9f9d-d1844e47312b}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromEmptyListExpectFailure
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aIdx: ARRAY[1..10] OF DINT := 
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -803,7 +803,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess" Id="{5a95b608-27ac-4a43-a9d1-799cb7b76773}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromListOf5DifferentItemsExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     aObject: ARRAY [1..5] OF FB_TestObject;
 
     nArraySize: UDINT;
@@ -862,7 +862,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestRemoveByIndexFromListOf5ItemsExpectConsistentContents" Id="{256128ca-b48d-4a23-ac96-5e26d6a769db}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByIndexFromListOf5ItemsExpectConsistentContents
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
     aObject: ARRAY [1..5] OF FB_TestObject;
     nArraySize: UDINT;
     i: UDINT;
@@ -896,7 +896,7 @@ TcUnit.TEST_FINISHED();
     <Method Name="TestRemoveByInvalidIndexFromListOfItemsExpectFailure" Id="{e59636a8-9445-4317-ac9c-3e5911a9f2ce}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveByInvalidIndexFromListOfItemsExpectFailure
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aIdx: ARRAY[1..10] OF DINT := 
         [-1, 5, 6, 7, 10, -10, -3, -4, -2, 9];
@@ -926,7 +926,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestRemoveInvalidItemFromListExpectFailure" Id="{58982acb-6137-40f2-95f5-e45f65e686f1}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveInvalidItemFromListExpectFailure
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..10] OF FB_TestObject;
     ipNull: I_Object;
@@ -969,7 +969,7 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="TestRemoveValidItemFromListExpectSuccess" Id="{fa22c7d3-93bf-4f09-9db9-90f6a8724484}">
       <Declaration><![CDATA[METHOD PRIVATE TestRemoveValidItemFromListExpectSuccess
 VAR_INST
-    fbList: FB_List;
+    fbList: FB_List_proxy(0);
 
     aObject: ARRAY [1..10] OF FB_TestObject;
 

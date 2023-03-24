@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ListCapacity_Test" Id="{5829bbde-f5fc-42c5-b7ae-758e6820d635}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ListCapacity_Test EXTENDS TcUnit.FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestInitializeCapacityWithNonZeroValuesExpectSuccess();
+]]></ST>
+    </Implementation>
+    <Method Name="TestInitializeCapacityWithNonZeroValuesExpectSuccess" Id="{ac161ae3-867a-4ce1-bee9-f8aeaf1b6bff}">
+      <Declaration><![CDATA[METHOD PRIVATE TestInitializeCapacityWithNonZeroValuesExpectSuccess
+VAR_INST
+    aList: ARRAY [1..5] OF FB_List[(4), (10), (20), (100), (1000)];
+    aExpected: ARRAY [1..5] OF UDINT := [4, 10, 20, 100, 1000];
+    i: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestInitializeCapacityWithNonZeroValuesExpectSuccess');
+
+FOR i := 1 TO SIZEOF(aList)/SIZEOF(aList[1]) DO
+    THIS^.AssertEquals_UDINT(Expected := aExpected[i],
+                             Actual := aList[i].nCapacity,
+                             Message := 'Unexpected capacity');
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
