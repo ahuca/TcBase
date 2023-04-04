@@ -209,6 +209,63 @@ function Install-TcLibrary {
     Remove-Item $TmpPath -Recurse
 }
 
+function Uninstall-TcLibrary {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]$LibName,
+        [string]$LibVersion = "*",
+        [string]$Distributor = $LibName,
+        [System.__ComObject]$DteInstace,
+        [string]$DummyProjectPath = (Resolve-Path "$PSScriptRoot\Dummy.tpzip").ToString(),
+        [string]$TmpPath = "$Env:TEMP\$(New-Guid)",
+        [string]$LibRepo = "System"
+    )
+
+    if (!(Test-Path $DummyProjectPath -PathType Leaf)) {
+        Write-Error "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
+        return
+    }
+
+    if (!$DteInstace) {
+        Write-Verbose "No existing DTE instance provided, creating a new one"
+        $DteInstace = New-DteInstance
+    }
+
+    if (!$DteInstace) {
+        return
+    }
+
+    Write-Verbose "Creating a new TwinCAT solution in $TmpPath ..."
+    
+    $tcProjectTemplatePath = "C:\TwinCAT\3.1\Components\Base\PrjTemplate\TwinCAT Project.tsproj"
+    
+    if (!(Test-Path $tcProjectTemplatePath -PathType Leaf)) {
+        Write-Error "Could not find TwinCAT project template at $tcProjectTemplatePath"
+        return
+    }
+
+    Write-Verbose "... successful"
+
+    $project = $DteInstace.Solution.AddFromTemplate($tcProjectTemplatePath, $TmpPath, "TmpSolution.tsp")
+    $systemManager = $project.Object
+    $plc = $systemManager.LookupTreeItem("TIPC")
+    
+    Write-Verbose "Loading a dummy PLC project from $DummyProjectPath ..."
+    $dummyProject = $plc.CreateChild("Dummy", 0, $null, $DummyProjectPath)
+
+    if ($dummyProject) { Write-Verbose "... successful" }
+    else { Write-Error "... failed" return }
+
+    $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
+
+    Write-Host "Uninstalling library $LibName version `"$LibVersion`""
+
+    $references.UninstallLibrary($LibRepo, $LibName, $LibVersion, $Distributor)
+
+    Write-Verbose "Cleaning up temporary directory $TmpPath ..."
+    Remove-Item $TmpPath -Recurse
+}
+
 function Close-DteInstace {
     [CmdletBinding()]
     param (
