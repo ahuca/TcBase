@@ -27,3 +27,5 @@ _ModuleInstall/
 
 # Visual studio
 .vs/
+
+*.nupkg
