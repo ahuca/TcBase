@@ -20,7 +20,6 @@
   
   * `-ForceProgId` - Force the installer to use the specified ProgId first.
   * `-LibRepo` - Specify the PLC library repository to install to, "System" by deffault.
-  * `-Force` - Force (re)installation of the PLC library in case it is already installed.
 
   Example: `choco install tcbase --params "-LibRepo System"`
 

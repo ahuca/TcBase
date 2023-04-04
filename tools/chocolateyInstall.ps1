@@ -1,15 +1,34 @@
 Param(
-    $LibPath="$PSScriptRoot\TcBase.library"
+    [string]$ForceProgId,
+    [string]$LibRepo = "System"
 )
 
+$LibPath = "$PSScriptRoot\TcBase.library"
 $AiUtilPath = "$PSScriptRoot\TcAutomationInterface.ps1"
 
 . $AiUtilPath
 
 Start-MessageFilter
-$dte = New-DteInstance
 
-Install-TcLibrary -LibPath $LibPath -DteInstace $dte -Verbose -Force
+# Create new DTE instance
+$dteArgs = @{}
+if ($ForceProgId) { $dteArgs.Add("-ForceProgId", $ForceProgId) }
+$dte = New-DteInstance @dteArgs
 
+# Install library
+$installArgs = @{}
+if ($env:ChocolateyForce) { $installArgs.Add("-Force", $true) }
+if ($env:ChocolateyEnvironmentVerbose) { $installArgs.Add("-Verbose", $true) }
+
+if (Install-TcLibrary -LibPath $LibPath -DteInstace $dte @installArgs) {
+    $exitCode = 0
+}
+else {
+    $exitCode = 1
+}
+
+# Close DTE instace
 Close-DteInstace -DteInstace $dte
+
 Stop-MessageFilter
+exit $exitCode
