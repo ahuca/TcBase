@@ -28,4 +28,7 @@ _ModuleInstall/
 # Visual studio
 .vs/
 
+# VS code
+.vscode/
+
 *.nupkg
