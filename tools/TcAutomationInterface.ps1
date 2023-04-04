@@ -104,7 +104,7 @@ function Stop-MessageFilter {
 function New-DteInstance {
     [CmdletBinding()]
     param (
-        $ForceProgId = "TcXaeShell.DTE.15.0"
+        $ForceProgId = ""
     )
 
     $dte = $null
@@ -126,10 +126,13 @@ function New-DteInstance {
             $dte.SuppressUI = $true
             $dte.MainWindow.Visible = $false
             $dte.UserControl = $false
+            # Check if TwinCAT is integrated with this visual studio version
+            $ignore = $dte.GetObject("TcRemoteManager")
             $loadedProgId = $vsProgId
         }
         catch {
-            Write-Host "Failed to create $vsProgId"
+            Write-Verbose "Failed to create $vsProgId"
+            $dte.Quit()
             $dte = $null
             $loadedProgId = ""
             continue
