@@ -1,7 +1,3 @@
-param(
-    $ProgId = "TcXaeShell.DTE.15.0"
-)
-
 $MsgFilterSrc = @"
 // https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/ms228772(v=vs.100)
 
@@ -108,24 +104,16 @@ function Stop-MessageFilter {
 function New-DteInstance {
     [CmdletBinding()]
     param (
-        $ProgId
+        $ForceProgId = "TcXaeShell.DTE.15.0"
     )
-    
-    # If a default ProgId is given, attemp to create a new DTE instance using this first
-    if ($ProgId) {
-        Write-Host "Loading $ProgId ..."
-        $dte = New-Object -ComObject $ProgId
-    }
 
-    if ($dte) {
-        Write-Host "... successful"
-        $dte.SuppressUI = $false
-        $dte.MainWindow.Visible = $true
-        return $dte
-    }
+    $dte = $null
+    $loadedProgId = ""
 
-    # Try to create a new DTE instance using a list of known ProgId:s
+    Write-Host "Trying to create a new DTE instance using known ProgIds"
+
     $vsProgIdList = New-Object Collections.Generic.List[string]
+    if ($ForceProgId) { $vsProgIdList.Add($ForceProgId) } # Add forced ProgId to try first
     $vsProgIdList.Add("TcXaeShell.DTE.15.0"); # TcXaeShell (VS2017)
     $vsProgIdList.Add("VisualStudio.DTE.16.0"); # VS2019
     $vsProgIdList.Add("VisualStudio.DTE.15.0"); # VS2017
@@ -133,15 +121,26 @@ function New-DteInstance {
     $vsProgIdList.Add("VisualStudio.DTE.12.0"); # VS2013
 
     foreach ($vsProgId in $vsProgIdList) {
-        Write-Host "Loading $vsProgId..."
-        $dte = New-Object -ComObject $vsProgId
-    
-        if ($dte) {
-            $dte.SuppressUI = $false
-            $dte.MainWindow.Visible = $true
-            Write-Host "... successful"
-            return $dte
+        try {
+            $dte = New-Object -ComObject $vsProgId
+            $dte.SuppressUI = $true
+            $dte.MainWindow.Visible = $false
+            $dte.UserControl = $false
+            $loadedProgId = $vsProgId
         }
+        catch {
+            Write-Host "Failed to create $vsProgId"
+            $dte = $null
+            $loadedProgId = ""
+            continue
+        }
+
+        break
+    }
+
+    if ($dte) {
+        Write-Host "Successfully created $loadedProgId"
+        return $dte
     }
 
     Write-Error "Unable to create a DTE instace"
@@ -152,7 +151,7 @@ function Install-TcLibrary {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]$LibPath,
-        $DteInstace,
+        [System.__ComObject]$DteInstace,
         [string]$DummyProjectPath = (Resolve-Path "$PSScriptRoot\Dummy.tpzip").ToString(),
         [string]$TmpPath = "$Env:TEMP\$(New-Guid)",
         [string]$LibRepo = "System",
