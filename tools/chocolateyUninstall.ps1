@@ -1,6 +1,7 @@
 [CmdletBinding()]
 Param(
-    $LibVersion = "*"
+    [string]$ForceProgId,
+    [string]$LibVersion = "*"
 )
 
 $LibName = "TcBase"
@@ -11,7 +12,9 @@ $AiUtilPath = "$PSScriptRoot\TcAutomationInterface.ps1"
 Start-MessageFilter
 
 # Create new DTE instance
-$dte = New-DteInstance
+$dteArgs = @{}
+if ($ForceProgId) { $dteArgs.Add("-ForceProgId", $ForceProgId) }
+$dte = New-DteInstance @dteArgs
 
 # Uninstall library
 $uninstallArgs = @{}

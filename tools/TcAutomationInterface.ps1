@@ -150,6 +150,42 @@ function New-DteInstance {
     return $null
 }
 
+function New-DummyTwincatSolution {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)][System.__ComObject]$DteInstace,
+        [Parameter(Mandatory = $true)][string]$Path = "$Env:TEMP\$([Guid]::NewGuid())",
+        [string]$DummyProjectPath = (Resolve-Path "$PSScriptRoot\Dummy.tpzip").ToString()
+    )
+
+    Write-Verbose "Creating a new TwinCAT solution in $Path ..."
+    
+    $tcProjectTemplatePath = "C:\TwinCAT\3.1\Components\Base\PrjTemplate\TwinCAT Project.tsproj"
+    
+    if (!(Test-Path $tcProjectTemplatePath -PathType Leaf)) {
+        Write-Error "Could not find TwinCAT project template at $tcProjectTemplatePath"
+        return $null
+    }
+
+    Write-Verbose "... successful"
+
+    $project = $DteInstace.Solution.AddFromTemplate($tcProjectTemplatePath, $Path, "TmpSolution.tsp")
+    $systemManager = $project.Object
+    $plc = $systemManager.LookupTreeItem("TIPC")
+    
+    Write-Verbose "Loading a dummy PLC project from $DummyProjectPath ..."
+    $dummyProject = $plc.CreateChild("Dummy", 0, $null, $DummyProjectPath)
+
+    if ($dummyProject) {
+        Write-Verbose "... successful"
+        return $dummyProject
+    }
+    else {
+        Write-Error "... failed"
+        return $null
+    }
+}
+
 function Install-TcLibrary {
     [CmdletBinding()]
     param (
@@ -180,31 +216,15 @@ function Install-TcLibrary {
         return $false
     }
 
-    Write-Verbose "Creating a new TwinCAT solution in $TmpPath ..."
-    
-    $tcProjectTemplatePath = "C:\TwinCAT\3.1\Components\Base\PrjTemplate\TwinCAT Project.tsproj"
-    
-    if (!(Test-Path $tcProjectTemplatePath -PathType Leaf)) {
-        Write-Error "Could not find TwinCAT project template at $tcProjectTemplatePath"
+    New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
+    $systemManager = $DteInstace.Solution.Projects.Item(1).Object
+
+    try {
+        $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
+    }
+    catch {
         return $false
     }
-
-    Write-Verbose "... successful"
-
-    $project = $DteInstace.Solution.AddFromTemplate($tcProjectTemplatePath, $TmpPath, "TmpSolution.tsp")
-    $systemManager = $project.Object
-    $plc = $systemManager.LookupTreeItem("TIPC")
-    
-    Write-Verbose "Loading a dummy PLC project from $DummyProjectPath ..."
-    $dummyProject = $plc.CreateChild("Dummy", 0, $null, $DummyProjectPath)
-
-    if ($dummyProject) { Write-Verbose "... successful" }
-    else {
-        Write-Error "... failed"
-        return $false
-    }
-
-    $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
 
     Write-Host "Installing library $LibPath to $LibRepo"
 
@@ -251,31 +271,15 @@ function Uninstall-TcLibrary {
         return $false
     }
 
-    Write-Verbose "Creating a new TwinCAT solution in $TmpPath ..."
-    
-    $tcProjectTemplatePath = "C:\TwinCAT\3.1\Components\Base\PrjTemplate\TwinCAT Project.tsproj"
-    
-    if (!(Test-Path $tcProjectTemplatePath -PathType Leaf)) {
-        Write-Error "Could not find TwinCAT project template at $tcProjectTemplatePath"
+    New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
+    $systemManager = $DteInstace.Solution.Projects.Item(1).Object
+
+    try {
+        $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
+    }
+    catch {
         return $false
     }
-
-    Write-Verbose "... successful"
-
-    $project = $DteInstace.Solution.AddFromTemplate($tcProjectTemplatePath, $TmpPath, "TmpSolution.tsp")
-    $systemManager = $project.Object
-    $plc = $systemManager.LookupTreeItem("TIPC")
-    
-    Write-Verbose "Loading a dummy PLC project from $DummyProjectPath ..."
-    $dummyProject = $plc.CreateChild("Dummy", 0, $null, $DummyProjectPath)
-
-    if ($dummyProject) { Write-Verbose "... successful" }
-    else {
-        Write-Error "... failed"
-        return $false
-    }
-
-    $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
 
     Write-Host "Uninstalling library $LibName version `"$LibVersion`""
 
@@ -285,8 +289,8 @@ function Uninstall-TcLibrary {
     Write-Verbose "Cleaning up temporary directory $TmpPath ..."
     Remove-Item $TmpPath -Recurse
     
-    if ($result) { Write-Host "Successfully uninstalled $LibName version $LibVersion from $LibRepo" }
-    else { Write-Error "Could not uninstall $LibName version $LibVersion from $LibRepo" }
+    if ($result) { Write-Host "Successfully uninstalled $LibName version `"$LibVersion`" from $LibRepo" }
+    else { Write-Error "Could not uninstall $LibName version `"$LibVersion`" from $LibRepo" }
     
     return $result
 }
