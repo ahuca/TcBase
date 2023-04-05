@@ -1,3 +1,4 @@
+[CmdletBinding()]
 Param(
     $LibVersion = "*"
 )

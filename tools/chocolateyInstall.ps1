@@ -1,6 +1,8 @@
+[CmdletBinding()]
 Param(
     [string]$ForceProgId,
-    [string]$LibRepo = "System"
+    [string]$LibRepo = "System",
+    [switch]$Force
 )
 
 $LibPath = "$PSScriptRoot\TcBase.library"
@@ -18,6 +20,7 @@ $dte = New-DteInstance @dteArgs
 # Install library
 $installArgs = @{}
 if ($env:ChocolateyForce) { $installArgs.Add("-Force", $true) }
+elseif ($Force) { $installArgs.Add("-Force", $true) }
 if ($env:ChocolateyEnvironmentVerbose) { $installArgs.Add("-Verbose", $true) }
 
 if (Install-TcLibrary -LibPath $LibPath -DteInstace $dte @installArgs) {

@@ -114,9 +114,9 @@ function New-DteInstance {
 
     $vsProgIdList = New-Object Collections.Generic.List[string]
     if ($ForceProgId) { $vsProgIdList.Add($ForceProgId) } # Add forced ProgId to try first
+    $vsProgIdList.Add("TcXaeShell.DTE.15.0"); # TcXaeShell (VS2017)
     $vsProgIdList.Add("VisualStudio.DTE.16.0"); # VS2019
     $vsProgIdList.Add("VisualStudio.DTE.15.0"); # VS2017
-    $vsProgIdList.Add("TcXaeShell.DTE.15.0"); # TcXaeShell (VS2017)
     $vsProgIdList.Add("VisualStudio.DTE.14.0"); # VS2015
     $vsProgIdList.Add("VisualStudio.DTE.12.0"); # VS2013
 
@@ -214,10 +214,15 @@ function Install-TcLibrary {
     Write-Host "Forced installation set to ``$forceInstall``"
 
     $references.InstallLibrary($LibRepo, $LibPath, $forceInstall)
+    $result = $?
 
     Write-Verbose "Cleaning up temporary directory $TmpPath ..."
     Remove-Item $TmpPath -Recurse
-    return $true
+    
+    if ($result) { Write-Host "Successfully installed $LibPath to $LibRepo" }
+    else { Write-Error "Could not install $LibPath to $LibRepo" }
+
+    return $result
 }
 
 function Uninstall-TcLibrary {
@@ -275,10 +280,15 @@ function Uninstall-TcLibrary {
     Write-Host "Uninstalling library $LibName version `"$LibVersion`""
 
     $references.UninstallLibrary($LibRepo, $LibName, $LibVersion, $Distributor)
+    $result = $?
 
     Write-Verbose "Cleaning up temporary directory $TmpPath ..."
     Remove-Item $TmpPath -Recurse
-    return $true
+    
+    if ($result) { Write-Host "Successfully uninstalled $LibName version $LibVersion from $LibRepo" }
+    else { Write-Error "Could not uninstall $LibName version $LibVersion from $LibRepo" }
+    
+    return $result
 }
 
 function Close-DteInstace {
