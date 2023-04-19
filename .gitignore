@@ -31,4 +31,6 @@ _ModuleInstall/
 # VS code
 .vscode/
 
+.config/
+
 *.nupkg
