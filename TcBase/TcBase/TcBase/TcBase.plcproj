@@ -46,12 +46,10 @@
     <Folder Include="Observer Pattern" />
     <Folder Include="Observer Pattern\Abstraction" />
     <Folder Include="Observer Pattern\Abstraction\Actions" />
-    <Folder Include="Project Information" />
     <Folder Include="Restorable" />
     <Folder Include="State Pattern" />
     <Folder Include="Task" />
     <Folder Include="Task\Data Type" />
-    <Folder Include="Version" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\FB_Action.TcPOU">
@@ -218,18 +216,6 @@
     <Compile Include="Observer Pattern\FB_Observer_WORD.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Project Information\F_GetCompany.TcPOU">
-      <SubType>Code</SubType>
-      <SystemCall>true</SystemCall>
-    </Compile>
-    <Compile Include="Project Information\F_GetTitle.TcPOU">
-      <SubType>Code</SubType>
-      <SystemCall>true</SystemCall>
-    </Compile>
-    <Compile Include="Project Information\F_GetVersion.TcPOU">
-      <SubType>Code</SubType>
-      <SystemCall>true</SystemCall>
-    </Compile>
     <Compile Include="Restorable\I_ObjectRestorer.TcIO">
       <SubType>Code</SubType>
     </Compile>
@@ -258,9 +244,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Task\I_TaskStatus.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Version\Global_Version.TcGVL">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
