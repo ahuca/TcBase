@@ -48,7 +48,7 @@ jobs:
           dotnet tool install --local BumpVersion --version 0.0.9
 
       - name: Bump version
-        run: bumpversion ${{ github.event.inputs.version }}
+        run: dotnet tool run bumpversion -- ${{ github.event.inputs.version }}
 
       - name: Push latest version
         run: git push origin main --follow-tags
