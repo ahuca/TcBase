@@ -8,7 +8,7 @@ name: Create Release
 jobs:
   create-artifacts:
     name: Publish to npm
-    runs-on: [self-hosted, Windows, x64]
+    runs-on: [self-hosted, Windows, x64, runner-1]
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -18,7 +18,7 @@ jobs:
 
   create-github-release:
     name: Create GitHub Release
-    runs-on: [self-hosted, Windows, x64]
+    runs-on: [self-hosted, Windows, x64, runner-1]
     needs: create-artifacts
     permissions:
       contents: write

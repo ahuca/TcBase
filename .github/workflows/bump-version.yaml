@@ -24,7 +24,7 @@ jobs:
   # This workflow contains a single job called "bump-version"
   bump-version:
     # The type of runner that the job will run on
-    runs-on: [self-hosted, Windows, x64]
+    runs-on: [self-hosted, Windows, x64, runner-1]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -43,7 +43,9 @@ jobs:
           git config user.email 'nhgiangvt117@gmail.com'
 
       - name: Install BumpVersion
-        run: dotnet tool install --local BumpVersion --version 0.0.9
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install --local BumpVersion --version 0.0.9
 
       - name: Bump version
         run: bunpversion ${{ github.event.inputs.version }}
