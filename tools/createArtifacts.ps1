@@ -18,7 +18,9 @@ $dte = New-DteInstance @dteArgs
 try {
     Save-TcProjectAsLibrary -DteInstace $dte -Solution ".\TcBase\TcBase.sln" -ProjectName "TcBase" -Path ".\tools"
 }
-catch {}
+catch {
+    Write-Error $_
+}
 
 # Close DTE instace
 Close-DteInstace -DteInstace $dte

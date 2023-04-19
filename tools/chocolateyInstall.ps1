@@ -2,6 +2,7 @@
 Param(
     [string]$ForceProgId,
     [string]$LibRepo = "System",
+    [int]$MaxAttempts = 5,
     [switch]$Force
 )
 
@@ -23,13 +24,19 @@ if ($env:ChocolateyForce) { $installArgs.Add("-Force", $true) }
 elseif ($Force) { $installArgs.Add("-Force", $true) }
 if ($env:ChocolateyEnvironmentVerbose) { $installArgs.Add("-Verbose", $true) }
 
-try {
-    Install-TcLibrary -LibPath $LibPath -DteInstace $dte @installArgs
-    if ($?) { $exitCode = 0 }
-}
-catch {
-    Write-Error "Could not install $LibPath"
-    $exitCode = 1
+Write-Host "Trying to install $LibPath with $MaxAttempts attempts"
+
+for (($attempts = 0); $attempts -lt $MaxAttempts; $attempts++) {
+    Write-Host "Attempt $($attempts + 1)"
+    try {
+        Install-TcLibrary -LibPath $LibPath -DteInstace $dte @installArgs
+        if ($?) { $exitCode = 0 }
+    }
+    catch {
+        Write-Error $_
+        $exitCode = 1
+    }
+    if ($exitCode -eq 0) { break }
 }
 
 # Close DTE instace

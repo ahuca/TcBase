@@ -275,24 +275,35 @@ function Install-TcLibrary {
     )
 
     if (!(Test-Path $LibPath -PathType Leaf)) {
+        Write-Error $_
         throw "Provided library path $LibPath does not exist"
     }
 
     if (!(Test-Path $DummyProjectPath -PathType Leaf)) {
+        Write-Error $_
         throw "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
     }
 
     if (!$DteInstace) {
+        Write-Error $_
         throw "No DTE instance provided, or it is null"
     }
 
     $ignore = New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
-    $systemManager = $DteInstace.Solution.Projects.Item(1).Object
+
+    try {
+        $systemManager = $DteInstace.Solution.Projects.Item(1).Object
+    }
+    catch {
+        Write-Error $_
+        throw "Failed to get the system manager object"
+    }
 
     try {
         $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
     }
     catch {
+        Write-Error $_
         throw "Failed to look up the project references"
     }
 
@@ -326,31 +337,46 @@ function Uninstall-TcLibrary {
     )
 
     if (!(Test-Path $DummyProjectPath -PathType Leaf)) {
+        Write-Error $_
         throw "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
     }
 
     if (!$DteInstace) {
+        Write-Error $_
         throw "No DTE instance provided, or it is null"
     }
 
     $ignore = New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
-    $systemManager = $DteInstace.Solution.Projects.Item(1).Object
+
+    try {
+        $systemManager = $DteInstace.Solution.Projects.Item(1).Object
+    }
+    catch {
+        Write-Error $_
+        throw "Failed to get the system manager object"
+    }
 
     try {
         $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
     }
     catch {
+        Write-Error $_
         throw "Failed to look up the project references"
     }
 
     Write-Host "Uninstalling library $LibName version `"$LibVersion`""
 
-    $references.UninstallLibrary($LibRepo, $LibName, $LibVersion, $Distributor)
-    $result = $?
+    try {
+        $references.UninstallLibrary($LibRepo, $LibName, $LibVersion, $Distributor)
+    }
+    catch {
+        Write-Error $_
+    }
 
+    $result = $?
     Write-Verbose "Cleaning up temporary directory $TmpPath ..."
     Remove-Item $TmpPath -Recurse
     
     if ($result) { Write-Host "Successfully uninstalled $LibName version `"$LibVersion`" from $LibRepo" }
-    else { Write-Error "Could not uninstall $LibName version `"$LibVersion`" from $LibRepo" }
+    else { throw "Could not uninstall $LibName version `"$LibVersion`" from $LibRepo" }
 }
