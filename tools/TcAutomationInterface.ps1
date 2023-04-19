@@ -150,6 +150,18 @@ function New-DteInstance {
     return $null
 }
 
+function Close-DteInstace {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]$DteInstace
+    )
+    
+    try {
+        $DteInstace.Quit()
+    }
+    catch {}
+}
+
 function New-DummyTwincatSolution {
     [CmdletBinding()]
     param (
@@ -190,7 +202,7 @@ function Install-TcLibrary {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]$LibPath,
-        [System.__ComObject]$DteInstace,
+        [Parameter(Mandatory = $true)][System.__ComObject]$DteInstace,
         [string]$DummyProjectPath = (Resolve-Path "$PSScriptRoot\Dummy.tpzip").ToString(),
         [string]$TmpPath = "$Env:TEMP\$([Guid]::NewGuid())",
         [string]$LibRepo = "System",
@@ -208,11 +220,7 @@ function Install-TcLibrary {
     }
 
     if (!$DteInstace) {
-        Write-Verbose "No existing DTE instance provided, creating a new one"
-        $DteInstace = New-DteInstance
-    }
-
-    if (!$DteInstace) {
+        Write-Error "No DTE instance provided, or it is null"
         return $false
     }
 
@@ -263,11 +271,7 @@ function Uninstall-TcLibrary {
     }
 
     if (!$DteInstace) {
-        Write-Verbose "No existing DTE instance provided, creating a new one"
-        $DteInstace = New-DteInstance
-    }
-
-    if (!$DteInstace) {
+        Write-Error "No DTE instance provided, or it is null"
         return $false
     }
 
@@ -293,13 +297,4 @@ function Uninstall-TcLibrary {
     else { Write-Error "Could not uninstall $LibName version `"$LibVersion`" from $LibRepo" }
     
     return $result
-}
-
-function Close-DteInstace {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]$DteInstace
-    )
-    
-    $DteInstace.Quit()
 }
