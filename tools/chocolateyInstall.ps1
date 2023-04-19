@@ -23,10 +23,12 @@ if ($env:ChocolateyForce) { $installArgs.Add("-Force", $true) }
 elseif ($Force) { $installArgs.Add("-Force", $true) }
 if ($env:ChocolateyEnvironmentVerbose) { $installArgs.Add("-Verbose", $true) }
 
-if (Install-TcLibrary -LibPath $LibPath -DteInstace $dte @installArgs) {
-    $exitCode = 0
+try {
+    Install-TcLibrary -LibPath $LibPath -DteInstace $dte @installArgs
+    if ($?) { $exitCode = 0 }
 }
-else {
+catch {
+    Write-Error "Could not install $LibPath"
     $exitCode = 1
 }
 

@@ -162,6 +162,71 @@ function Close-DteInstace {
     catch {}
 }
 
+function Save-TcProjectAsLibrary {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)][System.__ComObject]$DteInstace,
+        [Parameter(Mandatory = $true)][string]$Solution,
+        [Parameter(Mandatory = $true)][string]$ProjectName,
+        [string]$Path,
+        [string]$FileName,
+        [switch]$InstallUponSave = $false
+    )
+    
+    $sln = $DteInstace.Solution
+
+    $Solution = Resolve-Path $Solution
+    try {
+        $sln.Open($Solution)
+    }
+    catch {
+        Write-Error "Could not open $Solution"
+        return
+    }
+
+    try {
+        $project = $sln.Projects.Item(1)
+        $sysMan = $project.Object
+    }
+    catch {
+        return
+    }
+
+    try {
+        $plc = $sysMan.LookupTreeItem("TIPC^$ProjectName^$ProjectName Project")
+    }
+    catch {
+        Write-Error "Could not look up project $ProjectName in solution $Solution"
+        return
+    }
+
+    if ($null -eq $Path) {
+        $Path = Split-Path $Solution -Parent
+        Write-Host "No specific output path provided, default to $Path"
+    }
+    else {
+        try {
+            $Path = Resolve-Path $Path
+        }
+        catch {
+            return
+        }
+    }
+
+    if ($FileName) {
+        $fullName = "$Path\$FileName"
+    }
+    else {
+        $fullName = "$Path\$ProjectName.library"
+    }
+
+    $plc.SaveAsLibrary($fullName, $InstallUponSave)
+
+    if ($?) {
+        Write-Host "$ProjectName saved as library to $fullName"
+    }
+}
+
 function New-DummyTwincatSolution {
     [CmdletBinding()]
     param (
@@ -210,28 +275,25 @@ function Install-TcLibrary {
     )
 
     if (!(Test-Path $LibPath -PathType Leaf)) {
-        Write-Error "Provided library path $LibPath does not exist"
-        return $false
+        throw "Provided library path $LibPath does not exist"
     }
 
     if (!(Test-Path $DummyProjectPath -PathType Leaf)) {
-        Write-Error "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
-        return $false
+        throw "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
     }
 
     if (!$DteInstace) {
-        Write-Error "No DTE instance provided, or it is null"
-        return $false
+        throw "No DTE instance provided, or it is null"
     }
 
-    New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
+    $ignore = New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
     $systemManager = $DteInstace.Solution.Projects.Item(1).Object
 
     try {
         $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
     }
     catch {
-        return $false
+        throw "Failed to look up the project references"
     }
 
     Write-Host "Installing library $LibPath to $LibRepo"
@@ -249,8 +311,6 @@ function Install-TcLibrary {
     
     if ($result) { Write-Host "Successfully installed $LibPath to $LibRepo" }
     else { Write-Error "Could not install $LibPath to $LibRepo" }
-
-    return $result
 }
 
 function Uninstall-TcLibrary {
@@ -266,23 +326,21 @@ function Uninstall-TcLibrary {
     )
 
     if (!(Test-Path $DummyProjectPath -PathType Leaf)) {
-        Write-Error "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
-        return $false
+        throw "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
     }
 
     if (!$DteInstace) {
-        Write-Error "No DTE instance provided, or it is null"
-        return $false
+        throw "No DTE instance provided, or it is null"
     }
 
-    New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
+    $ignore = New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
     $systemManager = $DteInstace.Solution.Projects.Item(1).Object
 
     try {
         $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
     }
     catch {
-        return $false
+        throw "Failed to look up the project references"
     }
 
     Write-Host "Uninstalling library $LibName version `"$LibVersion`""
@@ -295,6 +353,4 @@ function Uninstall-TcLibrary {
     
     if ($result) { Write-Host "Successfully uninstalled $LibName version `"$LibVersion`" from $LibRepo" }
     else { Write-Error "Could not uninstall $LibName version `"$LibVersion`" from $LibRepo" }
-    
-    return $result
 }

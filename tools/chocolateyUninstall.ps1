@@ -1,6 +1,7 @@
 [CmdletBinding()]
 Param(
     [string]$ForceProgId,
+    [string]$LibRepo = "System",
     [string]$LibVersion = "*"
 )
 
@@ -20,14 +21,16 @@ $dte = New-DteInstance @dteArgs
 $uninstallArgs = @{}
 if ($env:ChocolateyEnvironmentVerbose) { $uninstallArgs.Add("-Verbose", $true) }
 
-if (Uninstall-TcLibrary -LibName $LibName -LibVersion $LibVersion -DteInstace $dte @uninstallArgs) {
-    $exitCode = 0
+try {
+    Uninstall-TcLibrary -LibName $LibName -LibRepo $LibRepo -LibVersion $LibVersion -DteInstace $dte @uninstallArgs
+    if ($?) { $exitCode = 0 }
 }
-else {
-    $exitCode = 1
+catch {
+    Write-Error "Could not uninstall $LibName from $LibRepo, maybe it has been uninstalled manually?"
+    $exitCode = 0
 }
 
 # Close DTE instace
 Close-DteInstace -DteInstace $dte
 Stop-MessageFilter
-exit $exitCode
+exit 0
