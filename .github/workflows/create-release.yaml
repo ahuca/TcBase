@@ -6,9 +6,11 @@ on:
 name: Create Release
 
 jobs:
-  create-artifacts:
-    name: Create artifacts
+  create-github-release:
+    name: Create GitHub Release
     runs-on: [self-hosted, Windows, x64, runner-1]
+    permissions:
+      contents: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -16,20 +18,12 @@ jobs:
       - name: Create artifacts
         run: .\tools\createArtifacts.ps1
 
-  create-github-release:
-    name: Create GitHub Release
-    runs-on: [self-hosted, Windows, x64, runner-1]
-    needs: create-artifacts
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create Release
+      - name: Install GitHub CLI
         run: |
           choco install gh -y
           refreshenv
-          gh release create ${{ github.ref }} (Get-Item ./tools/*.library) --generate-notes
+
+      - name: Create Release
+        run: gh release create ${{ github.ref }} (Get-Item ./tools/*.library) --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
