@@ -18,7 +18,7 @@
     <Company>TcBase</Company>
     <Released>false</Released>
     <Title>TcBase</Title>
-    <ProjectVersion>0.1.1</ProjectVersion>
+    <ProjectVersion>0.1.2</ProjectVersion>
     <DefaultNamespace>TcBase</DefaultNamespace>
     <Author>Giang Nguyen</Author>
     <LibraryCategories>
