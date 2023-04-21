@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/ahuca/TcBase/blob/main/LICENSE)
+﻿[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/ahuca/TcBase/blob/main/LICENSE)
 
 # TcBase - TwinCAT 3 base framework
 

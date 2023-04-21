@@ -275,53 +275,60 @@ function Install-TcLibrary {
     )
 
     if (!(Test-Path $LibPath -PathType Leaf)) {
-        Write-Error $_
         throw "Provided library path $LibPath does not exist"
     }
-
+    
     if (!(Test-Path $DummyProjectPath -PathType Leaf)) {
-        Write-Error $_
         throw "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
     }
-
+    
     if (!$DteInstace) {
-        Write-Error $_
         throw "No DTE instance provided, or it is null"
     }
-
+    
     $ignore = New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
-
+    
     try {
         $systemManager = $DteInstace.Solution.Projects.Item(1).Object
     }
     catch {
-        Write-Error $_
         throw "Failed to get the system manager object"
     }
-
+    
     try {
         $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
     }
     catch {
-        Write-Error $_
         throw "Failed to look up the project references"
     }
-
+    
     Write-Host "Installing library $LibPath to $LibRepo"
-
+    
     if ($Force) { $forceInstall = $true }
     else { $forceInstall = $false }
-    
+        
     Write-Host "Forced installation set to ``$forceInstall``"
-
-    $references.InstallLibrary($LibRepo, $LibPath, $forceInstall)
-    $result = $?
-
-    Write-Verbose "Cleaning up temporary directory $TmpPath ..."
-    Remove-Item $TmpPath -Recurse
     
-    if ($result) { Write-Host "Successfully installed $LibPath to $LibRepo" }
-    else { Write-Error "Could not install $LibPath to $LibRepo" }
+    try {
+        $references.InstallLibrary($LibRepo, $LibPath, $forceInstall)
+    }
+    catch {
+        throw "Failed to install $LibPath to $LibRepo"
+    }
+
+    Write-Host "Successfully installed $LibPath to $LibRepo"
+
+    trap {
+        Write-Error "$_"
+        Write-Verbose "Cleaning up temporary directory $TmpPath ..."
+        $dte.Solution.Close($false)
+        Remove-Item $TmpPath -Recurse -Force
+    }
+
+    Write-Error "$_"
+    Write-Verbose "Cleaning up temporary directory $TmpPath ..."
+    $dte.Solution.Close($false)
+    Remove-Item $TmpPath -Recurse -Force
 }
 
 function Uninstall-TcLibrary {
@@ -340,43 +347,48 @@ function Uninstall-TcLibrary {
         Write-Error $_
         throw "Provided (tpzip) PLC project path $DummyProjectPath does not exist"
     }
-
+    
     if (!$DteInstace) {
         Write-Error $_
         throw "No DTE instance provided, or it is null"
     }
-
+    
     $ignore = New-DummyTwincatSolution -DteInstace $DteInstace -Path $TmpPath -DummyProjectPath $DummyProjectPath
-
+    
     try {
         $systemManager = $DteInstace.Solution.Projects.Item(1).Object
     }
     catch {
-        Write-Error $_
         throw "Failed to get the system manager object"
     }
-
+    
     try {
         $references = $systemManager.LookupTreeItem("TIPC^Dummy^Dummy Project^References")
     }
     catch {
-        Write-Error $_
         throw "Failed to look up the project references"
     }
-
+    
     Write-Host "Uninstalling library $LibName version `"$LibVersion`""
-
+    
     try {
         $references.UninstallLibrary($LibRepo, $LibName, $LibVersion, $Distributor)
     }
     catch {
-        Write-Error $_
+        throw "Failed to uninstall $LibName $LibVersion from $LibRepo"
+    }
+    
+    Write-Host "Successfully uninstalled $LibName version `"$LibVersion`" from $LibRepo"
+
+    trap {
+        Write-Error "$_"
+        Write-Verbose "Cleaning up temporary directory $TmpPath ..."
+        $dte.Solution.Close($false)
+        Remove-Item $TmpPath -Recurse -Force
     }
 
-    $result = $?
+    Write-Error "$_"
     Write-Verbose "Cleaning up temporary directory $TmpPath ..."
-    Remove-Item $TmpPath -Recurse
-    
-    if ($result) { Write-Host "Successfully uninstalled $LibName version `"$LibVersion`" from $LibRepo" }
-    else { throw "Could not uninstall $LibName version `"$LibVersion`" from $LibRepo" }
+    $dte.Solution.Close($false)
+    Remove-Item $TmpPath -Recurse -Force
 }

@@ -17,18 +17,10 @@
   Yet another open-source TwinCAT 3 object-oriented framework. For more information, check the project's [README](https://github.com/ahuca/TcBase/blob/main/README.md).
 
   ## Package parameters
-  
-  ### Common parameters
-
-  Common parameters can be used both when installing and uninstalling the package:
 
   * `-ForceProgId` - Force the installer to use the specified ProgId first.
   * `-LibRepo` - Specify the PLC library repository to install to, "System" by deffault.
   * `-MaxAttempts` - Retry (un)installation for [MaxAttemtps] amount in case of failure.
-
-  ### Uninstall parameters
-
-  * `-LibVersion` - Specify a library version to uninstall. By default this is `$env:ChocolateyPackageVersion`.
 
   Example: `choco install tcbase --params "-LibRepo System"`
 

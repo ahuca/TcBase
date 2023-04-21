@@ -9,6 +9,11 @@ Param(
 $LibPath = "$PSScriptRoot\TcBase.library"
 $AiUtilPath = "$PSScriptRoot\TcAutomationInterface.ps1"
 
+if (!$env:TWINCAT3DIR) {
+    Write-Host "TwinCAT 3 is not installed, exiting normally"
+    exit 0
+}
+
 . $AiUtilPath
 
 Start-MessageFilter
@@ -28,6 +33,7 @@ Write-Host "Trying to install $LibPath with $MaxAttempts attempts"
 
 for (($attempts = 0); $attempts -lt $MaxAttempts; $attempts++) {
     Write-Host "Attempt $($attempts + 1)"
+
     try {
         Install-TcLibrary -LibPath $LibPath -DteInstace $dte @installArgs
         if ($?) { $exitCode = 0 }
@@ -36,6 +42,7 @@ for (($attempts = 0); $attempts -lt $MaxAttempts; $attempts++) {
         Write-Error $_
         $exitCode = 1
     }
+
     if ($exitCode -eq 0) { break }
 }
 
