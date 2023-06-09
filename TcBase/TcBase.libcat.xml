@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<LibraryCategories xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LibraryCategories.xsd">
-	<LibraryCategory>
-		<Id>7bcebc28-0319-4903-9e03-8a78a3e1a5b0</Id>
-		<Version>1.0.0.0</Version>
-		<DefaultName>TcBase</DefaultName>
-	</LibraryCategory>
-</LibraryCategories>

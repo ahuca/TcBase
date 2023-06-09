@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_SeasonState" Id="{558a8703-34c8-0d55-0d1e-6c82e0698ee7}">
+    <Declaration><![CDATA[INTERFACE INTERNAL I_SeasonState EXTENDS I_State
+]]></Declaration>
+    <Folder Name="Properties" Id="{7957fca1-682d-0014-0c50-ee8c4482f2e0}" />
+    <Property Name="bRaining" Id="{98e1555a-4bc6-072a-0e96-c895d3b31f98}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY bRaining : BOOL]]></Declaration>
+      <Get Name="Get" Id="{96376d38-9dec-067d-1063-1ac96d5ba183}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="bSnowing" Id="{d586a5cf-faa4-0605-2abe-4ea94c4f3878}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY bSnowing : BOOL]]></Declaration>
+      <Get Name="Get" Id="{3d65c69f-e5c9-0d9f-225d-d95decc6c9cd}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="bSunShining" Id="{ec71b237-b4d6-04c9-1dec-2e6678dc082d}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY bSunShining : BOOL]]></Declaration>
+      <Get Name="Get" Id="{f471db62-899a-0cea-37bd-42dc6154f2e1}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="bWindBlowing" Id="{10737400-3c58-0b10-0fb9-4c8f33868ea0}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY bWindBlowing : BOOL]]></Declaration>
+      <Get Name="Get" Id="{7204c415-e23d-0d4a-21ce-eb1b6af68711}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="ChangeToSummerTyres" Id="{a11f109a-5d67-0fe6-2df0-f69481ae0ef0}">
+      <Declaration><![CDATA[METHOD ChangeToSummerTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ChangeToWinterTyres" Id="{aaf0987b-e864-09ae-3fa4-72bd81263952}">
+      <Declaration><![CDATA[METHOD ChangeToWinterTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="eState" Id="{344a1a09-2395-0fa3-2b74-9f04478043b0}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY eState : E_Season]]></Declaration>
+      <Get Name="Get" Id="{346b0175-ec8f-0511-145e-42453087a733}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="NextSeason" Id="{a1ce02a1-2f60-0c84-3add-bcb3a30d1e9f}">
+      <Declaration><![CDATA[METHOD ABSTRACT NextSeason
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="nLeavesState" Id="{6ba53a43-700e-0f25-0076-21541f009ad9}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY nLeavesState : BYTE]]></Declaration>
+      <Get Name="Get" Id="{3d64fdf1-8a91-07fe-2599-7c93603f8238}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="nTyresType" Id="{06af23b6-640c-037f-2714-b4ea7c19f945}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY nTyresType : BYTE]]></Declaration>
+      <Get Name="Get" Id="{b0945015-c73b-014c-2b92-33cc366c19bc}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="sState" Id="{be5a2786-9c07-0a7d-1fe4-5641c86a0553}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY sState : STRING(MAX_STRING_LENGTH)]]></Declaration>
+      <Get Name="Get" Id="{9e413242-e069-0bda-1f7c-b46b6d5db8a6}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

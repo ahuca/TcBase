@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SeasonBase" Id="{e76cceb2-10f1-0b77-3629-5d68da451d4c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL ABSTRACT FB_SeasonBase EXTENDS FB_State IMPLEMENTS I_SeasonState
+VAR
+    _ipWeatherCtrl:     I_SeasonControl;
+    _eState:            E_Season;
+END_VAR
+VAR_STAT
+    _bWindBlowing:      BOOL;
+    _bRaining:          BOOL;
+    _bSunShining:       BOOL;
+    _bSnowing:          BOOL;
+    _nTyresType:        BYTE; // 0: winter, 1: summer/all season
+    _nLeavesState:      BYTE; // 0: no leave, 1: green leaves, 2: yellow/orange/red leaves
+    _nCounter:          UDINT;
+    _nModVal:           UDINT := 500;
+    _nLogLevel:         DWORD := Tc2_System.ADSLOG_MSGTYPE_WARN;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Properties" Id="{3c038783-6348-01c6-1c40-4494a2125ea4}" />
+    <Property Name="bRaining" Id="{fd1a56d1-520d-0670-05c6-9ca9a0282ad5}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL bRaining : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{74eda06f-99d1-029e-25a1-83e182042284}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bRaining := THIS^._bRaining;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bSnowing" Id="{6bee80c2-a09c-0e32-0a5b-c669f8563b81}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL bSnowing : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{91f39f14-2fc3-0925-1864-421c85171415}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bSnowing := THIS^._bSnowing;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bSunShining" Id="{4f4fdeb6-350c-0427-38c6-3f88d461852b}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL bSunShining : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{e80b9e98-c4b4-036c-0ca7-6108f3505f02}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bSunShining := THIS^._bSunShining;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bWindBlowing" Id="{4806b120-1684-08d3-0329-707dfcddc22e}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL bWindBlowing : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{981eca66-d856-0350-1808-ea520c4cee7e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bWindBlowing := THIS^._bWindBlowing;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ChangeToSummerTyres" Id="{a676411b-a62b-061c-1568-2a0bf6ecd9cf}">
+      <Declaration><![CDATA[METHOD ChangeToSummerTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ChangeToWinterTyres" Id="{6f842cfe-b334-0550-2d0c-24573aeb9421}">
+      <Declaration><![CDATA[METHOD ChangeToWinterTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="eState" Id="{33fd5e86-10d5-0a85-3491-7f2ffc425b27}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL eState : E_Season
+]]></Declaration>
+      <Get Name="Get" Id="{40ce81f9-bf2f-0ac6-06bc-cf4cf726907d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[eState := THIS^._eState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_init" Id="{d0db3bcd-5f12-0850-0c14-7c0361012f5f}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    ipStateMachine:         I_StateMachine;
+    ipParentObject:         I_Object;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[__QUERYINTERFACE(ipParentObject, THIS^._ipWeatherCtrl);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ipSeasonCtrl" Id="{145acb61-8b6a-04d7-2a50-29ca981166c5}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY ipSeasonCtrl : I_SeasonControl]]></Declaration>
+      <Get Name="Get" Id="{bae4de1e-61c3-0994-3323-c69028cf071f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ipSeasonCtrl := THIS^._ipWeatherCtrl;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="NextSeason" Id="{1ab6d83d-e7c2-08b6-008b-e88f8ef06f2d}">
+      <Declaration><![CDATA[METHOD ABSTRACT NextSeason
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="nLeavesState" Id="{ea976a4c-60e0-0e1d-289f-7a737903b249}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL nLeavesState : BYTE
+]]></Declaration>
+      <Get Name="Get" Id="{1fcb6614-607d-0908-1916-79788b713860}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nLeavesState := THIS^._nLeavesState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nTyresType" Id="{7caf6783-99c3-023c-1a73-3e0a3d32f43a}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL nTyresType : BYTE
+]]></Declaration>
+      <Get Name="Get" Id="{ee7237cc-4901-0f06-0fd9-e607e17752dc}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nTyresType := THIS^._nTyresType;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="OnEntry" Id="{14b64f64-09d2-07a3-0e79-7ac8145a41a8}">
+      <Declaration><![CDATA[METHOD OnEntry
+VAR
+    sTmp:       STRING(MAX_STRING_LENGTH);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sTmp := CONCAT(THIS^.sState, ' here we go!');
+
+Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                     msgFmtStr := sTmp,
+                     strArg := '');
+
+IF THIS^.bWindBlowing THEN
+    Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                         msgFmtStr := 'The wind is blowing',
+                         strArg := '');
+END_IF
+
+IF THIS^.bRaining THEN
+    Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                         msgFmtStr := 'It$'s raining dogs and cats',
+                         strArg := '');
+END_IF
+
+IF THIS^.bSunShining THEN
+    Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                         msgFmtStr := 'Aurinko paistaa',
+                         strArg := '');
+END_IF
+
+IF THIS^.bSnowing THEN
+    Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                         msgFmtStr := 'Sataa lunta',
+                         strArg := '');
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnExit" Id="{d266f259-32d3-01e0-0a5c-a5c688aa8806}">
+      <Declaration><![CDATA[METHOD OnExit
+VAR
+    sTmp:       STRING(MAX_STRING_LENGTH);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sTmp := CONCAT('Good bye ', THIS^.sState);
+
+Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                     msgFmtStr := sTmp,
+                     strArg := '');
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{a25bc8f0-2a4e-0791-1c5a-0e197274dc2e}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nCounter := THIS^._nCounter + 1;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="sState" Id="{a721ad87-8168-0c94-3cb9-8cb8cf90e844}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY FINAL sState : STRING(MAX_STRING_LENGTH)
+]]></Declaration>
+      <Get Name="Get" Id="{1bbd4a1f-a86e-00f7-3325-a56607276f92}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[sState := TO_STRING(THIS^.eState);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

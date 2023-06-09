@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_InvocationControlTestTask" Id="{6d48c19b-0949-0447-175a-af01d4b69302}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_InvocationControlTestTask EXTENDS FB_Task
+VAR CONSTANT
+    cDefaultCyclesToRun:        UDINT := 1;
+END_VAR
+VAR
+    _nCyclesToRunIn:            UDINT;
+
+    _nCyclesToRun:              UDINT := 10;
+    _nCycleCounter:             UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="nCycleCounter" Id="{55855e17-67a2-06c2-1f3e-bf09c5bc6ad1}">
+      <Declaration><![CDATA[PROPERTY nCycleCounter : UDINT
+]]></Declaration>
+      <Get Name="Get" Id="{df7bef26-4887-0611-10a0-ae37acd4da44}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nCycleCounter := THIS^._nCycleCounter;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="OnStart" Id="{35eb8f5c-047f-09ef-2ec4-647edcb9ddcf}">
+      <Declaration><![CDATA[METHOD PROTECTED OnStart
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^._nCyclesToRunIn > 0 THEN
+    THIS^._nCyclesToRun := THIS^._nCyclesToRunIn;
+ELSE
+    THIS^._nCyclesToRun := THIS^.cDefaultCyclesToRun;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Restore" Id="{058b7504-7ac1-06de-1bfb-4add33843d09}">
+      <Declaration><![CDATA[METHOD Restore : I_Restorable
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Restore := SUPER^.Restore();
+
+THIS^._nCycleCounter := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{f4236e24-17b7-009c-22d0-848f1ab39ee0}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Execute() THEN
+    THIS^._nCycleCounter := THIS^._nCycleCounter + 1;
+
+    THIS^.DoneWhen(THIS^._nCycleCounter = THIS^._nCyclesToRun);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetRunCondition" Id="{8135ce41-7159-0be6-1fbb-fceacd1bb4a5}">
+      <Declaration><![CDATA[METHOD SetRunCondition : REFERENCE TO FB_InvocationControlTestTask
+VAR_INPUT
+    nCyclesToRun:        UDINT; // Number of cycles to run
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetRunCondition REF= THIS^;
+
+THIS^._nCyclesToRunIn := nCyclesToRun;
+
+THIS^.Invoke();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

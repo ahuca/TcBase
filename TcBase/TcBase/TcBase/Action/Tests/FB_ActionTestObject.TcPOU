@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ActionTestObject" Id="{5641797a-cb27-04c1-000a-970c08e21dc3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ActionTestObject EXTENDS FB_Object IMPLEMENTS I_CyclicTask
+VAR
+    _nCounter: UDINT;
+    _bActivated: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Activate" Id="{2b889140-d7a5-0a56-3b9c-f3ac573149f1}">
+      <Declaration><![CDATA[METHOD Activate
+VAR_INPUT
+    bActivate: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._bActivated := bActivate;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="bIsActivated" Id="{3e7170b5-2443-0894-1fb8-43b92a28c90a}">
+      <Declaration><![CDATA[PROPERTY bIsActivated : BOOL]]></Declaration>
+      <Get Name="Get" Id="{f428bd93-865d-0a37-24d5-d5d1f2822df6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bIsActivated := THIS^._bActivated;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nCounter" Id="{70dcdeac-c026-025c-024e-45088ae711f9}">
+      <Declaration><![CDATA[PROPERTY nCounter : UDINT]]></Declaration>
+      <Get Name="Get" Id="{c78e7ebd-d2c8-03ed-22d2-b2e81e97bb85}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nCounter := THIS^._nCounter;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Run" Id="{d54a1ad8-a015-0eed-3045-bd40456160d4}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nCounter := THIS^._nCounter + 1;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

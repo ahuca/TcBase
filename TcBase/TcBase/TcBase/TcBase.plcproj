@@ -36,18 +36,26 @@
     <CompilerDefines />
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="Action\Tests" />
+    <Folder Include="Collection\Tests" />
     <Folder Include="Context" />
     <Folder Include="Cyclic Task" />
     <Folder Include="Invocation Control" />
     <Folder Include="Collection" />
     <Folder Include="Helpers" />
     <Folder Include="Action" />
+    <Folder Include="Invocation Control\Tests" />
+    <Folder Include="Programs" />
     <Folder Include="Object" />
+    <Folder Include="Object\Tests" />
     <Folder Include="Observer Pattern" />
     <Folder Include="Observer Pattern\Abstraction" />
     <Folder Include="Observer Pattern\Abstraction\Actions" />
+    <Folder Include="Observer Pattern\Tests" />
     <Folder Include="Restorable" />
     <Folder Include="State Pattern" />
+    <Folder Include="State Pattern\Tests" />
+    <Folder Include="State Pattern\Tests\Test Subjects" />
     <Folder Include="Task" />
     <Folder Include="Task\Data Type" />
   </ItemGroup>
@@ -59,6 +67,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Action\I_Action.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Action\Tests\FB_ActionTestObject.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Action\Tests\FB_Action_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Action\Tests\FB_ActivateAction.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Collection\FB_List.TcPOU">
@@ -76,6 +93,12 @@
     <Compile Include="Collection\Param_List.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Collection\Tests\FB_ListCapacity_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collection\Tests\FB_List_Test.TcPOU">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Context\FB_Context.TcPOU">
       <SubType>Code</SubType>
@@ -96,6 +119,12 @@
     <Compile Include="Invocation Control\FB_InvocationControl.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Invocation Control\Tests\FB_InvocationControlTestTask.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Invocation Control\Tests\FB_InvocationControl_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Object\FB_LinkedObject.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -106,6 +135,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Object\I_Object.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Object\Tests\FB_DummyObject.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Object\Tests\FB_Object_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Observer Pattern\Abstraction\Actions\FB_NotifyObserverAction.TcPOU">
@@ -216,6 +251,15 @@
     <Compile Include="Observer Pattern\FB_Observer_WORD.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Observer Pattern\Tests\FB_ObserverPattern_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Observer Pattern\Tests\FB_Observer_LREAL_.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Programs\Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Restorable\I_ObjectRestorer.TcIO">
       <SubType>Code</SubType>
     </Compile>
@@ -234,6 +278,57 @@
     <Compile Include="State Pattern\I_StateMachine.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="State Pattern\Tests\FB_StatePattern_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\E_Season.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_Autumn.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_Default.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_SeasonBase.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_SeasonStateMachine.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_Spring.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_State1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_State2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_State3.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_State4.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_StateMachine1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_Summer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_Winter.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\FB_Year.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\I_SeasonControl.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="State Pattern\Tests\Test Subjects\I_SeasonState.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Task\Data Type\E_TaskState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -244,6 +339,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Task\I_TaskStatus.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -275,6 +373,10 @@
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TcUnit">
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

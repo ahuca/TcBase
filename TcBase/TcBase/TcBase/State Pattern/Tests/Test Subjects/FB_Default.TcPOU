@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Default" Id="{c07428a4-f67f-097b-0012-e37bfcd15e8e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Default EXTENDS FB_SeasonBase
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="NextSeason" Id="{3b882c7e-bfea-0c74-0aac-af082b0127f0}">
+      <Declaration><![CDATA[METHOD  NextSeason
+VAR_INST
+    fbCallCtrl:     FB_InvocationControl;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF fbCallCtrl.Track().bNewInvocation THEN
+    Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                         msgFmtStr := 'Current state for %s is not initialized!',
+                         strArg := THIS^.sPath);
+END_IF
+
+IF THIS^.ipStateMachine <> 0 THEN
+    THIS^.ipStateMachine.SetState(THIS^);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

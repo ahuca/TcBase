@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Action_Test" Id="{d943d463-2c63-0db7-32f6-ff4ba6b4d444}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Action_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestActivateAction();
+TestRunCyclicTaskAction();
+]]></ST>
+    </Implementation>
+    <Method Name="TestActivateAction" Id="{a5a6d9e4-e0b8-0904-1eac-aa72810a43c6}">
+      <Declaration><![CDATA[METHOD PRIVATE TestActivateAction
+VAR_INST
+    fbObject: FB_ActionTestObject;
+    fbActivate: FB_ActivateAction;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestActivateTaskAction');
+
+THIS^.AssertFalse(Condition := fbObject.bIsActivated,
+                  Message := 'Object should not be activated yet');
+
+fbActivate.Inputs(TRUE).Execute(fbObject);
+
+THIS^.AssertTrue(Condition := fbObject.bIsActivated,
+                 Message := 'Failed to activate object');
+
+fbActivate.Inputs(FALSE).Execute(fbObject);
+
+THIS^.AssertFalse(Condition := fbObject.bIsActivated,
+                  Message := 'Failed to deactivate object');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestRunCyclicTaskAction" Id="{ee1a11c0-e564-02c9-2d09-330afa56163b}">
+      <Declaration><![CDATA[METHOD PRIVATE TestRunCyclicTaskAction
+VAR_INST
+    nCyclesToRun: UDINT := 5;
+    nCounter: UDINT := 0;
+    fbObject: FB_ActionTestObject;
+    fbRunCyclicTask: FB_RunCyclicTasksAction;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestRunCyclicTaskAction');
+
+fbRunCyclicTask.Execute(fbObject);
+nCounter := nCounter + 1;
+
+IF nCyclesToRun = nCounter THEN
+    THIS^.AssertEquals_UDINT(Expected := nCyclesToRun,
+                             Actual := fbObject.nCounter,
+                             Message := 'Unexpected counter value of cyclic object');
+    TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_SeasonControl" Id="{47aa773a-fff9-0e08-370d-af9b4e7030d6}">
+    <Declaration><![CDATA[INTERFACE INTERNAL I_SeasonControl EXTENDS __SYSTEM.IQueryInterface
+]]></Declaration>
+    <Property Name="StateAutumn" Id="{7b280794-b8e4-0e0a-38d2-c01a5a81a78a}">
+      <Declaration><![CDATA[PROPERTY StateAutumn : I_State]]></Declaration>
+      <Get Name="Get" Id="{fb443854-040e-0b5f-38c8-6bc7eaf2001a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="StateSpring" Id="{816f527d-7d64-0c04-3c0c-d07ad322311d}">
+      <Declaration><![CDATA[PROPERTY StateSpring : I_State]]></Declaration>
+      <Get Name="Get" Id="{91e356a7-23c3-0b3b-0ea6-34ee66dfdd09}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="StateSummer" Id="{d0ac5209-d205-0b73-1f68-7493e3faf8f9}">
+      <Declaration><![CDATA[PROPERTY StateSummer : I_State]]></Declaration>
+      <Get Name="Get" Id="{a3eeb549-7d38-0284-3d59-a948770fae6e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="StateWinter" Id="{a206ff64-49c0-0302-329b-6370b2ffb4b2}">
+      <Declaration><![CDATA[PROPERTY StateWinter : I_State]]></Declaration>
+      <Get Name="Get" Id="{2fad4bb7-5622-00d4-1d73-99e89658734c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

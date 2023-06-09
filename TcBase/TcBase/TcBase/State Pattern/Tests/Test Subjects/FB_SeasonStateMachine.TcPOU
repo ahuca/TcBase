@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SeasonStateMachine" Id="{a2b4631a-918d-04a9-0d62-db5b1969a75d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_SeasonStateMachine EXTENDS FB_StateMachine
+VAR
+    fbDefaultState:     FB_Default(THIS^, THIS^);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="CurrentSeason" Id="{45b6534a-c433-039e-0897-80c40533d81c}">
+      <Declaration><![CDATA[METHOD CurrentSeason : I_SeasonState
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[__QUERYINTERFACE(THIS^.ipState, CurrentSeason);
+
+IF CurrentSeason = 0 THEN
+    CurrentSeason := THIS^.fbDefaultState;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NextSeason" Id="{55ae97dc-687b-0359-26b5-ba3cb525716c}">
+      <Declaration><![CDATA[METHOD NextSeason
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.CurrentSeason().NextSeason();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="StateDefault" Id="{6853da7b-3d16-0e18-358e-858b6a5161c9}">
+      <Declaration><![CDATA[PROPERTY StateDefault : I_SeasonState]]></Declaration>
+      <Get Name="Get" Id="{74dd0896-8cc0-03cc-3639-1e42fd37b648}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[StateDefault := THIS^.fbDefaultState;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Summer" Id="{714eb448-a7ac-09e4-2258-7b0bc36333f9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Summer EXTENDS FB_SeasonBase
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="ChangeToSummerTyres" Id="{9699f616-eee6-080b-1f87-19eac24293bd}">
+      <Declaration><![CDATA[METHOD ChangeToSummerTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._nTyresType := 1;
+Tc2_System.ADSLOGSTR(msgCtrlMask := THIS^._nLogLevel,
+                     msgFmtStr := 'Changed to summer tyres',
+                     strArg := '');
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{4038ee1c-a443-094a-3813-7f061758ce0a}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+    ipStateMachine:         I_StateMachine;
+    ipParentObject:         I_Object;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._eState := E_Season.Summer;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NextSeason" Id="{dd5a8101-9b17-0df1-3365-9a33ecc9e826}">
+      <Declaration><![CDATA[METHOD  NextSeason
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.ipStateMachine.SetState(THIS^.ipSeasonCtrl.StateAutumn);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="OnEntry" Id="{e4310d01-c623-0355-345d-034bd8e442ed}">
+      <Declaration><![CDATA[METHOD OnEntry
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.OnEntry();
+THIS^._bWindBlowing     := FALSE;
+THIS^._bRaining         := FALSE;
+THIS^._bSunShining      := TRUE;
+THIS^._bSnowing         := FALSE;
+THIS^._nLeavesState     := 1;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

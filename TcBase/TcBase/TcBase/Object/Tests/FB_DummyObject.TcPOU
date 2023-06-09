@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DummyObject" Id="{02b827fa-a864-0b79-18d9-0983e456a88d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_DummyObject EXTENDS FB_Object
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+    _nTest: INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="nTest" Id="{f39036c8-376b-0437-0832-34bdf02a2176}">
+      <Declaration><![CDATA[PROPERTY nTest : INT]]></Declaration>
+      <Get Name="Get" Id="{d8777a8d-ef56-00b5-16db-51fe57934994}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nTest := THIS^._nTest;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{aa98e316-bb19-0f2b-0301-2cc1ce295fbe}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._nTest := nTest;
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

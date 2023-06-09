@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Object_Test" Id="{4b625189-197e-0eef-02c9-c476bdd86e65}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'}
+FUNCTION_BLOCK INTERNAL FB_Object_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+    fbPathTester: FB_DummyObject;
+    _sTestPath: STRING(MAX_STRING_LENGTH) := CONCAT(_sPath, '.fbPathTester');
+
+    {attribute 'instance-path'}
+    {attribute 'noinit'}
+    _sPath: STRING(MAX_STRING_LENGTH);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCompareObjectToSelfExpectTrue();
+TestCompareTwoDifferentObjectsExpectFalse();
+TestIdentityCorrectness();
+TestPathCorrectness();
+]]></ST>
+    </Implementation>
+    <Method Name="TestCompareObjectToSelfExpectTrue" Id="{ea470373-e19c-0801-25d6-5b1379beff12}">
+      <Declaration><![CDATA[METHOD PRIVATE TestCompareObjectToSelfExpectTrue
+VAR_INST
+    fbObject1:      FB_DummyObject;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestCompareObjectToSelfExpectTrue');
+
+THIS^.AssertTrue(Condition := fbObject1.Equals(fbObject1),
+                 Message := 'Failed when comparing two equal objects');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCompareTwoDifferentObjectsExpectFalse" Id="{985fd227-767c-0b17-3d0d-5ae9ac2c1025}">
+      <Declaration><![CDATA[METHOD PRIVATE TestCompareTwoDifferentObjectsExpectFalse
+VAR_INST
+    fbObject1:      FB_DummyObject;
+    fbObject2:      FB_DummyObject;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestCompareTwoDifferentObjectsExpectFalse');
+
+THIS^.AssertFalse(Condition := fbObject1.Equals(fbObject2),
+                  Message := 'Failed when comparing two equal objects');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestIdentityCorrectness" Id="{1728cde0-8a40-0d56-3a90-45d0e1c122be}">
+      <Declaration><![CDATA[METHOD PRIVATE TestIdentityCorrectness
+VAR_INST
+    fbObject: FB_DummyObject;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestIdentityCorrectness');
+
+THIS^.AssertEquals_ULINT(Expected := ADR(fbObject),
+                         Actual := fbObject.nIdentity,
+                         Message := 'Object indentity is not true');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestPathCorrectness" Id="{e7d76c8d-b26a-003e-00d4-4c67aea73964}">
+      <Declaration><![CDATA[METHOD PRIVATE TestPathCorrectness
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('TestPathCorrectness');
+
+THIS^.AssertEquals_STRING(Expected := THIS^._sTestPath,
+                          Actual := THIS^.fbPathTester.sPath,
+                          Message := 'Object path is not true');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

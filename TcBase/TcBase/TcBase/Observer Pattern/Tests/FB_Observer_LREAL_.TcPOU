@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Observer_LREAL_" Id="{ed241e61-c436-0cab-1624-c560dbb3c0eb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Observer_LREAL_ EXTENDS FB_Observer_LREAL
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="nUpdateCounter" Id="{5f1c2085-1f63-0fc4-0efd-b5711c3f8e08}">
+      <Declaration><![CDATA[PROPERTY nUpdateCounter : UDINT]]></Declaration>
+      <Get Name="Get" Id="{94e60791-76ed-092b-0dd6-22fef34365ba}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nUpdateCounter := THIS^._nUpdateCounter;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

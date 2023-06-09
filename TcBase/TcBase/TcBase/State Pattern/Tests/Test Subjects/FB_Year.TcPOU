@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Year" Id="{fe655ad5-7059-0731-0988-2edb45df25ec}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Year EXTENDS FB_Object IMPLEMENTS I_SeasonControl, I_CyclicTask
+VAR
+    fbSeasonStateMachine:   FB_SeasonStateMachine;
+    fbWinter:               FB_Winter(THIS^.fbSeasonStateMachine, THIS^);
+    fbSpring:               FB_Spring(THIS^.fbSeasonStateMachine, THIS^);
+    fbSummer:               FB_Summer(THIS^.fbSeasonStateMachine, THIS^);
+    fbAutumn:               FB_Autumn(THIS^.fbSeasonStateMachine, THIS^);
+
+    nCounter:               UDINT;
+    nModVal:                UDINT := 500;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Properties" Id="{ee3573fd-0509-051c-0602-8171ec30d53c}" />
+    <Method Name="ChangeToSummerTyres" Id="{70ebc0db-cf84-0f7e-3fab-533965158ac1}">
+      <Declaration><![CDATA[METHOD ChangeToSummerTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.CurrentState().ChangeToSummerTyres();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ChangeToWinterTyres" Id="{20add137-020c-0490-2dee-a5aae9b1e602}">
+      <Declaration><![CDATA[METHOD ChangeToWinterTyres
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.CurrentState().ChangeToWinterTyres();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CurrentState" Id="{9dde5f23-25e2-0c5b-1d72-636cd789ec37}">
+      <Declaration><![CDATA[METHOD CurrentState : I_SeasonState
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[__QUERYINTERFACE(THIS^.fbSeasonStateMachine.ipState, CurrentState);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{903d718b-fbcd-043f-2b03-d4b812d5787f}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+    bInitRetains:           BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+    bInCopyCode:            BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.fbSeasonStateMachine.SetState(THIS^.StateSummer);
+THIS^.CurrentState().ChangeToSummerTyres();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NextSeason" Id="{cc87e7e1-d903-0057-1226-7c1055a0d405}">
+      <Declaration><![CDATA[METHOD NextSeason
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.fbSeasonStateMachine.NextSeason();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{652743c6-ccfc-020d-276e-cddc5e1bb354}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.nCounter := THIS^.nCounter + 1;
+THIS^.fbSeasonStateMachine.Run();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="StateAutumn" Id="{2e1d0bde-c684-0c08-3f60-61b11c35adc8}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY StateAutumn : I_State]]></Declaration>
+      <Get Name="Get" Id="{6c74ae4c-0fa2-0cde-15ed-402bfd0b4100}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[StateAutumn := THIS^.fbAutumn;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="StateSpring" Id="{374866af-9ff1-094a-0ef4-a5727719ca68}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY StateSpring : I_State]]></Declaration>
+      <Get Name="Get" Id="{ef19480a-5df6-0247-1038-2002c554b65a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[StateSpring := THIS^.fbSpring;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="StateSummer" Id="{cddc9c39-53d3-09d9-2b73-00dcb11b7762}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY StateSummer : I_State]]></Declaration>
+      <Get Name="Get" Id="{4ca04d3b-f233-09d9-3400-c2e2b3ec87a1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[StateSummer := THIS^.fbSummer;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="StateWinter" Id="{6b7932ed-be28-0650-3513-fca56ba90efa}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY StateWinter : I_State]]></Declaration>
+      <Get Name="Get" Id="{8e64ce48-6662-0c98-1586-05362dd69e90}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[StateWinter := THIS^.fbWinter;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

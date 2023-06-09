@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Test" Id="{86d585dc-fc70-06c8-3542-0af93737446b}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Test
+VAR
+    fbObjectTest: FB_Object_Test;
+    fbListTest: FB_List_Test;
+    fbListEnsureCapacityTest: FB_ListCapacity_Test;
+    fbCallCtrlTest: FB_InvocationControl_Test;
+    fbObserverPatternTest: FB_ObserverPattern_Test;
+    fbStatePatternTest: FB_StatePattern_Test;
+    fbActionTest: FB_Action_Test;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TcUnit.RUN();
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
