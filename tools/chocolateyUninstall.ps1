@@ -7,14 +7,11 @@ Param(
 )
 
 $LibName = "TcBase"
-$AiUtilPath = "$PSScriptRoot\TcAutomationInterface.ps1"
 
 if (!$env:TWINCAT3DIR) {
     Write-Host "TwinCAT 3 is not installed, exiting normally"
     exit 0
 }
-
-. $AiUtilPath
 
 Start-MessageFilter
 

@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "chocolateyInstall.ps1",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "D:\\src\\TcBase\\tools\\chocolateyInstall.ps1",
+            "args": ["-ForceProgId \"TcXaeShell.DTE.15.0\" -Verbose -Debug -Force"]
+        },
+        {
+            "name": "chocolateyUninstall.ps1",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "D:\\src\\TcBase\\tools\\chocolateyUninstall.ps1",
+            "args": ["-ForceProgId \"TcXaeShell.DTE.15.0\" -Verbose -Debug"]
+        }
+    ]
+}

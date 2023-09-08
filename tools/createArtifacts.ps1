@@ -3,10 +3,6 @@ Param(
     [string]$ForceProgId
 )
 
-$AiUtilPath = "$PSScriptRoot\TcAutomationInterface.ps1"
-
-. $AiUtilPath
-
 Start-MessageFilter
 
 # Create new DTE instance
@@ -16,7 +12,7 @@ $dte = New-DteInstance @dteArgs
 
 # Save project as library
 try {
-    Save-TcProjectAsLibrary -DteInstace $dte -Solution ".\TcBase\TcBase.sln" -ProjectName "TcBase" -Path ".\tools"
+    Export-TcProject -DteInstace $dte -Solution ".\TcBase\TcBase.sln" -ProjectName "TcBase" -Path (Resolve-Path(".\tools"))
 }
 catch {
     Write-Error $_
