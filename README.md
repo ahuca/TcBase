@@ -16,7 +16,7 @@ Being under heavy development, we advise you well to use [proxy](https://en.wiki
 
 ## Dependencies
 
-While [TcBase](https://github.com/ahuca/TcBase/tree/main/TcBase) doesn't require any 3rd-party dependencies, [TcBaseTest](https://github.com/ahuca/TcBase/tree/main/TcBaseTest) - housing all the unit tests for TcBase - does depend on [TcUnit](https://github.com/tcunit/TcUnit) version [1.2.0.0](https://github.com/tcunit/TcUnit/releases/tag/1.2.0.0).
+The unit tests for [TcBase](https://github.com/ahuca/TcBase/tree/main/TcBase) depends on the [TcUnit library](https://github.com/tcunit/TcUnit) version [1.2.0.0](https://github.com/tcunit/TcUnit/releases/tag/1.2.0.0).
 
 ## Acknowledgement
 
